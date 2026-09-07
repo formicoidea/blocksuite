@@ -10,6 +10,7 @@ import { bpmnCommands } from './commands.js';
 import { NODE_LABEL, nodeLabelKey } from './consts.js';
 import { BPMN_IMPORT_REMARKS } from './import.js';
 import { BPMN_PROFILES } from './profiles.js';
+import { BPMN_READINGS } from './reading.js';
 import { BPMN_ROLES } from './roles.js';
 import { BPMN_RULES } from './rules.js';
 
@@ -66,5 +67,10 @@ export const bpmnTranslationEntries: TranslationKeyManifestEntry[] =
     collectTranslationKeys('rule', BPMN_RULES),
     collectTranslationKeys('profile', BPMN_PROFILES),
     seedEntries(),
-    importRemarkEntries()
+    importRemarkEntries(),
+    // LAST, and the order is load-bearing: a reading profile carries the
+    // framework's own `roles`, so walking it reaches every role key the `role`
+    // line above already named. `mergeTranslationEntries` keeps the FIRST
+    // occurrence, which is what makes each key report the source it comes from.
+    collectTranslationKeys('reading', BPMN_READINGS)
   );

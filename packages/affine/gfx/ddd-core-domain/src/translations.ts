@@ -10,6 +10,7 @@ import { coreDomainCommands } from './commands.js';
 import { CORE_DOMAIN_BACKGROUND } from './core-domain/background.js';
 import { CORE_DOMAIN_NUDGES } from './nudges.js';
 import { CORE_DOMAIN_PROFILES } from './profiles.js';
+import { CORE_DOMAIN_READINGS } from './reading.js';
 import { CORE_DOMAIN_ROLES } from './roles.js';
 import { CORE_DOMAIN_RULES } from './rules.js';
 
@@ -38,5 +39,10 @@ export const coreDomainTranslationEntries: TranslationKeyManifestEntry[] =
     collectTranslationKeys('background', CORE_DOMAIN_BACKGROUND),
     collectTranslationKeys('rule', CORE_DOMAIN_RULES),
     collectTranslationKeys('nudge', CORE_DOMAIN_NUDGES),
-    collectTranslationKeys('profile', CORE_DOMAIN_PROFILES)
+    collectTranslationKeys('profile', CORE_DOMAIN_PROFILES),
+    // LAST, and the order is load-bearing: a reading profile carries the
+    // framework's own `roles`, so walking it reaches every role key the `role`
+    // line above already named. `mergeTranslationEntries` keeps the FIRST
+    // occurrence, which is what makes each key report the source it comes from.
+    collectTranslationKeys('reading', CORE_DOMAIN_READINGS)
   );

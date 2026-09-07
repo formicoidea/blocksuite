@@ -8,6 +8,7 @@ import {
 
 import { cynefinEstuarineCommands } from './commands.js';
 import { ESTUARINE_NUDGES } from './estuarine/nudges.js';
+import { ESTUARINE_READING } from './estuarine/reading.js';
 import { ESTUARINE_ROLES } from './estuarine/roles.js';
 
 /**
@@ -37,5 +38,13 @@ export const cynefinEstuarineTranslationEntries: TranslationKeyManifestEntry[] =
     // English headers (#183).
     commandCategoryTranslationEntries(cynefinEstuarineCommands),
     collectTranslationKeys('role', ESTUARINE_ROLES),
-    collectTranslationKeys('nudge', ESTUARINE_NUDGES)
+    collectTranslationKeys('nudge', ESTUARINE_NUDGES),
+    // LAST, and the order is load-bearing: a reading profile carries the
+    // framework's own `roles`, so walking it reaches every role key the line
+    // above already named. `mergeTranslationEntries` keeps the FIRST
+    // occurrence, which is what makes each key report the source it comes from.
+    // This profile declares no relation, so today it contributes no key of its
+    // own — walking it costs nothing and means the day it gains one the
+    // manifest already names it.
+    collectTranslationKeys('reading', ESTUARINE_READING)
   );

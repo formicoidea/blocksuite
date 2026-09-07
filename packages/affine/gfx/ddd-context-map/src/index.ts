@@ -18,3 +18,4 @@ export {
   DddContextMapRenderViewExtension,
   DddContextMapViewExtension,
 } from './view.js';
+export { CONTEXT_MAP_READING } from './reading.js';

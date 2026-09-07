@@ -113,9 +113,35 @@ const PROFILE: ReadingProfile = {
       },
     ],
   },
-  relation: { edgeRole: 'test:dependency' },
+  relation: {
+    edgeRole: 'test:dependency',
+    sides: {
+      consumer: { labelKey: 'k.consumers', labelFallback: 'Above' },
+      supplier: { labelKey: 'k.suppliers', labelFallback: 'Below' },
+    },
+    // This made-up framework claims a vertical reading, so the contradiction
+    // check is on. `FLAT_PROFILE` below is the same declaration WITHOUT the
+    // claim, which is what every framework but Wardley ships.
+    geometry: 'vertical',
+  },
   frame: { backgroundRole: 'test:map', background: BACKGROUND, axis: 'x' },
   recordKeys: { nature: 'nature', phase: 'phase' },
+};
+
+/**
+ * The same subject and the same edge, on a board whose framework says NOTHING
+ * about its vertical axis — a pool, a context map, a storming roll.
+ */
+const FLAT_PROFILE: ReadingProfile = {
+  ...PROFILE,
+  id: 'test-flat',
+  relation: {
+    edgeRole: 'test:dependency',
+    sides: {
+      consumer: { labelKey: 'k.before', labelFallback: 'Preceded by' },
+      supplier: { labelKey: 'k.after', labelFallback: 'Followed by' },
+    },
+  },
 };
 
 type Stub = {
@@ -331,6 +357,48 @@ describe('the parent-child relations', () => {
     });
 
     expect(read(me, [other, dangling, neutral, loop])!.relations).toEqual([]);
+  });
+
+  it('names each side with the FRAMEWORK’s own two words', () => {
+    // The panel used to hard-code "Consumers (above)" / "Suppliers (below)",
+    // which is a Wardley value chain and nobody else's sentence. The wordings
+    // are declaration data now, one pair per framework, and the side they are
+    // keyed by is what the engine resolves.
+    expect(PROFILE.relation?.sides.consumer.labelFallback).toBe('Above');
+    expect(FLAT_PROFILE.relation?.sides.supplier.labelFallback).toBe(
+      'Followed by'
+    );
+  });
+
+  it('reports NO contradiction on a framework that claims no vertical axis', () => {
+    // The same board, the same upside-down edge as the test above — but a
+    // framework that never said its vertical axis carries an order. Two BPMN
+    // tasks side by side contradict nothing, and a note saying they do would be
+    // a complaint about a perfectly correct drawing.
+    const me = subject();
+    const other = element({
+      id: 'db',
+      role: 'test:component',
+      bound: [100, 10, 20, 20],
+    });
+    const edge = element({
+      id: 'e',
+      role: 'test:dependency',
+      source: 'me',
+      target: 'db',
+    });
+
+    const [relation] = readElement(
+      me,
+      [me, other, edge],
+      FLAT_PROFILE
+    )!.relations;
+    // The SIDE is still resolved — that is the edge's own declaration — and
+    // only the geometric second-guessing is off.
+    expect(relation).toMatchObject({
+      side: 'supplier',
+      contradictsGeometry: false,
+    });
   });
 
   it('names the other end when it has a name', () => {
@@ -741,6 +809,35 @@ describe('comparing a reading with a record', () => {
         unknownNature: ['Thing'],
       })
     ).toEqual([]);
+  });
+
+  it('accepts the zone label the HOST’s catalogue gives, not only the English', () => {
+    // The false-drift trap, in its localized form: a French deployment stores
+    // "Tardif" in its record and reads `late` off the board. Without the third
+    // spelling the panel would report a permanent disagreement about a
+    // component nobody had moved — and offer two ways out, both of which
+    // corrupt one side.
+    const translate = (key: string, fallback: string) =>
+      key === 'k.late' ? 'Tardif' : fallback;
+
+    expect(
+      compareReading(reading(), { pivotDocId: 'r', phase: 'Tardif' })
+    ).toEqual([{ field: 'phase', read: 'Late', record: 'Tardif' }]);
+    expect(
+      compareReading(reading(), { pivotDocId: 'r', phase: 'Tardif' }, translate)
+    ).toEqual([]);
+    // …and the two spellings that always worked still do, so the resolver adds
+    // an alphabet rather than replacing one.
+    expect(
+      compareReading(reading(), { pivotDocId: 'r', phase: 'late' }, translate)
+    ).toEqual([]);
+    expect(
+      compareReading(reading(), { pivotDocId: 'r', phase: 'Late' }, translate)
+    ).toEqual([]);
+    // A genuine disagreement stays one.
+    expect(
+      compareReading(reading(), { pivotDocId: 'r', phase: 'early' }, translate)
+    ).toEqual([{ field: 'phase', read: 'Late', record: 'early' }]);
   });
 
   it('never reports a phase the board cannot read', () => {

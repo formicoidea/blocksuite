@@ -190,6 +190,28 @@ describe('what a Wardley map is read as', () => {
     });
   });
 
+  it('keeps the two side wordings it shipped with, and claims the axis', () => {
+    // They used to be a CHROME table in the reading widget, which made
+    // "Consumers (above)" the engine's sentence rather than Wardley's. They are
+    // declaration data now — same keys, same English to the letter, so a host
+    // that already translated them translates nothing twice — and the
+    // parenthesised "(above)" is the very claim `geometry` states.
+    expect(WARDLEY_READING.relation).toEqual({
+      edgeRole: WARDLEY_ROLE.dependency,
+      sides: {
+        consumer: {
+          labelKey: 'com.labre.reading.relations.consumers',
+          labelFallback: 'Consumers (above)',
+        },
+        supplier: {
+          labelKey: 'com.labre.reading.relations.suppliers',
+          labelFallback: 'Suppliers (below)',
+        },
+      },
+      geometry: 'vertical',
+    });
+  });
+
   it('never invents a nature', () => {
     const reading = read(node('a', 0.5, 0.5), [map()])!;
     expect(reading.nature).toBeUndefined();

@@ -1,5 +1,6 @@
 import {
   QualityNudgeExtension,
+  ReadingProfileExtension,
   SpotlightHostExtension,
   ValidationProfileExtension,
   ValidationRuleExtension,
@@ -18,6 +19,7 @@ import { edgyCommandIcons, edgyCommands } from './commands';
 import { effects } from './effects';
 import { EDGY_NUDGES } from './nudges';
 import { EDGY_PROFILES } from './profiles';
+import { EDGY_READING } from './reading';
 import { EdgyRelationResolver } from './relation-resolver';
 import { EDGY_ROLES } from './roles';
 import { EDGY_RULES } from './rules';
@@ -128,6 +130,13 @@ export class EdgyViewExtension extends ViewExtensionProvider {
       // the renderers are always on); with the flag off nothing new is named
       // because nothing new is being armed. See `./relation-resolver.ts`.
       context.register(EdgyRelationResolver);
+      // The reversed reading (MF3): what the board says about an element, on
+      // demand. One declaration — the roles and the relation edge, both already
+      // stated elsewhere in this framework — is the whole of what makes the
+      // generic engine able to read an EDGY board. The CLICK that triggers it is
+      // registered once by the surface and gated by the presence of this
+      // profile, so it goes with the flag without either side naming the other.
+      context.register(ReadingProfileExtension(EDGY_READING));
       context.register(edgySeniorTool);
       // The eight EDGY commands: the sub-menu renders them, Settings ›
       // Shortcuts finally lists them, and a host override on an id binds.

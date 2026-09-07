@@ -33,3 +33,4 @@ export {
   DddEventStormingRenderViewExtension,
   DddEventStormingViewExtension,
 } from './view.js';
+export { EVENT_STORMING_READING } from './reading.js';
