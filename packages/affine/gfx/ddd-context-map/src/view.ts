@@ -1,5 +1,6 @@
 import {
   QualityNudgeExtension,
+  ReadingProfileExtension,
   validationToolbarConfig,
   ValidationProfileExtension,
   ValidationRuleExtension,
@@ -18,6 +19,7 @@ import { ContextMapRendererExtension } from './element-renderer';
 import { ContextMapInteraction, ContextMapView } from './element-view';
 import { CONTEXT_MAP_NUDGES } from './nudges';
 import { CONTEXT_MAP_PROFILES } from './profiles';
+import { CONTEXT_MAP_READING } from './reading';
 import { CONTEXT_MAP_ROLES } from './roles';
 import { CONTEXT_MAP_RULES } from './rules';
 import { contextMapBoardToolbarExtension } from './toolbar/board-config';
@@ -90,6 +92,12 @@ export class DddContextMapViewExtension extends ViewExtensionProvider {
           config: validationToolbarConfig,
         })
       );
+      // The reversed reading (MF3): what the map says about a bounded context,
+      // on demand. One declaration — the roles and the relationship edge, both
+      // already stated elsewhere in this framework. The CLICK that triggers it
+      // is registered once by the surface and gated by the presence of this
+      // profile, so it goes with the flag without either side naming the other.
+      context.register(ReadingProfileExtension(CONTEXT_MAP_READING));
       context.register(contextMapSeniorTool);
       context.register(
         CommandExtension(contextMapCommands, contextMapCommandIcons)

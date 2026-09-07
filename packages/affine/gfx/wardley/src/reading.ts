@@ -141,10 +141,36 @@ export const WARDLEY_READING: ReadingProfile = {
     tagId: WARDLEY_NATURE_TAG_ID,
     conventions: WARDLEY_NAMING_CONVENTIONS,
   },
-  // The value-chain link. ADR 0010 § 2: `source` is the subject of the role's
-  // verb, and this role's verb is "depends on" — so the source is the consumer
-  // and the target is what it needs.
-  relation: { edgeRole: WARDLEY_ROLE.dependency },
+  /**
+   * The value-chain link. ADR 0010 § 2: `source` is the subject of the role's
+   * verb, and this role's verb is "needs" — so the source is the consumer and
+   * the target is what it needs.
+   *
+   * The two wordings are Wardley's own and say so: a consumer is drawn ABOVE
+   * what it needs, which is a fact about a value chain and about nothing else.
+   * They lived in the panel until every framework gained a reading, and they
+   * keep their keys and their English to the letter — a host that already
+   * translated them translates nothing twice.
+   *
+   * `geometry: 'vertical'` is the claim those two parentheses make, stated
+   * where the engine can read it: this board's vertical axis IS the order, so
+   * a link drawn against it contradicts the drawing (W4) and the value flow can
+   * be read from the bottom up. Wardley is the only framework that says it.
+   */
+  relation: {
+    edgeRole: WARDLEY_ROLE.dependency,
+    sides: {
+      consumer: {
+        labelKey: 'com.labre.reading.relations.consumers',
+        labelFallback: 'Consumers (above)',
+      },
+      supplier: {
+        labelKey: 'com.labre.reading.relations.suppliers',
+        labelFallback: 'Suppliers (below)',
+      },
+    },
+    geometry: 'vertical',
+  },
   frame: {
     backgroundRole: WARDLEY_ROLE.map,
     background: WARDLEY_BACKGROUND,

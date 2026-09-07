@@ -10,6 +10,7 @@ import { CONTEXT_MAP_BACKGROUND } from './background.js';
 import { contextMapCommands } from './commands.js';
 import { CONTEXT_MAP_NUDGES } from './nudges.js';
 import { CONTEXT_MAP_PROFILES } from './profiles.js';
+import { CONTEXT_MAP_READING } from './reading.js';
 import { CONTEXT_MAP_ROLES } from './roles.js';
 import { CONTEXT_MAP_RULES } from './rules.js';
 
@@ -38,5 +39,10 @@ export const contextMapTranslationEntries: TranslationKeyManifestEntry[] =
     collectTranslationKeys('background', CONTEXT_MAP_BACKGROUND),
     collectTranslationKeys('rule', CONTEXT_MAP_RULES),
     collectTranslationKeys('nudge', CONTEXT_MAP_NUDGES),
-    collectTranslationKeys('profile', CONTEXT_MAP_PROFILES)
+    collectTranslationKeys('profile', CONTEXT_MAP_PROFILES),
+    // LAST, and the order is load-bearing: a reading profile carries the
+    // framework's own `roles`, so walking it reaches every role key the `role`
+    // line above already named. `mergeTranslationEntries` keeps the FIRST
+    // occurrence, which is what makes each key report the source it comes from.
+    collectTranslationKeys('reading', CONTEXT_MAP_READING)
   );

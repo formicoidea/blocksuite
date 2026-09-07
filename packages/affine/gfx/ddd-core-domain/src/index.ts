@@ -35,3 +35,8 @@ export {
   DddCoreDomainRenderViewExtension,
   DddCoreDomainViewExtension,
 } from './view.js';
+export {
+  CORE_DOMAIN_MARKER_READING,
+  CORE_DOMAIN_READING,
+  CORE_DOMAIN_READINGS,
+} from './reading.js';

@@ -4,6 +4,7 @@ import {
   type PivotSnapshot,
   queryPivotProperties,
   type TagDef,
+  translateKey,
 } from '@labre/affine-shared/services';
 import { createIdentifier } from '@labre/global/di';
 import type { Bound } from '@labre/global/gfx';
@@ -112,6 +113,55 @@ export interface ReadingNamingConvention {
 }
 
 /**
+ * How a framework names ONE end of its typed relation, in the panel.
+ *
+ * Key plus the framework's own wording, exactly like a role's label or a rule's
+ * message: the host localises it, and a host with no catalogue still reads a
+ * real phrase.
+ */
+export interface ReadingRelationSideLabel {
+  labelKey: string;
+  /** The framework's own English wording, for a host that ships no catalogue. */
+  labelFallback: string;
+}
+
+/**
+ * The typed edge a reading walks, and the two words the framework reads it
+ * with.
+ *
+ * The wordings live HERE rather than in the panel because they are the
+ * framework's own sentence and nobody else's: "Consumers (above)" is a Wardley
+ * value chain, "Followed by" is a BPMN sequence, "Upstream" is a context map.
+ * The panel used to hard-code the first pair, which is exactly what made the
+ * reading a Wardley feature wearing a generic coat.
+ */
+export interface ReadingRelationDef {
+  edgeRole: RoleId;
+  /**
+   * One wording per side, keyed by what the OTHER end is to the subject — the
+   * same convention {@link ReadingRelation.side} carries. `supplier` labels the
+   * edges LEAVING the subject (the subject is the `source`, i.e. the subject of
+   * the role's verb), `consumer` the edges arriving at it.
+   */
+  sides: Record<ReadingRelationSide, ReadingRelationSideLabel>;
+  /**
+   * The framework claims its board has a VERTICAL reading — that the axis the
+   * elements are drawn along IS the statement of order, so a link and the two
+   * positions can contradict each other.
+   *
+   * Opt-in, and only Wardley opts in: on a value chain a consumer is drawn
+   * above what it needs (ADR 0010 § 5), so an edge pointing the other way is a
+   * disagreement worth reporting. On a BPMN pool, a context map or a storming
+   * roll, "above" means nothing — two tasks side by side are not in conflict —
+   * and a contradiction note there would be a complaint about a drawing that is
+   * perfectly correct. Absent, {@link ReadingRelation.contradictsGeometry} is
+   * always `false`, and the panel also drops the VALUE FLOW section: "value
+   * flows up from X to Y" is the same vertical claim said the other way round.
+   */
+  geometry?: 'vertical';
+}
+
+/**
  * One framework's reading contract. Every section is optional: a framework that
  * declares only `appliesTo` gets the node-type line and nothing else, which is
  * exactly what a framework with no tags, no typed edges and no background
@@ -140,9 +190,7 @@ export interface ReadingProfile {
     conventions: readonly ReadingNamingConvention[];
   };
   /** The typed edge whose two ends the relation reading walks. */
-  relation?: {
-    edgeRole: RoleId;
-  };
+  relation?: ReadingRelationDef;
   /** The frame the phase is read from. */
   frame?: {
     backgroundRole: RoleId;
@@ -192,6 +240,10 @@ export interface ReadingRelation {
    * says one thing and the two positions say the other, the reading says so
    * rather than picking a winner: that is W4 seen from the record's side, and
    * the user is the one who decides which of the two was the mistake.
+   *
+   * Always `false` unless the framework declared
+   * {@link ReadingRelationDef.geometry} — a board whose axis carries no order
+   * has nothing to contradict.
    */
   contradictsGeometry: boolean;
 }
@@ -545,11 +597,15 @@ function readRelations(
     const side: ReadingRelationSide = isSource ? 'supplier' : 'consumer';
     const [, otherY] = centreOf(other.elementBound);
     // `y` grows downwards, so "higher on the map" is a SMALLER y. A supplier is
-    // expected below the subject, a consumer above it.
+    // expected below the subject, a consumer above it — but only on a board
+    // whose framework CLAIMED that axis says something (`geometry`). Two BPMN
+    // tasks side by side contradict nothing.
     const contradictsGeometry =
-      side === 'supplier'
-        ? otherY < subjectY - GEOMETRY_EPSILON
-        : otherY > subjectY + GEOMETRY_EPSILON;
+      relation.geometry !== 'vertical'
+        ? false
+        : side === 'supplier'
+          ? otherY < subjectY - GEOMETRY_EPSILON
+          : otherY > subjectY + GEOMETRY_EPSILON;
 
     relations.push({
       edgeId: edge.id,
@@ -712,6 +768,16 @@ export function readingProfileFor(
 }
 
 /**
+ * How the engine asks the HOST for a wording — `translateKey`, curried with the
+ * `std` its caller owns.
+ *
+ * A function rather than a scope, so every comparison below stays a pure
+ * function of its arguments and one caller ({@link ReadingManager}) owns the
+ * single `std` read.
+ */
+export type ReadingTranslate = (key: string, fallback: string) => string;
+
+/**
  * What the LINKED RECORD says about the two fields a reading can compare
  * itself against. Bounded by construction: the profile names at most two host
  * property keys, and the provider is asked for nothing else.
@@ -775,6 +841,16 @@ export interface ResolvedRecordNature {
  *   its words would be inventing it;
  * - **`values: 'open'`** — the def says any string is a value of this tag, so
  *   everything resolves. That is the def's own claim, not ours.
+ *
+ * ## Why there is no `translate` here, unlike {@link compareReading}
+ *
+ * There is nothing to translate. `TagValueDef.label` is documented as "already
+ * localized by the host" (ADR 0007): a pack is SEEDED with the wording of the
+ * deployment that seeded it, so the label this resolver already matches against
+ * IS the localized one. Adding a resolver would be a parameter that could never
+ * change an answer. The zone labels are the opposite case — they are declared
+ * in the library, in English, with an i18n key beside them — which is why the
+ * phase comparison takes one.
  */
 export function resolveRecordNature(
   def: TagDef | undefined,
@@ -914,13 +990,22 @@ export function readRecord(
  * side. `readRecord` has already resolved what CAN be compared; what could not
  * is not a difference of opinion, it is a difference of alphabet.
  *
- * The phase comparison accepts either the zone id or the zone's own wording,
- * because a host is free to store "Product" where the declaration says
- * `product`, and neither spelling is more correct than the other.
+ * The phase comparison accepts the zone id, the zone's own English wording, and
+ * — when a `translate` is handed in — the wording the HOST's catalogue gives
+ * that zone. A French deployment stores "Produit" in its record and reads
+ * `product` off the board; without the third spelling the panel would report a
+ * permanent, false disagreement on a component nobody had moved. Same shape as
+ * the value-id resolution above: a difference of alphabet is not a difference
+ * of opinion.
+ *
+ * `translate` is a PARAMETER rather than a `std` read, so this stays a pure
+ * function of its arguments; {@link ReadingManager} owns the single `std` the
+ * closure is built from.
  */
 export function compareReading(
   reading: ElementReading,
-  record: RecordReading
+  record: RecordReading,
+  translate?: ReadingTranslate
 ): ReadingDriftField[] {
   const fields: ReadingDriftField[] = [];
 
@@ -940,10 +1025,14 @@ export function compareReading(
   }
 
   if (record.phase && reading.phase) {
-    const spellings = [
-      reading.phase.zoneId,
-      reading.phase.labelFallback ?? '',
-    ].map(value => value.toLowerCase());
+    const { zoneId, labelKey, labelFallback } = reading.phase;
+    const localized =
+      translate && labelKey !== undefined
+        ? translate(labelKey, labelFallback ?? zoneId)
+        : '';
+    const spellings = [zoneId, labelFallback ?? '', localized].map(value =>
+      value.toLowerCase()
+    );
     if (!spellings.includes(record.phase.toLowerCase())) {
       fields.push({
         field: 'phase',
@@ -1229,7 +1318,13 @@ export class ReadingManager extends LifeCycleWatcher {
       return;
     }
 
-    const fields = compareReading(reading, record);
+    // The one `std` read the comparison needs, curried into a resolver so
+    // `compareReading` stays pure: a host serving French stores "Produit" in
+    // its record and would otherwise be told, for ever, that its board says
+    // `product` instead.
+    const fields = compareReading(reading, record, (key, fallback) =>
+      translateKey(this.std, key, fallback)
+    );
     if (fields.length === 0) {
       if (this.drift$.value?.elementId === elementId) this.drift$.value = null;
       return;

@@ -2,6 +2,7 @@ import {
   FrameworkBackgroundInteractionExtension,
   InterchangeExtension,
   morphToolbarConfig,
+  ReadingProfileExtension,
   ValidationProfileExtension,
   ValidationRuleExtension,
   validationToolbarConfig,
@@ -21,6 +22,7 @@ import { effects } from './effects';
 import { BPMN_INTERCHANGE } from './interchange';
 import { BPMN_MORPH_SPEC } from './morph';
 import { BPMN_PROFILES } from './profiles';
+import { BPMN_READINGS } from './reading';
 import { BPMN_ROLES } from './roles';
 import { BPMN_RULES } from './rules';
 import { bpmnTemplateCategory } from './templates';
@@ -130,6 +132,15 @@ export class BpmnViewExtension extends ViewExtensionProvider {
           config: morphToolbarConfig(BPMN_MORPH_SPEC),
         })
       );
+      // The reversed reading (MF3): what the process says about an artefact, on
+      // demand. Four profiles because BPMN has four parent-less node families
+      // (`reading.ts` says why the notation refuses a common root). The CLICK
+      // that triggers it is registered once by the surface and gated by the
+      // presence of a profile, so it goes with the flag without either side
+      // naming the other.
+      for (const reading of BPMN_READINGS) {
+        context.register(ReadingProfileExtension(reading));
+      }
       context.register(bpmnSeniorTool);
       context.register(CommandExtension(bpmnCommands, bpmnCommandIcons));
     }

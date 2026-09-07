@@ -1,6 +1,7 @@
 import {
   morphToolbarConfig,
   QualityNudgeExtension,
+  ReadingProfileExtension,
   validationToolbarConfig,
   ValidationProfileExtension,
   ValidationRuleExtension,
@@ -27,6 +28,7 @@ import { coreDomainEffects } from './effects';
 import { CORE_DOMAIN_MORPH_SPEC } from './morph';
 import { CORE_DOMAIN_NUDGES } from './nudges';
 import { CORE_DOMAIN_PROFILES } from './profiles';
+import { CORE_DOMAIN_READINGS } from './reading';
 import { CORE_DOMAIN_ROLES } from './roles';
 import { CORE_DOMAIN_RULES } from './rules';
 import { coreDomainSeniorTool } from './toolbar/senior-tool';
@@ -95,6 +97,14 @@ export class DddCoreDomainViewExtension extends ViewExtensionProvider {
           config: validationToolbarConfig,
         })
       );
+      // The reversed reading (MF3): what the chart says about an artefact, on
+      // demand. Two profiles, because the vocabulary has two disjoint node
+      // families and neither may inherit the other's rules (`reading.ts`). The
+      // CLICK that triggers it is registered once by the surface and gated by
+      // the presence of a profile.
+      for (const reading of CORE_DOMAIN_READINGS) {
+        context.register(ReadingProfileExtension(reading));
+      }
       context.register(coreDomainSeniorTool);
       context.register(
         CommandExtension(coreDomainCommands, coreDomainCommandIcons)

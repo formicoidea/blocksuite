@@ -25,6 +25,7 @@ import {
   ReadingManager,
   type ReadingProfile,
   type ReadingRelation,
+  type ReadingRelationSide,
   readRecord,
   readValueFlows,
   type RecordReading,
@@ -37,20 +38,16 @@ const TAG_SET_ID = 'tag.set';
 const PIVOT_BIND_ID = 'pivot.bind';
 
 /**
- * How the panel names each side of a parent-child relation, keyed under
- * `com.labre.reading.relations.`. Chrome, and only chrome.
+ * The two sides of a relation, in the order the panel lists them: what needs
+ * the subject first, then what the subject needs.
  *
- * Exported because it is DATA: the translation-key manifest walks it rather
- * than restating the two wordings, which a source scan could not check — the
- * key is built as a template literal and the fallback reaches `translateKey`
- * through a local helper.
+ * The WORDINGS are no longer here. They used to be a chrome table
+ * (`Consumers (above)` / `Suppliers (below)`), which was Wardley's sentence
+ * written into the engine — a BPMN sequence flow has no "above". Each framework
+ * now names its own two sides on its {@link ReadingProfile}, Wardley included,
+ * and restates those very keys and wordings so nothing on a Wardley map moved.
  */
-export const RELATION_SIDE_FALLBACK = {
-  consumers: 'Consumers (above)',
-  suppliers: 'Suppliers (below)',
-} as const;
-
-type RelationSide = keyof typeof RELATION_SIDE_FALLBACK;
+const RELATION_SIDES: readonly ReadingRelationSide[] = ['consumer', 'supplier'];
 
 /**
  * **The proposal panel** — what the tool reads of one component, offered for
@@ -394,23 +391,33 @@ export class ReadingProposalWidget extends EditorAnchoredPanel {
     );
   }
 
-  private _renderRelations(reading: ElementReading) {
-    const consumers = reading.relations.filter(r => r.side === 'consumer');
-    const suppliers = reading.relations.filter(r => r.side === 'supplier');
+  /**
+   * The typed edges touching the subject, grouped by side and named with the
+   * FRAMEWORK's own two words (`ReadingRelationDef.sides`).
+   *
+   * The `data-testid` keeps the shape it shipped with — `reading-consumers`,
+   * `reading-suppliers` — because it names the SIDE, which is generic, and not
+   * the wording, which is now the framework's.
+   */
+  private _renderRelations(reading: ElementReading, profile: ReadingProfile) {
+    const sides = profile.relation?.sides;
 
-    const line = (relations: ReadingRelation[], key: RelationSide) =>
-      relations.length
-        ? html`<div class="reading-value" data-testid=${`reading-${key}`}>
-            ${translateKey(
-              this.std,
-              `com.labre.reading.relations.${key}`,
-              RELATION_SIDE_FALLBACK[key]
-            )}:
-            ${relations
-              .map(relation => relation.otherName || relation.otherId)
-              .join(', ')}
-          </div>`
-        : nothing;
+    const line = (side: ReadingRelationSide) => {
+      const relations: ReadingRelation[] = reading.relations.filter(
+        r => r.side === side
+      );
+      const wording = sides?.[side];
+      // No wording means the framework declared no relation at all, in which
+      // case there is nothing to list either. Silence rather than a heading
+      // this library would have had to invent.
+      if (!relations.length || !wording) return nothing;
+      return html`<div class="reading-value" data-testid=${`reading-${side}s`}>
+        ${translateKey(this.std, wording.labelKey, wording.labelFallback)}:
+        ${relations
+          .map(relation => relation.otherName || relation.otherId)
+          .join(', ')}
+      </div>`;
+    };
 
     const contradictions = reading.relations.filter(r => r.contradictsGeometry);
 
@@ -430,7 +437,7 @@ export class ReadingProposalWidget extends EditorAnchoredPanel {
             )}
           </div>`
         : nothing}
-      ${line(consumers, 'consumers')} ${line(suppliers, 'suppliers')}
+      ${RELATION_SIDES.map(line)}
       ${contradictions.length
         ? html`<div class="reading-note" data-testid="reading-contradiction">
             ${translateKey(
@@ -461,8 +468,17 @@ export class ReadingProposalWidget extends EditorAnchoredPanel {
    * "Value flows up from X to Y"; a host that translates
    * `com.labre.reading.value-flow` gets the same two slots in its own order via
    * the `.to` suffix key.
+   *
+   * ## Why it is gated on the framework's `geometry`
+   *
+   * "Up" is a claim about the board, not about the edge: it is only true where
+   * the framework said the vertical axis carries the order
+   * (`ReadingRelationDef.geometry`). Wardley says it, and this section is the
+   * value chain read from the bottom. Nobody else does, and "value flows up
+   * from Receive order to Check stock" would be a sentence BPMN never said.
    */
-  private _renderValueFlow(reading: ElementReading) {
+  private _renderValueFlow(reading: ElementReading, profile: ReadingProfile) {
+    if (profile.relation?.geometry !== 'vertical') return nothing;
     const flows = readValueFlows(reading);
     if (flows.length === 0) return nothing;
 
@@ -493,7 +509,17 @@ export class ReadingProposalWidget extends EditorAnchoredPanel {
     );
   }
 
-  private _renderPhase(reading: ElementReading) {
+  /**
+   * Where the subject sits along the frame's phase axis.
+   *
+   * Absent ENTIRELY — not "no phase to read" — for a framework that declares no
+   * frame. The empty state below is about a component that could have been on a
+   * map and is not; telling the author of a BPMN task that it is "not on a
+   * framework background" would be answering a question their notation never
+   * asks.
+   */
+  private _renderPhase(reading: ElementReading, profile: ReadingProfile) {
+    if (!profile.frame) return nothing;
     const { phase } = reading;
     return this._field(
       'reading-phase',
@@ -779,8 +805,9 @@ export class ReadingProposalWidget extends EditorAnchoredPanel {
       </div>`,
       html`${this._renderNodeType(reading, profile)}
       ${this._renderNature(reading, profile, record, writable)}
-      ${this._renderRelations(reading)} ${this._renderValueFlow(reading)}
-      ${this._renderPhase(reading)} ${this._renderNaming(reading)}
+      ${this._renderRelations(reading, profile)}
+      ${this._renderValueFlow(reading, profile)}
+      ${this._renderPhase(reading, profile)} ${this._renderNaming(reading)}
       ${this._renderRecord(reading, writable)}
       ${writable ? this._renderDrift(reading) : nothing}`
     );

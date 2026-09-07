@@ -10,6 +10,7 @@ import { EVENT_STORMING_BACKGROUND } from './background.js';
 import { eventStormingCommands } from './commands.js';
 import { EVENT_STORMING_NUDGES } from './nudges.js';
 import { EVENT_STORMING_PROFILES } from './profiles.js';
+import { EVENT_STORMING_READING } from './reading.js';
 import { EVENT_STORMING_ROLES } from './roles.js';
 import { EVENT_STORMING_RULES } from './rules.js';
 
@@ -40,5 +41,10 @@ export const eventStormingTranslationEntries: TranslationKeyManifestEntry[] =
     collectTranslationKeys('background', EVENT_STORMING_BACKGROUND),
     collectTranslationKeys('rule', EVENT_STORMING_RULES),
     collectTranslationKeys('nudge', EVENT_STORMING_NUDGES),
-    collectTranslationKeys('profile', EVENT_STORMING_PROFILES)
+    collectTranslationKeys('profile', EVENT_STORMING_PROFILES),
+    // LAST, and the order is load-bearing: a reading profile carries the
+    // framework's own `roles`, so walking it reaches every role key the `role`
+    // line above already named. `mergeTranslationEntries` keeps the FIRST
+    // occurrence, which is what makes each key report the source it comes from.
+    collectTranslationKeys('reading', EVENT_STORMING_READING)
   );

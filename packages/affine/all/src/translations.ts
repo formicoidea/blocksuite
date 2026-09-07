@@ -1,7 +1,6 @@
 import {
   EXEMPTION_FALLBACK,
   PROVENANCE_FALLBACK,
-  RELATION_SIDE_FALLBACK,
   SEVERITY_FALLBACK,
 } from '@labre/affine-block-surface';
 import { bpmnTranslationEntries } from '@labre/affine-gfx-bpmn';
@@ -115,7 +114,13 @@ const CHROME_TABLES: readonly [
   // a host building a catalogue must not have to come back for a fourth word
   // the day the first org profile ships.
   ['com.labre.validation.provenance.', PROVENANCE_FALLBACK],
-  ['com.labre.reading.relations.', RELATION_SIDE_FALLBACK],
+  // `com.labre.reading.relations.consumers` / `.suppliers` USED to be here, as
+  // a chrome table walked out of the reading widget. They moved to Wardley's
+  // own `ReadingProfile` when every framework gained one: the two wordings are
+  // a value chain's ("Consumers (above)"), not the panel's, and a BPMN sequence
+  // flow names its sides differently. They now arrive with the rest of the
+  // declared data, through `wardleyTranslationEntries`, under source `reading`
+  // and with the same keys and the same English.
 ];
 
 const chromeTableEntries = (): TranslationKeyManifestEntry[] =>

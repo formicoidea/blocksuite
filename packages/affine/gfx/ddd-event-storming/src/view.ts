@@ -1,6 +1,7 @@
 import {
   morphToolbarConfig,
   QualityNudgeExtension,
+  ReadingProfileExtension,
   validationToolbarConfig,
   ValidationProfileExtension,
   ValidationRuleExtension,
@@ -23,6 +24,7 @@ import { EventStormingInteraction, EventStormingView } from './element-view';
 import { EVENT_STORMING_MORPH_SPEC } from './morph';
 import { EVENT_STORMING_NUDGES } from './nudges';
 import { EVENT_STORMING_PROFILES } from './profiles';
+import { EVENT_STORMING_READING } from './reading';
 import { EVENT_STORMING_ROLES } from './roles';
 import { EVENT_STORMING_RULES } from './rules';
 import { eventStormingBoardToolbarExtension } from './toolbar/board-config';
@@ -95,6 +97,12 @@ export class DddEventStormingViewExtension extends ViewExtensionProvider {
           config: validationToolbarConfig,
         })
       );
+      // The reversed reading (MF3): what the board says about a sticky, on
+      // demand. One declaration — the roles and the flow edge, both already
+      // stated elsewhere in this framework. The CLICK that triggers it is
+      // registered once by the surface and gated by the presence of this
+      // profile, so it goes with the flag without either side naming the other.
+      context.register(ReadingProfileExtension(EVENT_STORMING_READING));
       context.register(eventStormingSeniorTool);
       context.register(
         CommandExtension(eventStormingCommands, eventStormingCommandIcons)

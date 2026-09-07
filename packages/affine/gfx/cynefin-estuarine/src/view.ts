@@ -1,5 +1,6 @@
 import {
   QualityNudgeExtension,
+  ReadingProfileExtension,
   ValidationFrameworkExtension,
   validationToolbarConfig,
 } from '@labre/affine-block-surface';
@@ -27,6 +28,7 @@ import {
   EstuarineGhostOverlay,
 } from './estuarine/ghost-overlay';
 import { ESTUARINE_NUDGES } from './estuarine/nudges';
+import { ESTUARINE_READING } from './estuarine/reading';
 import { ESTUARINE_ROLE, ESTUARINE_ROLES } from './estuarine/roles';
 import { estuarineToolbarExtension } from './estuarine/toolbar/config';
 import {
@@ -124,6 +126,12 @@ export class CynefinEstuarineViewExtension extends ViewExtensionProvider {
           config: validationToolbarConfig,
         })
       );
+      // The reversed reading (MF3): what the board says about a constraint, on
+      // demand. Reading is not validation — this profile carries no rule and no
+      // verdict — which is why it can exist on a package ADR 0013 keeps out of
+      // the validation perimeter (see that ADR's amendment of 2026-09-07). A
+      // free element on a Cynefin board carries no role and stays unreadable.
+      context.register(ReadingProfileExtension(ESTUARINE_READING));
       context.register(cynefinEstuarineSeniorTool);
       context.register(
         CommandExtension(cynefinEstuarineCommands, cynefinEstuarineCommandIcons)

@@ -10,6 +10,7 @@ import { C4_BOARD_BACKGROUND, C4_BOUNDARY_BACKGROUND } from './background.js';
 import { c4Commands } from './commands.js';
 import { C4_BOARD_LEVEL_MENU } from './levels.js';
 import { C4_PROFILES } from './profiles.js';
+import { C4_READINGS } from './reading.js';
 import { C4_ROLES } from './roles.js';
 import { C4_RULES } from './rules.js';
 
@@ -58,5 +59,9 @@ export const c4TranslationEntries: TranslationKeyManifestEntry[] =
     // named. `mergeTranslationEntries` keeps the FIRST occurrence, which is what
     // makes each key report the source it actually comes from.
     collectTranslationKeys('rule', C4_RULES),
-    collectTranslationKeys('profile', C4_PROFILES)
+    collectTranslationKeys('profile', C4_PROFILES),
+    // LAST, for the reason the rules are placed after the roles: a reading
+    // profile carries the framework's own `roles` too, so walking it reaches
+    // keys the lists above already named, and the first occurrence wins.
+    collectTranslationKeys('reading', C4_READINGS)
   );

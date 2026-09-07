@@ -2,6 +2,7 @@ import {
   FrameworkBackgroundInteractionExtension,
   InterchangeExtension,
   morphToolbarConfig,
+  ReadingProfileExtension,
   ValidationProfileExtension,
   ValidationRuleExtension,
 } from '@labre/affine-block-surface';
@@ -30,6 +31,7 @@ import { C4NodeRendererExtension } from './node/node-renderer';
 import { C4NodeView } from './node/node-view';
 import { C4TypeLineWatcher } from './node/type-line-watcher';
 import { C4_PROFILES } from './profiles';
+import { C4_READINGS } from './reading';
 import { C4_ROLES } from './roles';
 import { C4_RULES } from './rules';
 import {
@@ -121,6 +123,14 @@ export class C4ViewExtension extends ViewExtensionProvider {
       // Tooling like the rest of this class: with the flag off there is nothing
       // to export WITH, while a stored diagram keeps painting (`docs/adr/0009`).
       context.register(InterchangeExtension(C4_INTERCHANGE));
+      // The reversed reading (MF3): what the diagram says about an element, on
+      // demand. Four profiles because the four levels are deliberately FLAT —
+      // composition is not specialisation, and `reading.ts` says why a common
+      // parent would be a lie. The CLICK that triggers it is registered once by
+      // the surface and gated by the presence of a profile.
+      for (const reading of C4_READINGS) {
+        context.register(ReadingProfileExtension(reading));
+      }
       context.register(c4SeniorTool);
       context.register(CommandExtension(c4Commands, c4CommandIcons));
       // The flag-gated half of the selected BOARD's row, through the `custom:`

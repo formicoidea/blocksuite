@@ -88,8 +88,6 @@ const CHROME_TABLE_PREFIXES = [
   'com.labre.validation.severity.',
   'com.labre.validation.state.exempted.',
   'com.labre.validation.provenance.',
-  'com.labre.reading.relations.consumers',
-  'com.labre.reading.relations.suppliers',
 ];
 
 /**

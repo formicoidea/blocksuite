@@ -88,3 +88,10 @@ export {
 } from './roles.js';
 export { BPMN_RULES, BPMN_SEQUENCE_MATRIX } from './rules.js';
 export { bpmnTranslationEntries } from './translations.js';
+export {
+  BPMN_ANNOTATION_READING,
+  BPMN_DATA_READING,
+  BPMN_GROUP_READING,
+  BPMN_READING,
+  BPMN_READINGS,
+} from './reading.js';

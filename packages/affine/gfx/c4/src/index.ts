@@ -122,3 +122,10 @@ export { c4TranslationEntries } from './translations.js';
 // the same reason the two background declarations are: it answers "what does
 // this framework document about itself" without a canvas.
 export { C4_AUTO_LEGEND } from './legend.js';
+export {
+  C4_COMPONENT_READING,
+  C4_CONTAINER_READING,
+  C4_PERSON_READING,
+  C4_READINGS,
+  C4_SYSTEM_READING,
+} from './reading.js';

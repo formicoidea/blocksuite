@@ -10,6 +10,7 @@ import { edgyCommands } from './commands.js';
 import { NODE_LABEL, nodeLabelKey } from './node/consts.js';
 import { EDGY_NUDGES } from './nudges.js';
 import { EDGY_PROFILES } from './profiles.js';
+import { EDGY_READING } from './reading.js';
 import { EDGY_ROLES } from './roles.js';
 import { EDGY_RULES } from './rules.js';
 
@@ -55,5 +56,10 @@ export const edgyTranslationEntries: TranslationKeyManifestEntry[] =
       key: nodeLabelKey(kind as keyof typeof NODE_LABEL),
       fallback: label,
       source: 'seed' as const,
-    }))
+    })),
+    // LAST, and the order is load-bearing: a reading profile carries the
+    // framework's own `roles`, so walking it reaches every role key the line
+    // above already named. `mergeTranslationEntries` keeps the FIRST
+    // occurrence, which is what makes each key report the source it comes from.
+    collectTranslationKeys('reading', EDGY_READING)
   );
