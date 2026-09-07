@@ -61,6 +61,13 @@ function embedFlavour(ctx: ToolbarContext, url: string) {
  * creates can be rendered here. Block flags gate view extensions (ADR 0009),
  * so a flavour without a registered view is one the host switched off —
  * converting would replace the link with a block that paints as nothing.
+ *
+ * ponytail: runtime probe of the flag's EFFECT, not the flag. Holds while a
+ * block's renderer and tooling share one view extension. The day bookmark or
+ * embed gets the render/tooling split of ADR 0009, the view stays registered
+ * with the flag off and this gate goes blind. Upgrade path: a link-conversion
+ * contribution identifier that the gated bookmark/embed extensions register,
+ * so the action disappears by absence like every other gated tool.
  */
 function canConvertTo(ctx: ToolbarContext, flavour: string | null) {
   return !!flavour && !!ctx.std.getView(flavour);
