@@ -789,11 +789,13 @@ describe('the reversed reading of a Wardley component', () => {
     const component = addComponent();
     await select(component);
 
-    // No profile is registered, so there is no entry and nothing to open —
-    // while the map and the component are still on the board, still selectable
-    // (ADR 0009).
+    // Wardley's profile is not registered, so there is no entry and nothing to
+    // open — while the map and the component are still on the board, still
+    // selectable (ADR 0009). The OTHER frameworks' profiles stay: a flag takes
+    // one framework's reading away, not the panel.
     expect(readButton()).toBeNull();
-    expect(manager().profiles).toHaveLength(0);
+    expect(manager().profiles.map(p => p.framework)).not.toContain('wardley');
+    expect(manager().profileOf(component)).toBeNull();
     expect(service.surface.getElementById(component)).not.toBeNull();
   });
 });
