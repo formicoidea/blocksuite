@@ -1,7 +1,9 @@
 import {
   backgroundSize,
   DefaultTool,
+  indexOverBackgrounds,
   runInterchangeImportFile,
+  type StackedElement,
 } from '@labre/affine-block-surface';
 import { ConnectorTool } from '@labre/affine-gfx-connector';
 import { createGroupCommand } from '@labre/affine-gfx-group';
@@ -24,11 +26,7 @@ import {
 import { downloadBlob } from '@labre/affine-shared/utils';
 import { Bound } from '@labre/global/gfx';
 import type { BlockStdScope } from '@labre/std';
-import {
-  generateKeyBetween,
-  type GfxController,
-  GfxControllerIdentifier,
-} from '@labre/std/gfx';
+import { type GfxController, GfxControllerIdentifier } from '@labre/std/gfx';
 
 import { WARDLEY_BACKGROUND } from './background';
 import { WARDLEY_SVG_IMPORT } from './interchange';
@@ -530,17 +528,10 @@ export function createWardleyArea(gfx: GfxController, shape: WardleyAreaShape) {
 /**
  * One already-placed element, as {@link wardleyAreaIndexOver} needs to read it.
  *
- * Three fields and no model, so the placement can be reasoned about — and
- * tested — without a document: what it is, where it is, and how deep.
+ * The Wardley name for the shared {@link StackedElement}, kept so this
+ * framework's callers and tests keep reading in its own vocabulary.
  */
-export interface WardleyStackedElement {
-  /** Fractional index. Sorts lexicographically, which IS the paint order. */
-  index: string;
-  /** Serialized box. */
-  xywh: string;
-  /** Whether this is a framework BACKGROUND — a map, a pool, a C4 board… */
-  isBackground: boolean;
-}
+export type WardleyStackedElement = StackedElement;
 
 /** The top-level canvas elements of a surface, minus the one being placed. */
 function stackedElementsOf(
@@ -560,47 +551,12 @@ function stackedElementsOf(
  * How deep a freshly drawn zone goes: just ABOVE the framework backgrounds it
  * covers, and below everything else. `null` means the back of the surface.
  *
- * "The back" alone was the first answer and it was wrong, as the recette of
- * #213 found: a Wardley map is a framework BACKGROUND — an opaque one — so a
- * zone sent behind the whole surface went behind the map and vanished. What a
- * zone must be under is the artefacts it groups; what it must be over is the
- * canvas they are drawn on. Those are two different depths, and only the first
- * one is "the back".
- *
- * So: find the topmost background the zone actually OVERLAPS — the map it was
- * drawn on, and not some other framework's board parked elsewhere on the same
- * canvas — and mint a key between it and whatever sits directly above it. With
- * no background under the zone at all there is nothing to clear, and the back
- * of the surface is right again.
- *
- * `siblings` need not be sorted: fractional indexes sort lexicographically, so
- * this sorts them itself and reads the paint order straight off the strings.
+ * The reasoning — and the recette of #213 that produced it — now lives with
+ * {@link indexOverBackgrounds}, because a frame drawn on a map needs the very
+ * same depth for the very same reason. This alias keeps the Wardley name for
+ * the callers and tests written against it.
  */
-export function wardleyAreaIndexOver(
-  siblings: readonly WardleyStackedElement[],
-  box: Bound
-): string | null {
-  const stack = [...siblings].sort((a, b) =>
-    a.index < b.index ? -1 : a.index > b.index ? 1 : 0
-  );
-  // The LAST match, which is the topmost: a board with two maps on it gets the
-  // zone above the one it is actually drawn over, whichever was drawn first.
-  const under = stack.reduce(
-    (found, element, at) =>
-      element.isBackground &&
-      Bound.deserialize(element.xywh).isOverlapWithBound(box)
-        ? at
-        : found,
-    -1
-  );
-  if (under < 0) return null;
-  // `null` for the upper bound when the background is the topmost element
-  // there is — `generateKeyBetween` reads that as "append after".
-  return generateKeyBetween(
-    stack[under].index,
-    stack[under + 1]?.index ?? null
-  );
-}
+export const wardleyAreaIndexOver = indexOverBackgrounds;
 
 /**
  * Read an SVG the user picks as a SKETCH, and say what it cost.

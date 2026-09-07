@@ -3,3 +3,4 @@ export * from './facts.js';
 export * from './interaction.js';
 export * from './labels.js';
 export * from './renderer.js';
+export * from './stacking.js';

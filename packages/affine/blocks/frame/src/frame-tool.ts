@@ -67,12 +67,16 @@ export class FrameTool extends BaseTool {
         block => block.flavour === 'affine:frame'
       ) as FrameBlockModel[];
 
+      const bound = Bound.fromPoints([this._startPoint, currentPoint]);
       const props = this.std
         .get(EditPropsStore)
         .applyLastProps('affine:frame', {
           title: new Text(new Y.Text(`Frame ${frames.length + 1}`)),
-          xywh: Bound.fromPoints([this._startPoint, currentPoint]).serialize(),
-          index: this.gfx.layer.generateIndex(true),
+          xywh: bound.serialize(),
+          // Not the raw back of the stack: a frame drawn on a framework
+          // background must sit just above it, or the author draws blind
+          // behind an opaque map. See `EdgelessFrameManager.frameIndexAt`.
+          index: this.frameManager.frameIndexAt(bound),
           presentationIndex: this.frameManager.generatePresentationIndex(),
         });
 

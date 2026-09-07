@@ -235,6 +235,107 @@ describe('frame', () => {
     expect(frame.childElements).toHaveLength(0);
   });
 
+  test('a frame drawn on a background renders above it without a reorder', async () => {
+    const surface = service.surface;
+
+    // The bug the PO hit: a frame's index is deliberately at the back of the
+    // stack so it renders behind its own content — but a Wardley map is an
+    // OPAQUE canvas element, so "behind everything" put the frame behind the
+    // map and only the overhanging strip stayed visible.
+    const bgId = surface.addElement({
+      type: 'wardley',
+      xywh: '[0,0,1600,900]',
+    });
+    await wait();
+
+    const frame = service.frame.createFrameOnBound(
+      new Bound(700, 350, 400, 300)
+    );
+    await wait();
+
+    const bg = surface.getElementById(bgId)!;
+    expect(service.layer.compare(frame, bg)).toBeGreaterThan(0);
+  });
+
+  test('a frame drawn on a background still renders behind its own content', async () => {
+    const surface = service.surface;
+
+    surface.addElement({ type: 'wardley', xywh: '[0,0,1600,900]' });
+    await wait();
+
+    const frame = service.frame.createFrameOnBound(
+      new Bound(700, 350, 400, 300)
+    );
+    await wait();
+
+    const shapeId = surface.addElement({
+      type: 'shape',
+      shapeType: 'rect',
+      xywh: '[800,400,100,100]',
+    });
+    await wait();
+
+    const shape = surface.getElementById(shapeId)!;
+    expect(shape.group).toBe(frame);
+    expect(service.layer.compare(shape, frame)).toBeGreaterThan(0);
+  });
+
+  test('a frame moved onto a background is raised above it', async () => {
+    const surface = service.surface;
+
+    // Drawn on bare canvas, far from the map: it legitimately gets the back of
+    // the stack here.
+    const frame = service.frame.createFrameOnBound(
+      new Bound(3000, 3000, 400, 300)
+    );
+    await wait();
+
+    const bgId = surface.addElement({
+      type: 'wardley',
+      xywh: '[0,0,1600,900]',
+    });
+    await wait();
+
+    const bg = surface.getElementById(bgId)!;
+    expect(service.layer.compare(frame, bg)).toBeLessThan(0);
+
+    // ...and dropping it onto the map must raise it, exactly as drawing it
+    // there would have.
+    service.doc.updateBlock(frame, { xywh: '[700,350,400,300]' });
+    await wait();
+
+    expect(service.layer.compare(frame, bg)).toBeGreaterThan(0);
+  });
+
+  test('every framework background gets the same treatment', async () => {
+    const surface = service.surface;
+
+    // The fix keys on FrameworkBackgroundElementModel, not on Wardley: a C4
+    // board and a BPMN pool are the same kind of opaque backdrop.
+    const boardId = surface.addElement({
+      type: 'c4Board',
+      xywh: '[0,0,1600,900]',
+    });
+    const poolId = surface.addElement({
+      type: 'bpmnPool',
+      xywh: '[2000,0,1200,600]',
+    });
+    await wait();
+
+    const onBoard = service.frame.createFrameOnBound(
+      new Bound(700, 350, 400, 300)
+    );
+    const onPool = service.frame.createFrameOnBound(
+      new Bound(2200, 100, 400, 300)
+    );
+    await wait();
+
+    const board = surface.getElementById(boardId)!;
+    const pool = surface.getElementById(poolId)!;
+    expect(service.layer.compare(onBoard, board)).toBeGreaterThan(0);
+    expect(service.layer.compare(onPool, pool)).toBeGreaterThan(0);
+  });
+
   test('undo of a deleted frame child restores its z-order untouched', async () => {
     const surface = service.surface;
 
