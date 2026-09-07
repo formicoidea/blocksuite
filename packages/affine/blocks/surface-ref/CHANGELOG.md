@@ -1,5 +1,22 @@
 # @labre/affine-block-surface-ref
 
+## 0.37.0
+
+### Patch Changes
+
+- Updated dependencies [9c7947d]
+  - @labre/affine-block-surface@0.37.0
+  - @labre/affine-block-frame@0.37.0
+  - @labre/affine-components@0.37.0
+  - @labre/affine-ext-loader@0.37.0
+  - @labre/affine-inline-reference@0.37.0
+  - @labre/affine-model@0.37.0
+  - @labre/affine-shared@0.37.0
+  - @labre/affine-widget-slash-menu@0.37.0
+  - @labre/global@0.37.0
+  - @labre/std@0.37.0
+  - @labre/store@0.37.0
+
 ## 0.36.0
 
 ### Patch Changes

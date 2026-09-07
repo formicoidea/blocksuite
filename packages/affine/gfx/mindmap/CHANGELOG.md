@@ -1,5 +1,29 @@
 # @labre/affine-gfx-mindmap
 
+## 0.37.0
+
+### Patch Changes
+
+- Updated dependencies [9c7947d]
+  - @labre/affine-block-surface@0.37.0
+  - @labre/affine-block-attachment@0.37.0
+  - @labre/affine-block-edgeless-text@0.37.0
+  - @labre/affine-block-image@0.37.0
+  - @labre/affine-gfx-connector@0.37.0
+  - @labre/affine-gfx-pointer@0.37.0
+  - @labre/affine-gfx-shape@0.37.0
+  - @labre/affine-gfx-template@0.37.0
+  - @labre/affine-gfx-text@0.37.0
+  - @labre/affine-widget-edgeless-toolbar@0.37.0
+  - @labre/affine-components@0.37.0
+  - @labre/affine-ext-loader@0.37.0
+  - @labre/affine-model@0.37.0
+  - @labre/affine-rich-text@0.37.0
+  - @labre/affine-shared@0.37.0
+  - @labre/global@0.37.0
+  - @labre/std@0.37.0
+  - @labre/store@0.37.0
+
 ## 0.36.0
 
 ### Patch Changes
