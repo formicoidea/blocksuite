@@ -1,5 +1,5 @@
 ---
-'@labre/affine-block-surface': patch
+'@labre/affine-block-surface': minor
 ---
 
 perf(edgeless): audit rules leave the real-time path under the profile in force
