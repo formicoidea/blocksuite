@@ -1170,10 +1170,12 @@ describe('congruence · one board, one answer to "which pool is this on"', () =>
    * a bracket on a participant they can see the artefact is not in, and no
    * answer can be called the right one.
    *
-   * The nominal case only. The title-band divergence — an artefact laid over the
-   * participant name band is in the element box and OUT of the plot — is
-   * documented in `facts.ts` and pinned in `facts.unit.spec.ts`; the point here
-   * is that the two readings AGREE wherever the answer is not on a knife edge.
+   * Since PF2.4 both read MEMBERSHIP as whole containment in the pool's element
+   * bound, name band included — the divergence this block used to document is
+   * gone. Two knife edges remain and neither is congruence: the LANE still reads
+   * the centre against the plot (`facts.ts`), and an element contained by NO
+   * pool is still attributed to the nearest one by the counting families,
+   * because a finding must land somewhere and a reading must not.
    */
   const buyer = pool('buyer', [0, 0, 800, 300]);
   const seller = pool('seller', [0, 400, 800, 300]);
@@ -1185,9 +1187,12 @@ describe('congruence · one board, one answer to "which pool is this on"', () =>
     // probe would prove nothing.
     const ends = [end('buyer-done', 700, 250), end('seller-done', 700, 650)];
     for (const [cx, cy, expected] of [
+      // Over the name band: in the element box, so in the pool (PF2.4).
       [BAND + 20, 20, 'buyer'],
       [400, 150, 'buyer'],
-      [780, 290, 'buyer'],
+      // Near the far corner but still WHOLLY inside — a 40-unit box centred
+      // here runs to (780, 280), and the pool ends at (800, 300).
+      [760, 260, 'buyer'],
       [400, 550, 'seller'],
     ] as const) {
       const event = start('probe', cx, cy);
@@ -1204,6 +1209,15 @@ describe('congruence · one board, one answer to "which pool is this on"', () =>
         expected === 'buyer' ? 'seller' : 'buyer',
       ]);
     }
+  });
+
+  it('names no pool for a start event straddling the edge (PF2.4)', () => {
+    // Centred on the buyer pool's bottom edge: half in, half out, so it is in
+    // no pool at all. Only the FACT is asserted here: the counting families go
+    // on attributing through `attributeBackground`, which files a finding
+    // against the nearest map when nothing contains the subject — a finding
+    // has to land somewhere, a reading does not.
+    expect(bpmnPoolOf(pools, start('probe', 400, 300).elementBound)).toBeNull();
   });
 
   it('reads a flow as staying home exactly when the fact says both ends are', () => {

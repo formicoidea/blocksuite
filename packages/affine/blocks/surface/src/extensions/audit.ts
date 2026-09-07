@@ -54,7 +54,10 @@ import {
   backgroundInstanceZones,
   backgroundPlot,
 } from '../framework-background/def.js';
-import { backgroundAxisFacts } from '../framework-background/facts.js';
+import {
+  backgroundAxisFacts,
+  containingFrame,
+} from '../framework-background/facts.js';
 import {
   ValidationManager,
   ValidationRuleIdentifier,
@@ -115,6 +118,8 @@ function collectRoles(rules: readonly ValidationRule[]): AuditRoleFact[] {
 
 /** A frame instance, plus everything needed to place an element inside it. */
 interface Frame {
+  /** The frame element's id, i.e. `fact.elementId` — what `containingFrame` ties on. */
+  id: string;
   fact: AuditFrameFact;
   bound: Bound;
   /** The declaration this instance paints, i.e. where its plot geometry is. */
@@ -149,6 +154,7 @@ function collectFrames(
       const profileId = el.validationProfile;
       frames.push({
         def,
+        id: el.id,
         bound: el.elementBound,
         fact: {
           elementId: el.id,
@@ -183,43 +189,11 @@ function collectFrames(
   return frames;
 }
 
-/** Squared edge-to-edge gap — the same attribution heuristic the engine uses. */
-function gapSquared(frame: Bound, bound: Bound): number {
-  const dx = Math.max(frame.x - bound.maxX, bound.x - frame.maxX, 0);
-  const dy = Math.max(frame.y - bound.maxY, bound.y - frame.maxY, 0);
-  return dx * dx + dy * dy;
-}
-
-/**
- * The frame an element belongs to: the one that CONTAINS it, failing that the
- * nearest by edge-to-edge gap, ties broken by the smaller id.
- *
- * Deliberately the same answer `attributeBackground` gives inside the engine —
- * an audit that attributed an element to a different map than the rule that
- * indicted it would produce two findings about one component that disagree
- * about which map it is on.
- */
-function attribute(bound: Bound, frames: readonly Frame[]): Frame | null {
-  let nearest: Frame | null = null;
-  let nearestDistance = Infinity;
-  for (const frame of frames) {
-    if (frame.bound.contains(bound)) return frame;
-    const distance = gapSquared(frame.bound, bound);
-    if (
-      distance < nearestDistance ||
-      (distance === nearestDistance &&
-        nearest !== null &&
-        frame.fact.elementId < nearest.fact.elementId)
-    ) {
-      nearestDistance = distance;
-      nearest = frame;
-    }
-  }
-  return nearest;
-}
-
 /**
  * Where an element's centre sits inside a frame's PLOT, as ratios.
+ *
+ * A POSITION, not a membership test: it is asked only about an element some
+ * frame already contains, and answers where in that frame's plot it lies.
  *
  * Ratios of the plot and not of the element box: a Wardley transition drawn at
  * `0.4` is 40 % of the PLOT, not of the map element, and the margin between the
@@ -325,7 +299,13 @@ export function collectAuditFacts(std: BlockStdScope): AuditFacts {
     if (role === undefined || frameIds.has(el.id)) continue;
 
     const bound = el.elementBound;
-    const frame = attribute(bound, frames);
+    // Membership is WHOLE containment (PF2.4), and there is no nearest-frame
+    // fallback: an element straddling the edge of a map is not on it, so the
+    // audit reports it exactly as it reports one on bare canvas — id and role,
+    // no frame, no position, no zone. Anything else would tell an assistant a
+    // component is on a map the engine is simultaneously indicting it for
+    // hanging off.
+    const frame = containingFrame(bound, frames, candidate => candidate.bound);
     if (frame === null) {
       elementFacts.push({ id: el.id, role });
       continue;
