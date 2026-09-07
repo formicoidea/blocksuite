@@ -906,7 +906,7 @@ class IdMinter {
  * decides the FILENAME and nothing else.
  */
 export interface BpmnExportBoard {
-  /** In document order — which is the tie-break `bpmnPoolOf` breaks on. */
+  /** In document order; `bpmnPoolOf` breaks a tie on the smaller id, not on it. */
   pools: readonly BpmnPoolElementModel[];
   nodes: readonly BpmnNodeElementModel[];
   connectors: readonly ConnectorElementModel[];
@@ -1192,10 +1192,11 @@ function edgeScope(
  *   process; with a collaboration it must point at the collaboration, or most
  *   tools draw the flow and none of the pools (spec §12.3.2).
  *
- * Attribution is {@link bpmnPoolOf} and {@link bpmnLaneOf} — the CENTRE against
- * the pool's PLOT, containment only, no nearest-pool fallback. Deliberately the
- * same arithmetic the audit and the validation rules read, so a task the audit
- * reports in "Back office" is in the `lane` named "Back office" here.
+ * Attribution is {@link bpmnPoolOf} and {@link bpmnLaneOf} — WHOLE containment
+ * in the pool, then the CENTRE against the pool's plot for the lane, no
+ * nearest-pool fallback. Deliberately the same arithmetic the audit and the
+ * validation rules read, so a task the audit reports in "Back office" is in the
+ * `lane` named "Back office" here.
  */
 export function exportBpmnXml(
   board: BpmnExportBoard,

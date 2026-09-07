@@ -102,6 +102,40 @@ Object.freeze(FORWARD.horizontal);
 Object.freeze(FORWARD.vertical);
 Object.freeze(FORWARD);
 
+/**
+ * The frame that WHOLLY CONTAINS `bound`, or `null` — the one membership test
+ * every reader of a framework board uses (PF2.4).
+ *
+ * An element belongs to a board (a Wardley map, a BPMN pool, a C4 board) only
+ * when it is ENTIRELY inside the board's element bound. Not its centre: a node
+ * hanging over the edge of a map is a node the author has not finished putting
+ * on it, and the validation engine already judges it that way — reading or
+ * auditing it as a member would give two answers about one node.
+ *
+ * The asymmetry with the INNER regions is deliberate: a zone, an evolution
+ * stage, a BPMN lane keeps the centre test, because a band is meant to be
+ * straddled and a board is not.
+ *
+ * `Bound.contains` is inclusive on all four edges, so an element whose bound
+ * EQUALS the board's is a member — the same answer `containingBackground` gives
+ * inside the engine, which is the whole point of having one function.
+ *
+ * Ties go to the smaller id, never to the order a `Y.Map` was rebuilt in: two
+ * overlapping maps must attribute an artefact the same way on every reload.
+ */
+export function containingFrame<T extends { id: string }>(
+  bound: Bound,
+  candidates: Iterable<T>,
+  boundOf: (candidate: T) => Bound
+): T | null {
+  let found: T | null = null;
+  for (const candidate of candidates) {
+    if (!boundOf(candidate).contains(bound)) continue;
+    if (found === null || candidate.id < found.id) found = candidate;
+  }
+  return found;
+}
+
 /** The declared axes, as facts. Empty for a background that declares none. */
 export function backgroundAxisFacts(
   def: FrameworkBackgroundDef

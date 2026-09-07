@@ -26,6 +26,7 @@ import {
   type BackgroundTransitionBand,
   backgroundTransitionBands,
   backgroundTransitionVisibleProps,
+  containingFrame,
 } from '../framework-background/facts.js';
 import type { BackgroundModelLike } from '../framework-background/labels.js';
 import { backgroundInVariant } from '../framework-background/labels.js';
@@ -3761,12 +3762,7 @@ function containingBackground(
   bound: Bound,
   backgrounds: readonly BackgroundInstance[]
 ): BackgroundInstance | null {
-  let found: BackgroundInstance | null = null;
-  for (const background of backgrounds) {
-    if (!background.bound.contains(bound)) continue;
-    if (found === null || background.id < found.id) found = background;
-  }
-  return found;
+  return containingFrame(bound, backgrounds, background => background.bound);
 }
 
 /**

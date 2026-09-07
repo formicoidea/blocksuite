@@ -1,6 +1,7 @@
 import {
   backgroundInstanceZones,
   backgroundPlot,
+  containingFrame,
 } from '@labre/affine-block-surface';
 import type { BpmnLane, BpmnPoolElementModel } from '@labre/affine-model';
 import type { Bound } from '@labre/global/gfx';
@@ -23,15 +24,21 @@ import { BPMN_POOL_BACKGROUND } from './background.js';
  * call them, a test can call them with a stub, and the answer cannot depend on
  * which extensions happen to be registered.
  *
- * ## One convention, copied rather than reinvented
+ * ## Two conventions, and the asymmetry between them is the point (PF2.4)
  *
- * Both read the element's CENTRE against ratios of the pool's PLOT, and take the
- * FIRST matching zone in declaration order — the convention `plotRatios` and
- * `zoneAt` already use inside the audit. Copied deliberately and stated here so
- * it stays copied: the day these two disagree with the audit, one component gets
- * two answers about which lane it is in, and no user can be told which is right.
- * The centre also has the property the geometry needs — a task wider than a lane
- * still belongs to exactly one of them.
+ * {@link bpmnPoolOf} asks about MEMBERSHIP and answers with WHOLE containment in
+ * the pool's element bound — the shared `containingFrame`, the same test the
+ * validation engine and the audit use, so one artefact never gets two answers
+ * about which participant it is on.
+ *
+ * {@link bpmnLaneOf} asks about POSITION inside a pool it is already in, and
+ * keeps the CENTRE against ratios of the PLOT, first matching zone in
+ * declaration order — the convention `plotRatios` and `zoneAt` use in the audit.
+ * A lane is a band drawn across a pool, and a task taller than a band still has
+ * to be in exactly one of them.
+ *
+ * So a task must be WHOLLY inside a pool, but may straddle two lanes. That is
+ * deliberate: a board is a container, a band is a reading.
  */
 
 /**
@@ -77,45 +84,26 @@ function within(
   );
 }
 
-/** The whole plot, as the ratios every zone rectangle is expressed in. */
-const WHOLE_PLOT = { x: 0, y: 0, w: 1, h: 1 } as const;
-
 /**
- * The pool whose plot contains the bound's centre, or `null`.
+ * The pool an artefact belongs to: the one that WHOLLY CONTAINS its bound
+ * (PF2.4), or `null`.
  *
- * ## Which attribution rule this is, and why it is not the audit's whole one
+ * The pool's ELEMENT bound and not its plot: membership is one question with one
+ * answer across the product, and `containingFrame` is where it is answered — the
+ * same function `containingBackground` uses inside the validation engine, so a
+ * task the engine indicts for hanging off a pool is not reported as being in it.
+ * The name band therefore counts as part of the pool for MEMBERSHIP; it is only
+ * the lane arithmetic below that still subtracts it.
  *
- * The audit attributes in two halves (`attribute()` in `audit.ts`, and
- * `attributeBackground()` in `validation.ts`): the frame that CONTAINS the
- * element, failing that the NEAREST by edge-to-edge gap. This is the containment
- * half only, with the audit's own first-match-in-document-order tie-break —
- * which is the sanctioned reduction, and it is the right one here for two
- * reasons.
- *
- * - The nearest-fallback never returns `null` while a single pool exists on the
- *   board. That is correct for an audit, which has to say something about every
- *   role-carrying element it reports; it is wrong for a fact query, whose whole
- *   value is telling "in this pool" apart from "beside it". A task dropped on
- *   bare canvas is not in a pool, and saying so is the answer.
- * - Containment is tested on the CENTRE against the plot, not on the full
- *   element box against the element box, so this function and {@link bpmnLaneOf}
- *   are the same test at two scales. A laned pool therefore cannot answer "yes,
- *   this pool" and "no lane" for a lane set that covers the plot — the two are
- *   congruent by construction rather than by agreement.
- *
- * Ties — a centre inside two overlapping pools — go to the first pool in the
- * order given, which for a surface is document order. The audit's `attribute()`
- * returns on its first containing frame the same way.
+ * No nearest-pool fallback, unlike the audit's frame attribution: a task dropped
+ * beside a pool is not in it, and inventing one here would put a rule's finding
+ * on a participant the author never drew it on.
  */
 export function bpmnPoolOf(
   pools: readonly BpmnPoolElementModel[],
   bound: Bound
 ): BpmnPoolElementModel | null {
-  for (const pool of pools) {
-    const at = plotRatios(pool, bound);
-    if (at !== null && within(at, WHOLE_PLOT)) return pool;
-  }
-  return null;
+  return containingFrame(bound, pools, pool => pool.elementBound);
 }
 
 /**
@@ -130,6 +118,10 @@ export function bpmnPoolOf(
  * a second reading of the raw prop would place a task in a band the pool does
  * not paint. The `BpmnLane` handed back is the model's own row, matched by id,
  * so a caller gets the thing it can rename or resize.
+ *
+ * The CENTRE, deliberately unlike {@link bpmnPoolOf}: a task must be wholly in a
+ * pool, but may straddle two lanes and is then read in the one its centre is in.
+ * See the module comment — a board is a container, a band is a reading.
  *
  * First match in declaration order, so a centre landing exactly ON a divider
  * belongs to the band ABOVE it. Arbitrary in isolation and deliberate together:

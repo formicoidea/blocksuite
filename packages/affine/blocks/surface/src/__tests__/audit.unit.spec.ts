@@ -233,6 +233,12 @@ function board() {
     late: element('n2', [680, 230, 40, 40], ROLE.market),
     // Nowhere near the frame.
     off: element('n3', [5000, 5000, 40, 40], ROLE.node),
+    // Straddling the frame's right edge (x 980 → 1020, frame ends at 1000):
+    // its centre is ON the map, its box is not.
+    straddling: element('n4', [980, 230, 40, 40], ROLE.node),
+    // Exactly the frame's own box — `Bound.contains` is inclusive on all four
+    // edges, so this one IS a member.
+    flush: element('n5', [0, 0, 1000, 500], ROLE.node),
     // Neutral: no role at all.
     neutral: element('free', [300, 300, 40, 40]),
   };
@@ -241,9 +247,9 @@ function board() {
 /* -------------------------------------------------------------------------- */
 
 describe('the facts handed to the assistant', () => {
-  const { frame, early, late, off, neutral } = board();
+  const { frame, early, late, off, straddling, flush, neutral } = board();
   const std = stubStd({
-    elements: [frame, early, late, off, neutral],
+    elements: [frame, early, late, off, straddling, flush, neutral],
     manager: stubManager([
       {
         ruleId: RULE.id,
@@ -311,13 +317,27 @@ describe('the facts handed to the assistant', () => {
     });
   });
 
-  test('a far-away element is still attributed, and reads as outside', () => {
-    // Same nearest-frame heuristic the engine uses, so an audit and a rule
-    // never disagree about which map a component belongs to.
-    const fact = facts.elements.find(e => e.id === 'n3');
+  test('a far-away element belongs to no frame at all (PF2.4)', () => {
+    // No nearest-frame fallback any more: an element off every map is reported
+    // with its id and role and nothing else, so an assistant is never told a
+    // component is on a map it is visibly beside.
+    expect(facts.elements).toContainEqual({ id: 'n3', role: ROLE.node });
+  });
+
+  test('an element STRADDLING the frame edge is not a member either', () => {
+    // The PO's decision: membership is whole containment, not the centroid. Its
+    // centre is on the map, its box hangs over the right edge — so it reads
+    // exactly like the element on bare canvas above, and agrees with the
+    // validation engine that already indicts it.
+    expect(facts.elements).toContainEqual({ id: 'n4', role: ROLE.node });
+  });
+
+  test('an element FLUSH with the frame is a member — contains is inclusive', () => {
+    // `Bound.contains` compares with `>=` / `<=` on all four edges, so a box
+    // exactly the size of the map is inside it. Documented here rather than
+    // left to chance: it is the one boundary the three readers must share.
+    const fact = facts.elements.find(e => e.id === 'n5');
     expect(fact?.frameId).toBe('map');
-    expect(fact?.at?.[0]).toBeGreaterThan(1);
-    expect(fact?.zone).toBeUndefined();
   });
 
   test('neutral elements are not facts about a framework map', () => {

@@ -26,8 +26,9 @@ import { BPMN_ROLE, BPMN_ROLE_OF_KIND, BPMN_ROLES } from '../roles';
  * asking "is this task in the right lane" must get the answer the audit would
  * have given, and must keep getting it after somebody refactors either side; the
  * tests below are what make the two impossible to drift apart, because they pin
- * the CONVENTIONS rather than the results — the centre and not the box, the plot
- * and not the element, the first zone in order and not the nearest one.
+ * the CONVENTIONS rather than the results — the whole box and not the centre for
+ * MEMBERSHIP in a pool (PF2.4), the centre against the plot for the lane, the
+ * first zone in order and not the nearest one.
  *
  * Plain stubs throughout, no editor and no DI: if any of this needed a
  * `BlockStdScope` to answer, the tranche would have failed at its own premise.
@@ -79,30 +80,31 @@ const lane = (id: string, size: number, name?: string): BpmnLane =>
   name === undefined ? { id, size } : { id, name, size };
 
 describe('bpmnPoolOf', () => {
-  it('answers the pool whose plot the centre falls in', () => {
+  it('answers the pool that WHOLLY contains the element', () => {
     const pool = fakePool('pool-a', [0, 0, POOL_W, POOL_H]);
     expect(bpmnPoolOf([pool], centredAt(300, 100))).toBe(pool);
   });
 
-  it('answers null for a centre outside every pool', () => {
+  it('answers null for an element outside every pool', () => {
     const pool = fakePool('pool-a', [0, 0, POOL_W, POOL_H]);
     expect(bpmnPoolOf([pool], centredAt(1000, 100))).toBeNull();
     expect(bpmnPoolOf([], centredAt(300, 100))).toBeNull();
   });
 
-  it('answers null for a centre over the name band, not in the flow area', () => {
+  it('counts the name band as part of the pool for MEMBERSHIP (PF2.4)', () => {
     // The band is the left margin: inside the ELEMENT box, outside the PLOT.
-    // Locked because this is the one place where "in the pool" as a reader sees
-    // it and "in the pool" as the geometry means it come apart — and the plot is
-    // the half the lanes and the rules are expressed in.
+    // Membership is the element box, so a task laid over the band IS in the
+    // pool — and it is `bpmnLaneOf` alone that then answers "no lane", because
+    // the lanes are expressed in plot ratios. The two questions are allowed to
+    // come apart; it is membership that must match the validation engine.
     const pool = fakePool('pool-a', [0, 0, POOL_W, POOL_H]);
-    expect(bpmnPoolOf([pool], centredAt(BAND / 2, 100))).toBeNull();
-    expect(bpmnPoolOf([pool], centredAt(BAND + 1, 100))).toBe(pool);
+    const overBand = new Bound(0, 64, BAND + 10, 72);
+    expect(bpmnPoolOf([pool], overBand)).toBe(pool);
+    // Hanging off the LEFT edge is out, band or no band.
+    expect(bpmnPoolOf([pool], new Bound(-1, 64, BAND + 10, 72))).toBeNull();
   });
 
-  it('answers null for a pool with no flow area left to be inside', () => {
-    // Dragged narrower than its own name band: a degenerate plot, and there is
-    // no honest answer other than none.
+  it('answers null for a pool too small to hold the element', () => {
     const pool = fakePool('pool-a', [0, 0, BAND - 4, POOL_H]);
     expect(bpmnPoolOf([pool], centredAt(2, 100))).toBeNull();
   });
@@ -116,39 +118,49 @@ describe('bpmnPoolOf', () => {
     expect(bpmnPoolOf(pools, centredAt(300, 250))).toBe(bottom);
   });
 
-  it('lets the CENTRE decide for an element straddling two pools', () => {
-    // Contained by neither — which is exactly the case the audit's containment
-    // half cannot answer on its own, and where a fact query must still be right.
+  it('answers null for an element straddling two pools (PF2.4)', () => {
+    // The PO's decision: an element belongs to a board only when it is entirely
+    // inside it. Straddling the seam it is in NEITHER pool, where the old centre
+    // test would have picked whichever half held the middle.
     const top = fakePool('pool-top', [0, 0, POOL_W, POOL_H]);
     const bottom = fakePool('pool-bottom', [0, POOL_H, POOL_W, POOL_H]);
     const pools = [top, bottom];
 
-    // Spans y 120 → 320, so it overlaps both; its centre is at 220.
-    expect(bpmnPoolOf(pools, centredAt(300, 220, 120, 200))).toBe(bottom);
-    // Same element slid up: centre 180, still overlapping both.
-    expect(bpmnPoolOf(pools, centredAt(300, 180, 120, 200))).toBe(top);
+    // Spans y 120 → 320, so it overlaps both and is contained by neither.
+    expect(bpmnPoolOf(pools, centredAt(300, 220, 120, 200))).toBeNull();
+    expect(bpmnPoolOf(pools, centredAt(300, 180, 120, 200))).toBeNull();
   });
 
-  it('gives a centre exactly on the seam to the FIRST pool in order', () => {
-    // Both plots contain y = 200 inclusively. The audit's `attribute()` returns
-    // on its first containing frame, so this does too: document order, and the
-    // same first-match convention `zoneAt` uses one level down.
-    const top = fakePool('pool-top', [0, 0, POOL_W, POOL_H]);
-    const bottom = fakePool('pool-bottom', [0, POOL_H, POOL_W, POOL_H]);
-
-    expect(bpmnPoolOf([top, bottom], centredAt(300, 200))).toBe(top);
-    expect(bpmnPoolOf([bottom, top], centredAt(300, 200))).toBe(bottom);
-  });
-
-  it('does not fall back to the nearest pool the way the audit does', () => {
-    // `attribute()` / `attributeBackground()` answer "the nearest map" when
-    // nothing contains the element, because an audit must say something about
-    // everything it reports. A fact query must not: a task dropped beside a pool
-    // is not in it, and inventing a pool here would put a rule's finding on a
-    // participant the author never drew it on.
+  it('answers null for an element hanging over one pool’s edge', () => {
     const pool = fakePool('pool-a', [0, 0, POOL_W, POOL_H]);
-    // Overlaps the pool, but its centre is well past the right edge.
+    // Spans x 500 → 700: mostly on the pool, over its right edge at 560.
     expect(bpmnPoolOf([pool], centredAt(600, 100, 200, 72))).toBeNull();
+  });
+
+  it('gives an element FLUSH with the pool to that pool — contains is inclusive', () => {
+    // `Bound.contains` uses `>=` / `<=` on all four edges, so an element exactly
+    // the size of the pool is in it. The same boundary `containingBackground`
+    // draws inside the validation engine, which is why it is pinned here.
+    const pool = fakePool('pool-a', [0, 0, POOL_W, POOL_H]);
+    expect(bpmnPoolOf([pool], new Bound(0, 0, POOL_W, POOL_H))).toBe(pool);
+  });
+
+  it('breaks a tie between two containing pools on the SMALLER id', () => {
+    // Not document order: `containingFrame` ties on the id, so two overlapping
+    // pools attribute the same task the same way on every reload, whatever
+    // order the `Y.Map` came back in.
+    const a = fakePool('pool-a', [0, 0, POOL_W, POOL_H]);
+    const b = fakePool('pool-b', [0, 0, POOL_W, POOL_H]);
+
+    expect(bpmnPoolOf([a, b], centredAt(300, 100))).toBe(a);
+    expect(bpmnPoolOf([b, a], centredAt(300, 100))).toBe(a);
+  });
+
+  it('does not fall back to the nearest pool the way the audit used to', () => {
+    // A task dropped beside a pool is not in it, and inventing a pool here would
+    // put a rule's finding on a participant the author never drew it on.
+    const pool = fakePool('pool-a', [0, 0, POOL_W, POOL_H]);
+    expect(bpmnPoolOf([pool], centredAt(2000, 2000))).toBeNull();
   });
 });
 
@@ -208,7 +220,9 @@ describe('bpmnLaneOf', () => {
       [0, 0, POOL_W, POOL_H],
       [lane('a', 1), lane('b', 1)]
     );
-    for (const y of [1, 50, 100, 150, 199]) {
+    // Wholly inside the pool, which is now what membership requires — the two
+    // questions only have to agree about elements the pool actually holds.
+    for (const y of [40, 60, 100, 140, 160]) {
       const bound = centredAt(300, y);
       expect(bpmnPoolOf([pool], bound)).toBe(pool);
       expect(bpmnLaneOf(pool, bound)).not.toBeNull();

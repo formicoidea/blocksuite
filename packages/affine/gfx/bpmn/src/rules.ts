@@ -932,11 +932,11 @@ const activityDeadEnd: ValidationRule = {
  *
  * ## What it needs the pool DECLARATION for
  *
- * "Inside the pool" is read against the pool's PLOT, not its element box, and the
- * plot is where the declaration says the flow area starts — the left margin is
- * the participant name band, and a task lying on the band is not in the flow area
- * at all. Carrying `BPMN_POOL_BACKGROUND` here is what makes this rule and
- * `bpmnPoolOf` give one answer to "which pool is this on" instead of two.
+ * "Inside the pool" is WHOLE containment in the pool's element bound (PF2.4) —
+ * the same `containingFrame` `bpmnPoolOf` calls, so this rule and the fact query
+ * give one answer to "which pool is this on" instead of two. The declaration is
+ * carried all the same: it is what the zone half of the family reads, and it is
+ * where the lane geometry lives.
  *
  * ## Silence
  *
@@ -965,8 +965,8 @@ const sequenceFlowStaysHome: ValidationRule = {
       'OMG BPMN 2.0.2 (ISO/IEC 19510) p.40, restated p.502 — Sequence Flows cannot cross a Pool boundary',
   },
   backgroundRole: BPMN_ROLE.pool,
-  // The declaration, so "inside the pool" means inside its FLOW AREA — the
-  // participant name band is not part of it. Same plot `bpmnPoolOf` reads.
+  // The declaration, for the zone half of the family and the lane geometry.
+  // Membership itself is whole containment in the element bound (PF2.4).
   background: BPMN_POOL_BACKGROUND,
   locality: {
     edgeRole: BPMN_ROLE.sequenceFlow,
