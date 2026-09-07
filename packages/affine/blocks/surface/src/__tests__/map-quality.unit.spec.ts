@@ -16,6 +16,7 @@ import {
   onDemandRules,
   toneOf,
   type ValidationFrameworkDef,
+  type ValidationProfile,
   type ValidationRule,
 } from '../extensions/validation.js';
 
@@ -159,6 +160,103 @@ describe('the on-demand moment (PF5.14)', () => {
       'test.tone-off-convention',
       'test.majority-nature',
     ]);
+  });
+
+  /**
+   * `audit` severity IMPLIES the on-demand moment (PF7.6).
+   *
+   * An audit finding is dropped by `userFacingViolations` before anything draws
+   * it, so computing one on every gesture bought the user nothing and cost the
+   * frame budget a full surface walk per rule. Declaring the severity is now
+   * enough — no framework has to remember to write `moment` next to it.
+   */
+  describe('audit severity implies on-demand', () => {
+    /** Same rule as REALTIME, only quieter — and that alone moves it. */
+    const AUDIT: ValidationRule = {
+      ...REALTIME,
+      id: 'test.audit-node-outside-frame',
+      severity: 'audit',
+    };
+    /** …and saying `'realtime'` out loud does not bring it back. */
+    const AUDIT_CLAIMING_REALTIME: ValidationRule = {
+      ...AUDIT,
+      id: 'test.audit-claiming-realtime',
+      moment: 'realtime',
+    };
+    const outside = [
+      frame(),
+      element('n1', [5000, 5000, 20, 20], { role: 'test:node' }),
+    ];
+
+    it('keeps an audit rule that says nothing about its moment off the gesture path', () => {
+      expect(evaluateRules([AUDIT], outside)).toEqual([]);
+      expect(evaluateCheckup([AUDIT], outside).map(v => v.ruleId)).toEqual([
+        'test.audit-node-outside-frame',
+      ]);
+      expect(onDemandRules([AUDIT]).map(r => r.id)).toEqual([
+        'test.audit-node-outside-frame',
+      ]);
+    });
+
+    it('ignores an explicit `realtime` on an audit rule', () => {
+      expect(evaluateRules([AUDIT_CLAIMING_REALTIME], outside)).toEqual([]);
+      expect(onDemandRules([AUDIT_CLAIMING_REALTIME])).toHaveLength(1);
+    });
+
+    it('leaves the frame bookkeeping alone for an audit rule too', () => {
+      // `backgroundElementIds` is the second half of the gesture path; the
+      // severity has to reach it as well, or the walk comes back per tick.
+      expect([...backgroundElementIds([AUDIT], outside)]).toEqual([]);
+    });
+
+    it('does not move a non-audit rule that says nothing', () => {
+      expect(evaluateRules([REALTIME], outside).map(v => v.ruleId)).toEqual([
+        'test.node-outside-frame',
+      ]);
+      expect(onDemandRules([REALTIME])).toEqual([]);
+    });
+
+    /**
+     * The one thing that brings an audit rule back: a LEVEL that shows it.
+     *
+     * `userFacingViolations` reads the severity a profile rewrote, not the one
+     * the rule declared, so an audit rule a level promotes to `warning` is drawn
+     * on the canvas — and a canvas verdict has to be computed while the user
+     * draws. `c4.strict` is exactly that table for eleven of its rules.
+     */
+    describe('unless a level of requirement promotes it', () => {
+      const STRICT: ValidationProfile = {
+        id: 'test.strict',
+        framework: 'test',
+        labelKey: 'com.labre.test.strict',
+        fallback: 'Strict',
+        rules: { 'test.audit-node-outside-frame': 'warning' },
+      };
+      const SILENT: ValidationProfile = {
+        id: 'test.silent',
+        framework: 'test',
+        labelKey: 'com.labre.test.silent',
+        fallback: 'Silent',
+        rules: { 'test.audit-node-outside-frame': 'off' },
+      };
+
+      it('keeps a promotable audit rule on the drawing path', () => {
+        expect(
+          evaluateRules([AUDIT], outside, [STRICT]).map(v => v.ruleId)
+        ).toEqual(['test.audit-node-outside-frame']);
+        expect(onDemandRules([AUDIT], [STRICT])).toEqual([]);
+        expect([...backgroundElementIds([AUDIT], outside, [STRICT])]).toEqual([
+          'frame',
+        ]);
+      });
+
+      it('does not count `off` as a promotion', () => {
+        // A level that SILENCES a rule is not a level that shows it.
+        expect(onDemandRules([AUDIT], [SILENT]).map(r => r.id)).toEqual([
+          'test.audit-node-outside-frame',
+        ]);
+      });
+    });
   });
 
   /**

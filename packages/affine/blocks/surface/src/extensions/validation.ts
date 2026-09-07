@@ -61,7 +61,9 @@ import { ViolationTimeline } from './violation-timeline.js';
  *
  * - `blocking-overridable` — the host may block, and must let the user override.
  * - `warning` — surfaced, never blocking. The sketch always wins.
- * - `audit` — collected for reporting, invisible to the drawing user.
+ * - `audit` — collected for reporting, invisible to the drawing user, and
+ *   therefore evaluated ON DEMAND only unless a profile promotes it
+ *   ({@link ValidationMoment}).
  */
 export type ViolationSeverity = 'blocking-overridable' | 'warning' | 'audit';
 
@@ -150,6 +152,13 @@ export type RuleFamily =
  * interrupt says so once, in its own declaration, and no evaluation path has to
  * remember. That is what makes "zero real-time cost" provable at the bench
  * rather than promised in a comment.
+ *
+ * `audit` severity implies `'on-demand'` (PF7.6) — a finding the canvas never
+ * shows has no business costing a frame. A rule may still declare `moment`
+ * explicitly, but `'realtime'` on an `audit` rule is IGNORED. The exception is
+ * a rule some registered {@link ValidationProfile} raises above `audit`: a level
+ * of requirement is what makes the finding visible again, so the rule stays on
+ * the drawing path.
  */
 export type ValidationMoment = 'realtime' | 'on-demand';
 
@@ -1045,6 +1054,9 @@ export interface ValidationRule extends RuleMessage {
    * `'on-demand'` takes the rule OUT of {@link evaluateRules} entirely — not
    * out of the canvas affordance, out of the evaluation — and into
    * {@link evaluateCheckup}, which only a user gesture calls.
+   *
+   * A `severity: 'audit'` rule no profile promotes is on-demand whatever this
+   * field says (PF7.6): declaring `'realtime'` on one is ignored, not honoured.
    */
   moment?: ValidationMoment;
   /**
@@ -1611,11 +1623,13 @@ function backgroundsOf(
  */
 export function backgroundElementIds(
   rules: readonly ValidationRule[],
-  elements: readonly GfxPrimitiveElementModel[]
+  elements: readonly GfxPrimitiveElementModel[],
+  profiles: readonly ValidationProfile[] = []
 ): ReadonlySet<string> {
+  const promoted = auditPromotedIds(profiles);
   const ids = new Set<string>();
   for (const rule of rules) {
-    if (!isRealtime(rule)) continue;
+    if (!isRealtime(rule, promoted)) continue;
     for (const background of backgroundsOf(rule, elements))
       ids.add(background.id);
   }
@@ -4716,9 +4730,51 @@ const RULE_FAMILIES: Record<
   'view-admissibility': evaluateViewAdmissibility,
 };
 
-/** A rule the drawing path evaluates. `moment` absent means `'realtime'`. */
-function isRealtime(rule: ValidationRule): boolean {
-  return (rule.moment ?? 'realtime') === 'realtime';
+/**
+ * Rule ids some registered profile can raise ABOVE `audit` — the audit rules
+ * that are still, somewhere on the board, a finding the drawing user sees.
+ *
+ * Computed over EVERY profile of the pack rather than the one an element
+ * happens to name: the moment is decided once for a whole pass, before a single
+ * element is read, and a user switching a frame to the strict level must not
+ * have to wait for a rule to be re-admitted to the drawing path.
+ *
+ * `'off'` does not count as a promotion — a rule a level silences is not a rule
+ * that level shows.
+ */
+function auditPromotedIds(
+  profiles: readonly ValidationProfile[]
+): ReadonlySet<string> {
+  const ids = new Set<string>();
+  for (const profile of profiles) {
+    for (const [id, severity] of Object.entries(profile.rules)) {
+      if (severity !== 'audit' && severity !== 'off') ids.add(id);
+    }
+  }
+  return ids;
+}
+
+/**
+ * A rule the drawing path evaluates. `moment` absent means `'realtime'`.
+ *
+ * `audit` severity IMPLIES `'on-demand'` (PF7.6): the canvas never draws an
+ * audit finding ({@link userFacingViolations} drops it), so computing one inside
+ * the frame budget bought the user nothing. A rule may still declare `moment`
+ * explicitly, but `'realtime'` on an `audit` rule is IGNORED — the severity
+ * wins, and no framework has to remember to write both.
+ *
+ * The one thing that DOES bring an audit rule back is a profile promoting it
+ * ({@link auditPromotedIds}): a level of requirement is exactly what turns a
+ * remark into something the user is meant to see, so `c4.strict` keeps its
+ * eleven rules on the gesture path while the five it leaves at `audit` — and
+ * every BPMN and DDD audit rule, which no level promotes — come off it.
+ */
+function isRealtime(
+  rule: ValidationRule,
+  promoted?: ReadonlySet<string>
+): boolean {
+  if ((rule.moment ?? 'realtime') !== 'realtime') return false;
+  return rule.severity !== 'audit' || promoted?.has(rule.id) === true;
 }
 
 /** The exceptions an element carries, always an array, never a copy to keep. */
@@ -4827,13 +4883,18 @@ function runRules(
   // No profile registered => not a single extra read on the whole surface.
   const index = profiles.length > 0 ? indexProfiles(profiles) : null;
   const chosen = index ? readChosenProfiles(elements) : null;
+  // One walk of the profile TABLES, before any element: which audit rules a
+  // level can still show, and therefore which ones the gesture path owes a
+  // verdict (PF7.6).
+  const promoted = auditPromotedIds(profiles);
 
   const violations: Violation[] = [];
   for (const rule of rules) {
     // The other moment's rules are not this pass's business — checked FIRST,
     // so an on-demand rule never reaches a profile lookup, let alone an
     // element (PF5.14).
-    if ((isRealtime(rule) ? 'realtime' : 'on-demand') !== moment) continue;
+    if ((isRealtime(rule, promoted) ? 'realtime' : 'on-demand') !== moment)
+      continue;
     // `'off'` everywhere means never walked: the cheapest exit there is, taken
     // before a single element is touched.
     if (index && chosen && isRuleSilent(rule, chosen, index)) continue;
@@ -4853,11 +4914,19 @@ function runRules(
   return violations;
 }
 
-/** The registered rules a check-up runs — and nothing else ever evaluates. */
+/**
+ * The registered rules a check-up runs — and nothing else ever evaluates.
+ *
+ * `profiles` is the registered pack, not a choice: an audit rule a level can
+ * promote stays on the drawing path and is not a check-up rule (PF7.6). Absent
+ * means "no level promotes anything", which is what an empty registry means.
+ */
 export function onDemandRules(
-  rules: readonly ValidationRule[]
+  rules: readonly ValidationRule[],
+  profiles: readonly ValidationProfile[] = []
 ): readonly ValidationRule[] {
-  return rules.filter(rule => !isRealtime(rule));
+  const promoted = auditPromotedIds(profiles);
+  return rules.filter(rule => !isRealtime(rule, promoted));
 }
 
 /**
@@ -5287,11 +5356,14 @@ export const VERDICT_PROPS = [
  * declaring the rule real-time, which is the one place that decision belongs.
  */
 export function verdictPropsOf(
-  rules: readonly ValidationRule[]
+  rules: readonly ValidationRule[],
+  profiles: readonly ValidationProfile[] = []
 ): ReadonlySet<string> {
+  const promoted = auditPromotedIds(profiles);
   const props = new Set<string>(VERDICT_PROPS);
   for (const rule of rules) {
-    if (rule.family === 'label-presence' && isRealtime(rule)) props.add('text');
+    if (rule.family === 'label-presence' && isRealtime(rule, promoted))
+      props.add('text');
     // The level a VIEW declares decides which roles it admits, so changing it —
     // or clearing it back to "free sketch", which DELETES the key, which is why
     // `touchesVerdict` reads `oldValues` too — re-judges everything drawn on
@@ -5498,7 +5570,10 @@ export class ValidationManager extends InteractivityExtension {
    * beside the rules it is derived from — see {@link verdictPropsOf}.
    */
   private get _watchedProps(): ReadonlySet<string> {
-    this._verdictProps ??= verdictPropsOf(this._activeRules);
+    this._verdictProps ??= verdictPropsOf(
+      this._activeRules,
+      this._activeProfiles
+    );
     return this._verdictProps;
   }
 
@@ -5673,7 +5748,11 @@ export class ValidationManager extends InteractivityExtension {
         : undefined
     );
     this._evaluated = true;
-    this._backgrounds = backgroundElementIds(rules, surface.elementModels);
+    this._backgrounds = backgroundElementIds(
+      rules,
+      surface.elementModels,
+      this._activeProfiles
+    );
     // Stay silent when nothing changed: `violations$` is the seam a host panel
     // subscribes to, and a clean board must not wake it on every debounce tick.
     if (violations.length === 0 && this.violations$.peek().length === 0) return;
@@ -5763,7 +5842,7 @@ export class ValidationManager extends InteractivityExtension {
   ): readonly ValidationRule[] {
     const frameworks = this.frameworksOf(element);
     if (frameworks.size === 0) return [];
-    return onDemandRules(this._activeRules).filter(rule =>
+    return onDemandRules(this._activeRules, this._activeProfiles).filter(rule =>
       frameworks.has(rule.framework)
     );
   }

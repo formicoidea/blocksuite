@@ -1,4 +1,8 @@
-import { evaluateRules, type Violation } from '@labre/affine-block-surface';
+import {
+  evaluateCheckup,
+  evaluateRules,
+  type Violation,
+} from '@labre/affine-block-surface';
 import { Bound } from '@labre/global/gfx';
 import type { GfxPrimitiveElementModel } from '@labre/std/gfx';
 import { describe, expect, it } from 'vitest';
@@ -58,6 +62,14 @@ const link = (
 
 const evaluate = (elements: GfxPrimitiveElementModel[]) =>
   evaluateRules(CONTEXT_MAP_RULES, elements);
+
+/**
+ * The check-up pass. `context-map.acl-on-customer-supplier` is `audit` and no
+ * level promotes it, so since PF7.6 it is asked here rather than on the gesture
+ * path — the finding is unchanged, the moment is not.
+ */
+const checkup = (elements: GfxPrimitiveElementModel[]) =>
+  evaluateCheckup(CONTEXT_MAP_RULES, elements);
 
 const idsOf = (violations: readonly Violation[]) =>
   violations.map(violation => violation.ruleId).sort();
@@ -280,12 +292,13 @@ describe('CM3 / CM4 · what may ride on a Customer/Supplier', () => {
   });
 
   it('reports an ACL on a Customer/Supplier as an AUDIT finding', () => {
-    const violations = evaluate(
-      couple(
-        link('r1', CM_PATTERN_ROLE.customerSupplier, 'a', 'b'),
-        link('r2', CM_PATTERN_ROLE.acl, 'a', 'b')
-      )
+    const board = couple(
+      link('r1', CM_PATTERN_ROLE.customerSupplier, 'a', 'b'),
+      link('r2', CM_PATTERN_ROLE.acl, 'a', 'b')
     );
+    // An audit remark, so the drawing pass says nothing about it at all.
+    expect(idsOf(evaluate(board))).toEqual([]);
+    const violations = checkup(board);
     expect(idsOf(violations)).toEqual([CM4]);
     expect(violations[0].severity).toBe('audit');
   });

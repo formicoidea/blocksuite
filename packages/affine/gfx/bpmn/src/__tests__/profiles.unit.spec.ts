@@ -1,3 +1,4 @@
+import { onDemandRules } from '@labre/affine-block-surface';
 import { describe, expect, it } from 'vitest';
 
 import { BPMN_PROFILES } from '../profiles';
@@ -378,5 +379,25 @@ describe('what the framework ships as rules', () => {
       if (onDemand.includes(rule)) continue;
       expect(rule.moment, rule.id).toBeUndefined();
     }
+  });
+
+  it('keeps every audit rule off it too, without any of them saying so', () => {
+    // PF7.6: an `audit` finding never reaches the canvas, so it is never worth a
+    // frame. The severity alone moves the rule — none of the five below declares
+    // `moment`, and none of them has to. Neither level promotes one, so the
+    // whole set goes, profiles included in the question.
+    const audit = ALL_RULES.filter(rule => rule.severity === 'audit');
+    expect(audit.map(rule => rule.id).sort()).toEqual([
+      'bpmn.activity-dead-end',
+      'bpmn.fake-join',
+      'bpmn.implicit-split',
+      'bpmn.single-blank-start',
+      'bpmn.unlabeled-step',
+    ]);
+
+    const checkup = new Set(
+      onDemandRules(ALL_RULES, BPMN_PROFILES).map(rule => rule.id)
+    );
+    for (const rule of audit) expect(checkup.has(rule.id), rule.id).toBe(true);
   });
 });

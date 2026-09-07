@@ -154,6 +154,18 @@ const evaluate = (elements: GfxPrimitiveElementModel[]) =>
 const checkup = (elements: GfxPrimitiveElementModel[]) =>
   evaluateCheckup(BPMN_RULES, elements, BPMN_PROFILES);
 
+/**
+ * Both moments — everything the pack says about a board, whichever pass says it.
+ *
+ * Since PF7.6 an `audit` rule no level ever promotes is a check-up rule, and
+ * neither BPMN level promotes one, so the five remarks below live here. A case
+ * about WHEN a rule speaks still uses `evaluate` or `checkup` on its own.
+ */
+const judged = (elements: GfxPrimitiveElementModel[]) => [
+  ...evaluate(elements),
+  ...checkup(elements),
+];
+
 /** `[ruleId, …elementIds]` per finding, sorted — everything a board reports. */
 const said = (violations: readonly Violation[]) =>
   violations.map(v => [v.ruleId, ...v.elementIds].join(' ')).sort();
@@ -169,7 +181,9 @@ const said = (violations: readonly Violation[]) =>
  * that is merely unfinished — and holding a board to "raises exactly one finding
  * of any kind" would have meant either deleting them or bending every fixture
  * around remarks the user will never see. The remarks are still asserted, on the
- * boards that are ABOUT them, with {@link said}.
+ * boards that are ABOUT them, with {@link said} over {@link judged} — since
+ * PF7.6 the five are check-up rules, so the drawing pass no longer computes
+ * them at all.
  */
 const told = (violations: readonly Violation[]) =>
   said(violations.filter(v => v.severity !== 'audit'));
@@ -259,7 +273,7 @@ describe('the VALID corpus — nothing to say about a correct process', () => {
     // pack goes quiet off-frame. Drop the last flow and both degree rules speak
     // — the step leads nowhere, and the outcome is unreachable.
     const board = poollessSketch().filter(el => el.id !== 'f2');
-    expect(said(evaluate(board))).toEqual([
+    expect(said(judged(board))).toEqual([
       'bpmn.activity-dead-end do',
       'bpmn.end-event-must-be-reached done',
     ]);
@@ -309,8 +323,8 @@ describe('the INVALID corpus — one mistake, one sentence', () => {
     // The crossing flow also gives `order` a second exit and `ship` a second
     // entrance, which p.151 allows and the panel remarks on. Neither reaches
     // the canvas, and neither is what this board is about.
-    expect(said(evaluate(board))).toContain('bpmn.implicit-split order');
-    expect(said(evaluate(board))).toContain('bpmn.fake-join ship');
+    expect(said(judged(board))).toContain('bpmn.implicit-split order');
+    expect(said(judged(board))).toContain('bpmn.fake-join ship');
   });
 
   it('catches a message flow that never leaves its pool', () => {
@@ -360,7 +374,9 @@ describe('the INVALID corpus — one mistake, one sentence', () => {
       flow('f2', 'first', 'done'),
       flow('f3', 'start', 'forgotten'),
     ];
-    const violations = evaluate(board);
+    // A remark, so a check-up rule: the drawing pass never computes it (PF7.6).
+    expect(evaluate(board)).toEqual([]);
+    const violations = checkup(board);
     expect(said(violations)).toEqual(['bpmn.activity-dead-end forgotten']);
     expect(violations[0].severity).toBe('audit');
   });
@@ -701,10 +717,10 @@ describe('what the corpus stays silent about', () => {
     // `outside` is a dead end and `second` now splits, both of which the panel
     // remarks on — but the LOCALITY rule says nothing, which is the point.
     expect(told(evaluate(board))).toEqual([]);
-    expect(said(evaluate(board)).join(' ')).not.toContain(
+    expect(said(judged(board)).join(' ')).not.toContain(
       'bpmn.sequence-flow-stays-home'
     );
-    expect(said(evaluate(board))).toContain('bpmn.activity-dead-end outside');
+    expect(said(judged(board))).toContain('bpmn.activity-dead-end outside');
   });
 });
 
@@ -726,21 +742,23 @@ describe('scenario · an exception granted, and taken back', () => {
     ];
     const forgotten = board.find(el => el.id === 'forgotten')!;
 
-    const before = evaluate(board);
+    // An `audit` rule, so the arbitration is exercised on the CHECK-UP pass —
+    // the same pipeline, which is the point of `runRules` (PF7.6).
+    const before = checkup(board);
     expect(said(before)).toEqual(['bpmn.activity-dead-end forgotten']);
     expect(told(before)).toEqual([]);
     expect(before[0].exemption).toBeUndefined();
 
     // The user's arbitration: "this one is deliberate."
     grantException(forgotten, 'bpmn.activity-dead-end', 'mathieu');
-    const during = evaluate(board);
+    const during = checkup(board);
     // The finding does NOT vanish — a board can never hide an arbitration it
     // made (PF8.3). It changes STATE.
     expect(said(during)).toEqual(['bpmn.activity-dead-end forgotten']);
     expect(during[0].exemption).toBe('element');
 
     revokeException(forgotten, 'bpmn.activity-dead-end');
-    const after = evaluate(board);
+    const after = checkup(board);
     expect(said(after)).toEqual(['bpmn.activity-dead-end forgotten']);
     expect(after[0].exemption).toBeUndefined();
     // ...and the element is indistinguishable from one that never carried an
@@ -904,7 +922,7 @@ describe('a pool that draws one half of the pair', () => {
     expect(told(evaluate(board))).toEqual(['bpmn.pool-start-without-end pool']);
     // `first` leads nowhere, which is how the pool comes to have no end event
     // at all — the panel remarks on it, the canvas says the one thing.
-    expect(said(evaluate(board))).toContain('bpmn.activity-dead-end first');
+    expect(said(judged(board))).toContain('bpmn.activity-dead-end first');
   });
 
   it('says nothing about a pool holding both', () => {
@@ -1041,7 +1059,8 @@ describe('the panel-only nuances', () => {
   /**
    * Four `audit` rules, every one of them quieter than the bpmnlint level for
    * the same shape. They never reach the canvas: `audit` is collected for the
-   * conformance panel and shown to no drawing user.
+   * conformance panel and shown to no drawing user — and since PF7.6 that is
+   * also WHEN they run, so every case here asks the check-up pass.
    */
   it('remarks on several paths arriving at one step', () => {
     // p.151 sanctions the uncontrolled merge and defines its token semantics,
@@ -1056,7 +1075,8 @@ describe('the panel-only nuances', () => {
       flow('f2', 'b-start', 'merge-here'),
       flow('f3', 'merge-here', 'done'),
     ];
-    const violations = evaluate(board);
+    expect(evaluate(board)).toEqual([]);
+    const violations = checkup(board);
     expect(said(violations)).toEqual(['bpmn.fake-join merge-here']);
     expect(violations[0].severity).toBe('audit');
   });
@@ -1072,7 +1092,7 @@ describe('the panel-only nuances', () => {
       flow('f2', 'split-here', 'a-done'),
       flow('f3', 'split-here', 'b-done'),
     ];
-    expect(said(evaluate(board))).toEqual(['bpmn.implicit-split split-here']);
+    expect(said(checkup(board))).toEqual(['bpmn.implicit-split split-here']);
   });
 
   it('remarks on two indistinguishable blank starts', () => {
@@ -1094,7 +1114,7 @@ describe('the panel-only nuances', () => {
       flow('f3', 'work-a', 'done'),
       flow('f4', 'work-b', 'done'),
     ];
-    expect(said(evaluate(twoBlank))).toEqual(['bpmn.single-blank-start pool']);
+    expect(said(checkup(twoBlank))).toEqual(['bpmn.single-blank-start pool']);
 
     // ...and a message start beside a timer start is the diagram this rule
     // exists to PERMIT: two triggers, two symbols, no ambiguity.
