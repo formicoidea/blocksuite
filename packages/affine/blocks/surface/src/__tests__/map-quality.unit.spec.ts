@@ -10,10 +10,10 @@ import {
 } from '../extensions/map-quality.js';
 import {
   backgroundElementIds,
+  checkupRules,
   evaluateCheckup,
   evaluateRules,
   frameworksOfRole,
-  onDemandRules,
   toneOf,
   type ValidationFrameworkDef,
   type ValidationProfile,
@@ -156,7 +156,7 @@ describe('the on-demand moment (PF5.14)', () => {
   });
 
   it('names the rules a check-up would walk', () => {
-    expect(onDemandRules(rules).map(r => r.id)).toEqual([
+    expect(checkupRules(rules, surface).map(r => r.id)).toEqual([
       'test.tone-off-convention',
       'test.majority-nature',
     ]);
@@ -193,38 +193,43 @@ describe('the on-demand moment (PF5.14)', () => {
       expect(evaluateCheckup([AUDIT], outside).map(v => v.ruleId)).toEqual([
         'test.audit-node-outside-frame',
       ]);
-      expect(onDemandRules([AUDIT]).map(r => r.id)).toEqual([
+      expect(checkupRules([AUDIT], outside).map(r => r.id)).toEqual([
         'test.audit-node-outside-frame',
       ]);
     });
 
     it('ignores an explicit `realtime` on an audit rule', () => {
       expect(evaluateRules([AUDIT_CLAIMING_REALTIME], outside)).toEqual([]);
-      expect(onDemandRules([AUDIT_CLAIMING_REALTIME])).toHaveLength(1);
-    });
-
-    it('leaves the frame bookkeeping alone for an audit rule too', () => {
-      // `backgroundElementIds` is the second half of the gesture path; the
-      // severity has to reach it as well, or the walk comes back per tick.
-      expect([...backgroundElementIds([AUDIT], outside)]).toEqual([]);
+      expect(checkupRules([AUDIT_CLAIMING_REALTIME], outside)).toHaveLength(1);
     });
 
     it('does not move a non-audit rule that says nothing', () => {
       expect(evaluateRules([REALTIME], outside).map(v => v.ruleId)).toEqual([
         'test.node-outside-frame',
       ]);
-      expect(onDemandRules([REALTIME])).toEqual([]);
+      expect(checkupRules([REALTIME], outside)).toEqual([]);
     });
 
     /**
-     * The one thing that brings an audit rule back: a LEVEL that shows it.
+     * The one thing that brings an audit rule back: a level IN FORCE that shows
+     * it.
      *
      * `userFacingViolations` reads the severity a profile rewrote, not the one
      * the rule declared, so an audit rule a level promotes to `warning` is drawn
      * on the canvas — and a canvas verdict has to be computed while the user
-     * draws. `c4.strict` is exactly that table for eleven of its rules.
+     * draws. What decides it is the level the surface's own frames are ON: the
+     * framework default, and every profile a frame has CHOSEN. A `c4.strict`
+     * nobody has switched a board to costs that board nothing.
      */
-    describe('unless a level of requirement promotes it', () => {
+    describe('unless a level in force shows it', () => {
+      const SKETCH: ValidationProfile = {
+        id: 'test.sketch',
+        framework: 'test',
+        labelKey: 'com.labre.test.sketch',
+        fallback: 'Sketch',
+        isDefault: true,
+        rules: { 'test.audit-node-outside-frame': 'audit' },
+      };
       const STRICT: ValidationProfile = {
         id: 'test.strict',
         framework: 'test',
@@ -239,22 +244,68 @@ describe('the on-demand moment (PF5.14)', () => {
         fallback: 'Silent',
         rules: { 'test.audit-node-outside-frame': 'off' },
       };
+      const PACK = [SKETCH, STRICT, SILENT];
 
-      it('keeps a promotable audit rule on the drawing path', () => {
-        expect(
-          evaluateRules([AUDIT], outside, [STRICT]).map(v => v.ruleId)
-        ).toEqual(['test.audit-node-outside-frame']);
-        expect(onDemandRules([AUDIT], [STRICT])).toEqual([]);
-        expect([...backgroundElementIds([AUDIT], outside, [STRICT])]).toEqual([
-          'frame',
+      /** The same board, with the frame switched to a level. */
+      const on = (profileId?: string) => [
+        element('frame', [0, 0, 1000, 1000], {
+          role: 'test:frame',
+          ...(profileId === undefined ? {} : { validationProfile: profileId }),
+        }),
+        element('n1', [5000, 5000, 20, 20], { role: 'test:node' }),
+      ];
+
+      it('keeps the rule off the drawing path while every frame is on the default', () => {
+        // `test.strict` is REGISTERED and promotes the rule — and promotes it
+        // for nobody, because no frame on this surface is on it.
+        expect(evaluateRules([AUDIT], on(), PACK)).toEqual([]);
+        expect(checkupRules([AUDIT], on(), PACK).map(r => r.id)).toEqual([
+          'test.audit-node-outside-frame',
         ]);
       });
 
-      it('does not count `off` as a promotion', () => {
-        // A level that SILENCES a rule is not a level that shows it.
-        expect(onDemandRules([AUDIT], [SILENT]).map(r => r.id)).toEqual([
-          'test.audit-node-outside-frame',
-        ]);
+      it('puts it back the moment a frame chooses a level that shows it', () => {
+        const raised = on('test.strict');
+
+        expect(evaluateRules([AUDIT], raised, PACK).map(v => v.ruleId)).toEqual(
+          ['test.audit-node-outside-frame']
+        );
+        expect(evaluateRules([AUDIT], raised, PACK)[0].severity).toBe(
+          'warning'
+        );
+        expect(checkupRules([AUDIT], raised, PACK)).toEqual([]);
+      });
+
+      it('evaluates for the whole surface when only one frame is raised', () => {
+        // Two frames, one level each: the pass has ONE answer, and it errs
+        // towards evaluating — the sketch frame's findings are re-judged back
+        // to `audit` afterwards, which is what `applyProfiles` is for.
+        const mixed = [
+          element('sketchy', [0, 0, 1000, 1000], { role: 'test:frame' }),
+          element('raised', [2000, 0, 1000, 1000], {
+            role: 'test:frame',
+            validationProfile: 'test.strict',
+          }),
+          element('n1', [5000, 5000, 20, 20], { role: 'test:node' }),
+        ];
+
+        expect(
+          evaluateRules([AUDIT], mixed, PACK).map(v => v.ruleId)
+        ).toContain('test.audit-node-outside-frame');
+      });
+
+      it('does not count `off` as a level that shows it', () => {
+        // A level that SILENCES a rule is not a level that shows it — the rule
+        // stays a check-up rule, and the silent frame simply raises nothing.
+        expect(
+          checkupRules([AUDIT], on('test.silent'), PACK).map(r => r.id)
+        ).toEqual(['test.audit-node-outside-frame']);
+      });
+
+      it('guards the frames of an audit rule all the same', () => {
+        // `backgroundElementIds` reads the DECLARED moment and no level: an
+        // extra guarded frame costs one id and can never make a verdict wrong.
+        expect([...backgroundElementIds([AUDIT], on())]).toEqual(['frame']);
       });
     });
   });

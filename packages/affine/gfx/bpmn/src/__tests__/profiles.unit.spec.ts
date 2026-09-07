@@ -1,7 +1,10 @@
-import { onDemandRules } from '@labre/affine-block-surface';
+import { checkupRules } from '@labre/affine-block-surface';
+import { Bound } from '@labre/global/gfx';
+import type { GfxPrimitiveElementModel } from '@labre/std/gfx';
 import { describe, expect, it } from 'vitest';
 
 import { BPMN_PROFILES } from '../profiles';
+import { BPMN_ROLE } from '../roles';
 import { BPMN_RULES } from '../rules';
 
 /**
@@ -381,23 +384,79 @@ describe('what the framework ships as rules', () => {
     }
   });
 
-  it('keeps every audit rule off it too, without any of them saying so', () => {
-    // PF7.6: an `audit` finding never reaches the canvas, so it is never worth a
-    // frame. The severity alone moves the rule — none of the five below declares
-    // `moment`, and none of them has to. Neither level promotes one, so the
-    // whole set goes, profiles included in the question.
-    const audit = ALL_RULES.filter(rule => rule.severity === 'audit');
-    expect(audit.map(rule => rule.id).sort()).toEqual([
-      'bpmn.activity-dead-end',
-      'bpmn.fake-join',
-      'bpmn.implicit-split',
-      'bpmn.single-blank-start',
-      'bpmn.unlabeled-step',
-    ]);
+  /**
+   * PF7.6 — the moment is decided against the level IN FORCE.
+   *
+   * `bpmn.sketch` is the default and holds all twenty-two rules at `audit`, so
+   * a process nobody has raised costs the drawing path nothing whatsoever. Raise
+   * a pool to `bpmn.descriptive` and exactly the rules that level SHOWS come
+   * back — which is not the same set as "the rules that declare `audit`", and
+   * that difference is the whole point of asking the profile rather than the
+   * declaration.
+   */
+  describe('the level in force decides the moment', () => {
+    /** A pool, which is where a BPMN level of requirement is chosen. */
+    const pool = (profile?: string): GfxPrimitiveElementModel =>
+      ({
+        id: 'pool',
+        role: BPMN_ROLE.pool,
+        validationProfile: profile,
+        get elementBound() {
+          return new Bound(0, 0, 1200, 400);
+        },
+      }) as unknown as GfxPrimitiveElementModel;
 
-    const checkup = new Set(
-      onDemandRules(ALL_RULES, BPMN_PROFILES).map(rule => rule.id)
+    /** Every rule the level shows to nobody — `audit`, or silenced outright. */
+    const quietUnder = (profileId: string) => {
+      const profile = BPMN_PROFILES.find(one => one.id === profileId)!;
+      return ALL_RULES.filter(rule => {
+        const severity = Object.hasOwn(profile.rules, rule.id)
+          ? profile.rules[rule.id]
+          : rule.severity;
+        return severity === 'audit' || severity === 'off';
+      }).map(rule => rule.id);
+    };
+
+    /** …plus the ones that declare the second moment whatever a level says. */
+    const declared = ALL_RULES.filter(rule => rule.moment === 'on-demand').map(
+      rule => rule.id
     );
-    for (const rule of audit) expect(checkup.has(rule.id), rule.id).toBe(true);
+
+    const expected = (profileId: string) =>
+      [...new Set([...quietUnder(profileId), ...declared])].sort();
+
+    it('takes the whole pack off the drawing path on the sketch default', () => {
+      // Twenty-two rules, none of which the sketch shows: a process drawn at
+      // workshop speed is not argued with, and is not measured either.
+      expect(checkupRules(ALL_RULES, [pool()], BPMN_PROFILES)).toHaveLength(22);
+      expect(
+        checkupRules(ALL_RULES, [], BPMN_PROFILES)
+          .map(rule => rule.id)
+          .sort()
+      ).toEqual(expected('bpmn.sketch'));
+    });
+
+    it('gives back exactly what the descriptive level shows', () => {
+      const checkup = checkupRules(
+        ALL_RULES,
+        [pool('bpmn.descriptive')],
+        BPMN_PROFILES
+      )
+        .map(rule => rule.id)
+        .sort();
+
+      // Derived from the table, never counted by hand: the five the level
+      // leaves at `audit`, plus the graph sweep that declares the moment
+      // itself. Everything else is judged while the user draws again.
+      expect(checkup).toEqual(expected('bpmn.descriptive'));
+      expect(checkup).toEqual([
+        'bpmn.activity-dead-end',
+        'bpmn.fake-join',
+        'bpmn.implicit-split',
+        'bpmn.single-blank-start',
+        'bpmn.unlabeled-step',
+        'bpmn.unreachable-step',
+      ]);
+    });
   });
 });

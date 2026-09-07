@@ -1,5 +1,6 @@
 import {
   defaultProfileOf,
+  evaluateCheckup,
   evaluateRules,
   userFacingViolations,
 } from '@labre/affine-block-surface';
@@ -47,12 +48,24 @@ const backwardsArrow = () =>
     [400, 400],
   ]);
 
-const evaluate = (profile?: string) =>
-  evaluateRules(
-    [...WARDLEY_RULES],
-    [map(profile), backwardsArrow()],
-    WARDLEY_PROFILES
-  );
+const board = (profile?: string) => [map(profile), backwardsArrow()];
+
+/** The drawing pass alone — what a gesture pays for. */
+const drawing = (profile?: string) =>
+  evaluateRules([...WARDLEY_RULES], board(profile), WARDLEY_PROFILES);
+
+/**
+ * Everything the pack says about the map, whichever MOMENT says it.
+ *
+ * `wardley.sketch` holds all four rules at `audit`, and since PF7.6 a level
+ * that draws nothing costs no gesture: on the default the findings come off the
+ * check-up pass. What each level MAKES of a finding, which is what this suite
+ * is about, is the same either way.
+ */
+const evaluate = (profile?: string) => [
+  ...drawing(profile),
+  ...evaluateCheckup([...WARDLEY_RULES], board(profile), WARDLEY_PROFILES),
+];
 
 describe('what Wardley ships', () => {
   it('exposes a permissive and a strict level', () => {
@@ -126,6 +139,13 @@ describe('the permissive default', () => {
     // No profile key on the background, no migration, no backfill.
     expect(evaluate(undefined)).toEqual(evaluate('wardley.sketch'));
   });
+
+  it('costs the drawing path nothing at all', () => {
+    // PF7.6: four rules the level shows to nobody are four rules no gesture
+    // walks. They are still computed, on the pass a user asks for.
+    expect(drawing()).toEqual([]);
+    expect(drawing('wardley.sketch')).toEqual([]);
+  });
 });
 
 describe('the strict profile', () => {
@@ -137,5 +157,13 @@ describe('the strict profile', () => {
 
   it('shows it on the canvas', () => {
     expect(userFacingViolations(evaluate('wardley.strict'))).toHaveLength(1);
+  });
+
+  it('brings the rules back onto the drawing path', () => {
+    // The other half of PF7.6: the level that SHOWS a finding is the level that
+    // owes the gesture a verdict, so a map raised to strict is judged live.
+    expect(drawing('wardley.strict').map(v => v.ruleId)).toEqual([
+      'wardley.change-arrow-against-evolution',
+    ]);
   });
 });

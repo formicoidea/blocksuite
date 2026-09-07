@@ -8,6 +8,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import {
   defaultProfileOf,
+  evaluateCheckup,
   evaluateRules,
   profileSeverity,
   type ValidationProfile,
@@ -137,14 +138,30 @@ const outside = (id: string, at = 5000, exceptions?: ValidationException[]) =>
     ...(exceptions ? { validationExceptions: exceptions } : {}),
   });
 
+/**
+ * Everything the rules say about a board, whichever MOMENT says it.
+ *
+ * `test.sketch` — the default here, as a permissive default is everywhere —
+ * holds `RULE` at `audit`, and since PF7.6 a level that draws nothing is a
+ * level that costs no gesture: a board nobody raised evaluates the rule on the
+ * check-up pass instead. WHAT the profile makes of the finding, which is the
+ * whole of this suite, is unchanged either way — so the cases about the
+ * severity ask both passes, and the cases about the moment live next door in
+ * `map-quality.unit.spec.ts`.
+ */
+const judged = (
+  rules: readonly ValidationRule[],
+  elements: readonly GfxPrimitiveElementModel[],
+  profiles: readonly ValidationProfile[]
+) => [
+  ...evaluateRules(rules, elements, profiles),
+  ...evaluateCheckup(rules, elements, profiles),
+];
+
 describe('a profile decides the severity of each rule', () => {
   it('demotes the rule to audit under the permissive default', () => {
     // No profile named on the frame => the framework default applies.
-    const [violation] = evaluateRules(
-      [RULE],
-      [frame(), outside('n1')],
-      PROFILES
-    );
+    const [violation] = judged([RULE], [frame(), outside('n1')], PROFILES);
 
     expect(violation.severity).toBe('audit');
     // The finding is still REPORTED: `audit` is invisible on the canvas, not
@@ -281,7 +298,7 @@ describe('the profile is read off the instance the finding was measured against'
       labelKey: 'com.labre.other.profile.strict',
       rules: { [RULE.id]: 'off' },
     };
-    const violations = evaluateRules(
+    const violations = judged(
       [RULE],
       [frame('bg', foreign.id), outside('n1')],
       [...PROFILES, foreign]
@@ -293,7 +310,7 @@ describe('the profile is read off the instance the finding was measured against'
   });
 
   it('falls back to the default when the id names nothing', () => {
-    const violations = evaluateRules(
+    const violations = judged(
       [RULE],
       [frame('bg', 'test.profile-from-the-future'), outside('n1')],
       PROFILES
@@ -342,7 +359,7 @@ describe('a frame that names no profile inherits the one it is drawn inside', ()
   });
 
   it('leaves it at the default level while the board names none', () => {
-    const [violation] = evaluateRules(
+    const [violation] = judged(
       [INNER_RULE],
       [board(), boundary(), homeless],
       PROFILES
@@ -396,7 +413,7 @@ describe('a frame that names no profile inherits the one it is drawn inside', ()
 describe('changing profile touches nothing else', () => {
   it('keeps a user exception across a change of profile', () => {
     const exceptions: ValidationException[] = [{ ruleId: RULE.id, at: 1 }];
-    const permissive = evaluateRules(
+    const permissive = judged(
       [RULE],
       [frame(), outside('n1', 5000, exceptions)],
       PROFILES

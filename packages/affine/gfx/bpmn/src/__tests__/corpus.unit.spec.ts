@@ -842,7 +842,10 @@ describe('scenario · the profile decides how hard the pack bites', () => {
   });
 
   it('demotes every finding to audit on bpmn.sketch', () => {
-    const violations = evaluate(messyBoard('bpmn.sketch'));
+    // …and takes them off the gesture path with the same line (PF7.6): a level
+    // that shows nothing is a level that costs nothing.
+    expect(evaluate(messyBoard('bpmn.sketch'))).toEqual([]);
+    const violations = judged(messyBoard('bpmn.sketch'));
     // The same findings, collected and available — the sketch PRIMES, it does
     // not switch anything off.
     expect(said(violations)).toEqual(MESSY);
@@ -854,7 +857,11 @@ describe('scenario · the profile decides how hard the pack bites', () => {
   it('puts a pool that names no profile on the sketch, silently', () => {
     // Being the default is also what makes it write NOTHING: every process ever
     // drawn is on it, with no migration and no backfill.
-    const violations = evaluate(messyBoard(null));
+    // Nothing on the drawing path either — the same silence, one layer down:
+    // the twenty-two rules are not filtered out of the result, they are not
+    // walked (PF7.6).
+    expect(evaluate(messyBoard(null))).toEqual([]);
+    const violations = judged(messyBoard(null));
     expect(said(violations)).toEqual(MESSY);
     for (const violation of violations) {
       expect(violation.severity, violation.ruleId).toBe('audit');
