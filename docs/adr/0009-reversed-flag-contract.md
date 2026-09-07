@@ -107,6 +107,14 @@ fail to compile and migrate to `extensions`. That is the intended outcome.
   it for ~16 blocks now would be speculative work ahead of a product need. When
   a block's flag must genuinely be shipped, split it the way the frameworks
   were.
+- **Creation tools outside the gated extension read the gate at runtime.** A
+  tool that creates a block from another package (the inline link toolbar's
+  "Card view" / "Embed view" conversions, which create `affine:bookmark`,
+  `affine:embed-*` or `affine:embed-iframe`) cannot see the flags — only the
+  assembly points do. It asks `std.getView(flavour)` instead: a flavour whose
+  view extension is unregistered is one the host switched off, and the tool
+  hides itself rather than create a block that renders as nothing. Schemas
+  being unconditional, a schema lookup is no longer a valid proxy for "on".
 - **Flags are no longer a document-compatibility hazard**, so the ADR 0002
   caveat "only disable blocks that never reached users' documents" is void and
   the `flags.ts` documentation has been rewritten accordingly.

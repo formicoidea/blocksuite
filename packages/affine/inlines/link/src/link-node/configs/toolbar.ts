@@ -10,6 +10,7 @@ import {
   type ToolbarAction,
   type ToolbarActionGroup,
   toolbarActionLabel,
+  type ToolbarContext,
   type ToolbarModuleConfig,
 } from '@labre/affine-shared/services';
 import {
@@ -33,6 +34,50 @@ const trackBaseProps = {
   category: 'link',
   type: 'inline view',
 };
+
+/**
+ * Flavour the "Card view" conversion would create for `url`.
+ */
+function cardFlavour(ctx: ToolbarContext, url: string) {
+  const options = ctx.std.get(EmbedOptionProvider).getEmbedBlockOptions(url);
+  return options?.viewType === 'card' ? options.flavour : 'affine:bookmark';
+}
+
+/**
+ * Flavour the "Embed view" conversion would create for `url`, or `null` when
+ * nothing can embed it.
+ */
+function embedFlavour(ctx: ToolbarContext, url: string) {
+  const options = ctx.std.get(EmbedOptionProvider).getEmbedBlockOptions(url);
+  if (options?.viewType === 'embed') return options.flavour;
+  if (ctx.std.get(EmbedIframeService).canEmbed(url)) {
+    return 'affine:embed-iframe';
+  }
+  return null;
+}
+
+/**
+ * A conversion is a creation tool: it may only be offered when the block it
+ * creates can be rendered here. Block flags gate view extensions (ADR 0009),
+ * so a flavour without a registered view is one the host switched off —
+ * converting would replace the link with a block that paints as nothing.
+ *
+ * ponytail: runtime probe of the flag's EFFECT, not the flag. Holds while a
+ * block's renderer and tooling share one view extension. The day bookmark or
+ * embed gets the render/tooling split of ADR 0009, the view stays registered
+ * with the flag off and this gate goes blind. Upgrade path: a link-conversion
+ * contribution identifier that the gated bookmark/embed extensions register,
+ * so the action disappears by absence like every other gated tool.
+ */
+function canConvertTo(ctx: ToolbarContext, flavour: string | null) {
+  return !!flavour && !!ctx.std.getView(flavour);
+}
+
+function isOffered(ctx: ToolbarContext, action: ToolbarAction) {
+  return typeof action.when === 'function'
+    ? action.when(ctx)
+    : (action.when ?? true);
+}
 
 export const builtinInlineLinkToolbarConfig = {
   actions: [
@@ -116,6 +161,15 @@ export const builtinInlineLinkToolbarConfig = {
         {
           id: 'card',
           labelWording: TOOLBAR_CARD_VIEW,
+          when(ctx) {
+            const target = ctx.message$.peek()?.element;
+            if (!(target instanceof AffineLink)) return false;
+
+            const url = target.link;
+            if (!url) return false;
+
+            return canConvertTo(ctx, cardFlavour(ctx, url));
+          },
           run(ctx) {
             const target = ctx.message$.peek()?.element;
             if (!(target instanceof AffineLink)) return;
@@ -141,13 +195,7 @@ export const builtinInlineLinkToolbarConfig = {
               selfInlineRange.index + selfInlineRange.length
             );
 
-            const options = ctx.std
-              .get(EmbedOptionProvider)
-              .getEmbedBlockOptions(url);
-            const flavour =
-              options?.viewType === 'card'
-                ? options.flavour
-                : 'affine:bookmark';
+            const flavour = cardFlavour(ctx, url);
             const index = parent.children.indexOf(model);
             const props = {
               url,
@@ -200,14 +248,7 @@ export const builtinInlineLinkToolbarConfig = {
 
             if (!inlineEditor || !selfInlineRange || !parent) return false;
 
-            // check if the url can be embedded as iframe block
-            const embedIframeService = ctx.std.get(EmbedIframeService);
-            const canEmbedAsIframe = embedIframeService.canEmbed(url);
-
-            const options = ctx.std
-              .get(EmbedOptionProvider)
-              .getEmbedBlockOptions(url);
-            return canEmbedAsIframe || options?.viewType === 'embed';
+            return canConvertTo(ctx, embedFlavour(ctx, url));
           },
           run(ctx) {
             const target = ctx.message$.peek()?.element;
@@ -328,7 +369,11 @@ export const builtinInlineLinkToolbarConfig = {
           return false;
         }
 
-        return true;
+        // "Inline view" is the current state; without another target the
+        // dropdown would offer nothing.
+        return this.actions.some(
+          action => action.id !== 'inline' && isOffered(ctx, action)
+        );
       },
     } satisfies ToolbarActionGroup<ToolbarAction>,
     {
