@@ -204,7 +204,7 @@ describe('command registry invariants', () => {
   });
 
   /**
-   * The one numeric cap, and it is a UI one: 14 buttons in the sub-menu's row.
+   * The one numeric cap, and it is a UI one: `SENIOR_MENU_CAP` buttons in the sub-menu's row.
    *
    * Two numbers, because they fail differently.
    *
@@ -228,7 +228,7 @@ describe('command registry invariants', () => {
    */
   const NO_NOMINATION_BUDGET = new Set<string>(['wardley']);
 
-  test('no owner renders more than 14 senior-menu buttons, or nominates past its budget', () => {
+  test(`no owner renders more than SENIOR_MENU_CAP (${SENIOR_MENU_CAP}) senior-menu buttons, or nominates past its budget`, () => {
     for (const id of FRAMEWORK_IDS) {
       const owned = byOwner(id);
       const nominated = owned.filter(c => c.surfaces.includes('senior-menu'));
