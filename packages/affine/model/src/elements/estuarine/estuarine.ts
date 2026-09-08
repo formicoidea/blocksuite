@@ -1,18 +1,10 @@
-import type { IVec, SerializedXYWH } from '@labre/global/gfx';
-import {
-  Bound,
-  getPointsFromBoundWithRotation,
-  linePolygonIntersects,
-  polygonNearestPoint,
-} from '@labre/global/gfx';
-import type { BaseElementProps, PointTestOptions } from '@labre/std/gfx';
-import { field, GfxPrimitiveElementModel } from '@labre/std/gfx';
+import type { SerializedXYWH } from '@labre/global/gfx';
+import { field } from '@labre/std/gfx';
 
-import { backgroundIncludesPoint } from '../framework-background/index.js';
+import { FrameworkBackgroundElementModel } from '../framework-background/index.js';
+import type { FrameworkBackgroundProps } from '../framework-background/index.js';
 
-export type EstuarineProps = BaseElementProps & {
-  /** When false the resize handles are hidden — toggled from the toolbar. */
-  resizeEnabled?: boolean;
+export type EstuarineProps = FrameworkBackgroundProps & {
   /** Per-curve visibility (the curve + its legend) — toggled from the toolbar. */
   showLiminal?: boolean;
   showVolatile?: boolean;
@@ -27,45 +19,14 @@ export type EstuarineProps = BaseElementProps & {
  * Volatile (red, dipping below zero) and Counter-factual (dark) — each with its
  * legend. The user drops hexagon constraint nodes (native shapes) into the space.
  *
- * Mirrors the Wardley / EDGY backgrounds.
+ * An INSTANCE of the framework-background primitive
+ * ({@link FrameworkBackgroundElementModel}), like the Wardley / EDGY
+ * backgrounds: the passive-canvas geometry comes from the primitive, the
+ * fields below are the persisted document.
  */
-export class EstuarineElementModel extends GfxPrimitiveElementModel<EstuarineProps> {
+export class EstuarineElementModel extends FrameworkBackgroundElementModel<EstuarineProps> {
   get type() {
     return 'estuarine';
-  }
-
-  override get connectable() {
-    return false;
-  }
-
-  override containsBound(bounds: Bound): boolean {
-    const points = getPointsFromBoundWithRotation(this);
-    return points.some(point => bounds.containsPoint(point));
-  }
-
-  override getLineIntersections(start: IVec, end: IVec) {
-    const points = getPointsFromBoundWithRotation(this);
-    return linePolygonIntersects(start, end, points);
-  }
-
-  override getNearestPoint(point: IVec): IVec {
-    return polygonNearestPoint(
-      Bound.deserialize(this.xywh).points,
-      point
-    ) as IVec;
-  }
-
-  /**
-   * Picked by its BORDER band — see {@link backgroundIncludesPoint}. The map is
-   * a space constraint nodes are dropped into, so the clicks inside it are
-   * theirs.
-   */
-  override includesPoint(
-    x: number,
-    y: number,
-    options?: PointTestOptions
-  ): boolean {
-    return backgroundIncludesPoint(this, x, y, options);
   }
 
   @field(true)

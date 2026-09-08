@@ -1,18 +1,10 @@
-import type { IVec, SerializedXYWH } from '@labre/global/gfx';
-import {
-  Bound,
-  getPointsFromBoundWithRotation,
-  linePolygonIntersects,
-  polygonNearestPoint,
-} from '@labre/global/gfx';
-import type { BaseElementProps, PointTestOptions } from '@labre/std/gfx';
-import { field, GfxPrimitiveElementModel } from '@labre/std/gfx';
+import type { SerializedXYWH } from '@labre/global/gfx';
+import { field } from '@labre/std/gfx';
 
-import { backgroundIncludesPoint } from '../framework-background/index.js';
+import { FrameworkBackgroundElementModel } from '../framework-background/index.js';
+import type { FrameworkBackgroundProps } from '../framework-background/index.js';
 
-export type CynefinProps = BaseElementProps & {
-  /** When false the resize handles are hidden — toggled from the toolbar. */
-  resizeEnabled?: boolean;
+export type CynefinProps = FrameworkBackgroundProps & {
   /** When false the domain titles + the A/C marker letters and names are hidden. */
   showTitles?: boolean;
   /** When false the explanatory text (subheadings, decisions, annotations, notes) is hidden. */
@@ -28,46 +20,14 @@ export type CynefinProps = BaseElementProps & {
  * boundary — reproduced from the official SVG paths. The user places regular
  * edgeless elements on top of it.
  *
- * Mirrors the Wardley / EDGY backgrounds: extends {@link GfxPrimitiveElementModel}
- * so it inherits selection, move, copy/paste, duplicate, align and undo/redo.
+ * An INSTANCE of the framework-background primitive
+ * ({@link FrameworkBackgroundElementModel}), like the Wardley / EDGY
+ * backgrounds: the passive-canvas geometry comes from the primitive, the
+ * fields below are the persisted document.
  */
-export class CynefinElementModel extends GfxPrimitiveElementModel<CynefinProps> {
+export class CynefinElementModel extends FrameworkBackgroundElementModel<CynefinProps> {
   get type() {
     return 'cynefin';
-  }
-
-  override get connectable() {
-    return false;
-  }
-
-  override containsBound(bounds: Bound): boolean {
-    const points = getPointsFromBoundWithRotation(this);
-    return points.some(point => bounds.containsPoint(point));
-  }
-
-  override getLineIntersections(start: IVec, end: IVec) {
-    const points = getPointsFromBoundWithRotation(this);
-    return linePolygonIntersects(start, end, points);
-  }
-
-  override getNearestPoint(point: IVec): IVec {
-    return polygonNearestPoint(
-      Bound.deserialize(this.xywh).points,
-      point
-    ) as IVec;
-  }
-
-  /**
-   * Picked by its BORDER band — see {@link backgroundIncludesPoint}. The five
-   * domains are a picture the user drops elements onto, so the clicks inside
-   * the frame belong to those elements.
-   */
-  override includesPoint(
-    x: number,
-    y: number,
-    options?: PointTestOptions
-  ): boolean {
-    return backgroundIncludesPoint(this, x, y, options);
   }
 
   @field(true)
