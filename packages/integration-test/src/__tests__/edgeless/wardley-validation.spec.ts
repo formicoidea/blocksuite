@@ -610,11 +610,16 @@ describe('wardley validation on the canvas', () => {
       addNode('[404,400,18,18]');
       await settle();
 
-      const violations = validation.violations$.value;
-      // Reported to the engine seam — a host panel and a report see them…
-      expect(new Set(violations.map(v => v.ruleId)).size).toBe(3);
-      // …and every one of them is `audit`, so the canvas says nothing at all.
-      expect(violations.every(v => v.severity === 'audit')).toBe(true);
+      // Silenced means not even computed while the user draws (PF7.6): the
+      // gesture path has nothing to say on the sketch…
+      expect(validation.violations$.value).toEqual([]);
+      // …and a check-up still reports all three, every one of them `audit`, so
+      // the canvas says nothing at all.
+      const map = service.surface.getElementsByType('wardley')[0];
+      const run = await validation.runCheckup(map);
+      const remarks = run?.results ?? [];
+      expect(new Set(remarks.map(v => v.ruleId)).size).toBe(3);
+      expect(remarks.every(v => v.severity === 'audit')).toBe(true);
     });
   });
 });

@@ -248,11 +248,15 @@ describe('validation profiles', () => {
       await settle();
 
       expect(validation.profileOf(model(map))?.id).toBe(SKETCH);
-      // The finding exists and is reported...
-      expect(validation.violations$.value).toHaveLength(1);
-      expect(validation.violations$.value[0].severity).toBe('audit');
+      // Nothing is computed on the gesture path: every rule is `audit` on the
+      // sketch, so none of them runs while the user draws (PF7.6)...
+      expect(validation.violations$.value).toEqual([]);
       // ...and the canvas says nothing at all: the sketch wins.
       expect(badges()).toHaveLength(0);
+      // The finding still exists, for whoever asks for a check-up.
+      const run = await validation.runCheckup(model(map));
+      expect(run?.results).toHaveLength(1);
+      expect(run?.results[0].severity).toBe('audit');
     });
 
     test('writes nothing, ever, while it stays on the default', async () => {
@@ -381,11 +385,13 @@ describe('validation profiles', () => {
       const map = addBackground();
       addBackwardsArrow('[3000,3000,40,40]');
       await settle();
-      expect(validation.violations$.value[0].severity).toBe('audit');
+      // On the sketch the rule is not even evaluated live (PF7.6).
+      expect(validation.violations$.value).toEqual([]);
 
       await pick(map, STRICT);
 
-      // Applied IMMEDIATELY — no waiting for the 120 ms debounce.
+      // Applied IMMEDIATELY — no waiting for the 120 ms debounce. Choosing a
+      // level marks the map dirty, which re-admits the rule to the gesture path.
       expect(validation.violations$.value[0].severity).toBe('warning');
       expect(validation.profileOf(model(map))?.id).toBe(STRICT);
     });
@@ -399,7 +405,8 @@ describe('validation profiles', () => {
 
       await pick(map, SKETCH);
 
-      expect(validation.violations$.value[0].severity).toBe('audit');
+      // Silenced means not computed live any more (PF7.6), not demoted.
+      expect(validation.violations$.value).toEqual([]);
       // Choosing the default removes the KEY rather than writing it: a map that
       // tried strict and came back leaves no trace, in the document and not
       // just in this tab.
@@ -437,10 +444,12 @@ describe('validation profiles', () => {
       // Raising the level does not resurrect a decision, and lowering it does
       // not quietly delete one.
       expect(hasException(model(excused), RULE_ID)).toBe(true);
+      // Back on the sketch the rule runs on demand only (PF7.6), and the
+      // check-up reads the arbitration exactly as the gesture path did.
+      const run = await validation.runCheckup(model(map));
       expect(
-        validation.violations$.value.find(violation =>
-          violation.elementIds.includes(excused)
-        )?.exemption
+        run?.results.find(violation => violation.elementIds.includes(excused))
+          ?.exemption
       ).toBe('element');
     });
   });
