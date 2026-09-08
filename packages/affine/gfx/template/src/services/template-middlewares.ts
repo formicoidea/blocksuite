@@ -56,6 +56,7 @@ export const replaceIdMiddleware = (job: TemplateJob) => {
         regeneratedIdMap.set(id, newId);
         val.id = newId;
         elements[newId] = val;
+        job.insertedElementIds.push(newId);
 
         if (['connector', 'group', 'mindmap'].includes(val['type'] as string)) {
           defered.push(newId);

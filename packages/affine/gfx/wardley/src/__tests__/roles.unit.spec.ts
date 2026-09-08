@@ -211,11 +211,12 @@ describe('built-in templates are typed like hand-drawn maps', () => {
 
     // Guard against the selector silently matching nothing.
     expect(nodes.length).toBeGreaterThan(10);
-    // The ONLY neutral nodes a template may contain are the market glyph's
-    // three inner dots — one market template, one market composite. Pinned as
-    // a COUNT rather than skipped: "every node that has a role has the right
-    // one" would pass a template that quietly lost one.
-    expect(neutral).toHaveLength(3);
+    // The ONLY neutral nodes a template may contain are a glyph's own wiring:
+    // the market's three inner dots, and the four red arrows of the Porter's
+    // forces template the palette gained when it started deriving its entries
+    // from the toolbox. Pinned as a COUNT rather than skipped: "every node that
+    // has a role has the right one" would pass a template that quietly lost one.
+    expect(neutral).toHaveLength(7);
     for (const node of nodes) {
       if (node.role === undefined) continue;
       expect(node.role).toBe(
@@ -235,13 +236,15 @@ describe('built-in templates are typed like hand-drawn maps', () => {
     // which name nothing and are measured by nobody.
     expect(named.length + neutral.length).toBe(texts.length);
     expect(named.length).toBeGreaterThan(10);
-    // The annotation texts of the canonical maps: the two map titles, and the
-    // three notes of the Kodak card. Pinned as a COUNT, not as "at least one" —
-    // the two sets sum to the total either way, so neutralising a NAME to
-    // silence a W3 finding would merely move one unit from one set to the
-    // other and leave a `toBeGreaterThan(0)` untouched. Same form as the
-    // `toHaveLength(3)` above, and for the same reason.
-    expect(neutral).toHaveLength(5);
+    // The annotation texts of the canonical maps: the two map titles, the
+    // three notes of the Tea Shop card, and its "limited by" — a remark about
+    // a LINK rather than the name of an artefact, so it names nothing and
+    // travels with nothing. Pinned as a COUNT, not as "at least one" — the two
+    // sets sum to the total either way, so neutralising a NAME to silence a W3
+    // finding would merely move one unit from one set to the other and leave a
+    // `toBeGreaterThan(0)` untouched. Same form as the count above, and for the
+    // same reason.
+    expect(neutral).toHaveLength(6);
   });
 
   it('types template dependency links AND change arrows', () => {

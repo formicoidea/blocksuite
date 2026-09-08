@@ -1,127 +1,43 @@
 import {
   makeTemplateSnapshot,
   type SurfaceElementsJSON,
-  surfaceText,
   type Template,
   type TemplateCategory,
+  templateFromCommand,
 } from '@labre/affine-gfx-template';
-import {
-  ConnectorMode,
-  FontFamily,
-  PointStyle,
-  ShapeStyle,
-  StrokeStyle,
-  TextAlign,
-  type WardleyBgVariant,
-  type WardleyNodeKind,
-} from '@labre/affine-model';
+import { ConnectorMode, PointStyle, StrokeStyle } from '@labre/affine-model';
+import type { CommandDescriptor } from '@labre/std';
+import { GfxControllerIdentifier } from '@labre/std/gfx';
 
-import { REF_WIDTH } from '../consts';
+import { lowerWardleyArea } from '../actions';
+import { wardleyCommands } from '../commands';
+import { LINK_GREY, LINK_STROKE_WIDTH, WARDLEY_RED } from '../node/consts';
 import { WARDLEY_ROLE } from '../roles';
 import { wardleyMaps } from './maps';
-import {
-  ECOSYSTEM_SIZE,
-  HANDLE_SIZE,
-  INERTIA_COLOR,
-  INERTIA_SIZE,
-  LABEL_FONT_SIZE,
-  LINK_GREY,
-  LINK_STROKE_WIDTH,
-  MARKET_DOT_RING,
-  MARKET_DOT_SIZE,
-  MARKET_DOT_STROKE_WIDTH,
-  MARKET_LINK_COLOR,
-  MARKET_LINK_WIDTH,
-  MARKET_SIZE,
-  METHOD_FILL,
-  METHOD_SIZE,
-  NODE_FILL,
-  NODE_SIZE,
-  NODE_STROKE,
-  NODE_STROKE_WIDTH,
-  PIPELINE_FILL,
-  PIPELINE_HEIGHT,
-  PIPELINE_WIDTH,
-  WARDLEY_RED,
-} from '../node/consts';
 
 /**
- * Verbatim copy of `BACKGROUND_VARIANT_DEFAULTS` in `../actions.ts` — see the
- * TODO there: both copies write English prose into the document for the two
- * value-chain variants, and both go away together when the variant becomes
- * part of the declaration.
+ * The Wardley palette — DERIVED from the toolbox, one template per command.
+ *
+ * Every single-artefact entry below is what its command actually draws, run
+ * once against a recording surface. It used to be a hand-written restatement of
+ * the same artefacts, and it had drifted exactly as far as a copy drifts: the
+ * four backgrounds had lost `role: wardley:map` and `resizeEnabled` (#77), no
+ * composite carried the `group` the toolbox has written since #51, the inertia
+ * bar had lost its `textFitMode`, label boxes were 140 against a `LABEL_W` of
+ * 120, and five commands had no template at all. Derived, none of that can
+ * happen again — and `templates-parity.unit.spec.ts` re-runs each command and
+ * compares, so the day a creation site changes the palette changes with it.
+ *
+ * The two shipped MAPS stay hand-composed (`maps.ts`): a canonical map is an
+ * arrangement of a dozen artefacts, which no single command draws. They are
+ * built on the same presets, and the same test checks their composition.
  */
-const VARIANT_DEFAULTS: Record<WardleyBgVariant, Record<string, unknown>> = {
-  classic: {},
-  opportunity: {
-    yAxisTitle: 'Opportunity',
-    showVisibilityLabels: false,
-    showCornerLabels: false,
-  },
-  benefit: {
-    yAxisTitle: '',
-    visibilityHigh: 'Benefit',
-    visibilityLow: 'Investment',
-    showCornerLabels: false,
-  },
-  'evolution-gradient': {},
-};
 
-const bg = (variant: WardleyBgVariant, w = REF_WIDTH) => {
-  const h = Math.round((w * 9) / 16);
-  return {
-    type: 'wardley',
-    variant,
-    ...VARIANT_DEFAULTS[variant],
-    xywh: `[0,0,${w},${h}]`,
-  };
-};
-
-/** A wardley node ellipse positioned by top-left. */
-function node(
-  kind: WardleyNodeKind,
-  x: number,
-  y: number,
-  d = NODE_SIZE,
-  fill = NODE_FILL,
-  strokeWidth = NODE_STROKE_WIDTH,
-  // Neutral for the market's inner dots, exactly as `createWardleyMarket` does:
-  // glyph wiring, not artefacts.
-  neutral = false
-) {
-  return {
-    type: 'wardleyNode',
-    kind,
-    // A template must produce the same typed artefacts as the toolbox, so a
-    // map started from a preset validates like a hand-drawn one.
-    role: neutral ? undefined : WARDLEY_ROLE[kind],
-    shapeType: 'ellipse',
-    filled: true,
-    fillColor: fill,
-    strokeColor: NODE_STROKE,
-    strokeWidth,
-    shapeStyle: ShapeStyle.General,
-    roughness: 0,
-    xywh: `[${x},${y},${d},${d}]`,
-  };
-}
-
-function label(
-  x: number,
-  y: number,
-  str: string,
-  align: 'left' | 'center' = 'left'
-) {
-  return {
-    type: 'text',
-    text: surfaceText(str),
-    role: WARDLEY_ROLE.label,
-    color: NODE_STROKE,
-    fontFamily: FontFamily.Inter,
-    fontSize: LABEL_FONT_SIZE,
-    textAlign: align === 'center' ? TextAlign.Center : TextAlign.Left,
-    xywh: `[${x},${y},140,26]`,
-  };
+/** The command a derived template is the picture of. Throws rather than skips. */
+function byId(id: string): CommandDescriptor {
+  const command = wardleyCommands.find(entry => entry.id === id);
+  if (!command) throw new Error(`[wardley] templates: no command "${id}"`);
+  return command;
 }
 
 /**
@@ -162,114 +78,6 @@ function connect(
   };
 }
 
-const inertia = (x = 0, y = 0) => ({
-  type: 'shape',
-  shapeType: 'rect',
-  role: WARDLEY_ROLE.inertia,
-  filled: true,
-  fillColor: INERTIA_COLOR,
-  strokeColor: INERTIA_COLOR,
-  strokeWidth: 0,
-  shapeStyle: ShapeStyle.General,
-  roughness: 0,
-  radius: 0,
-  xywh: `[${x},${y},${INERTIA_SIZE.w},${INERTIA_SIZE.h}]`,
-});
-
-/** Pipeline composite: body rect + handle square (straddling top) + label. */
-function pipeline(): SurfaceElementsJSON {
-  return {
-    label: label(0, 0, 'Pipeline', 'center'),
-    body: {
-      type: 'wardleyNode',
-      kind: 'pipeline',
-      role: WARDLEY_ROLE.pipeline,
-      shapeType: 'rect',
-      filled: true,
-      fillColor: PIPELINE_FILL,
-      strokeColor: NODE_STROKE,
-      strokeWidth: NODE_STROKE_WIDTH,
-      shapeStyle: ShapeStyle.General,
-      roughness: 0,
-      radius: 0,
-      xywh: `[0,39,${PIPELINE_WIDTH},${PIPELINE_HEIGHT}]`,
-    },
-    handle: {
-      type: 'wardleyNode',
-      kind: 'handle',
-      role: WARDLEY_ROLE.handle,
-      shapeType: 'rect',
-      filled: true,
-      fillColor: NODE_FILL,
-      strokeColor: NODE_STROKE,
-      strokeWidth: NODE_STROKE_WIDTH,
-      shapeStyle: ShapeStyle.General,
-      roughness: 0,
-      radius: 0,
-      xywh: `[${PIPELINE_WIDTH / 2 - HANDLE_SIZE / 2},${39 - HANDLE_SIZE / 2},${HANDLE_SIZE},${HANDLE_SIZE}]`,
-    },
-  };
-}
-
-/** Market composite: outer circle + 3 inner dots wired in a triangle + label. */
-function market(): SurfaceElementsJSON {
-  const R = MARKET_SIZE / 2;
-  const c = R; // center within the [0,0,MARKET_SIZE,MARKET_SIZE] box
-  const rho = MARKET_DOT_RING;
-  const sin60 = Math.sqrt(3) / 2;
-  const verts = [
-    [0, -rho],
-    [rho * sin60, rho / 2],
-    [-rho * sin60, rho / 2],
-  ];
-  const dotAt = (vx: number, vy: number) =>
-    node(
-      'component',
-      c + vx - MARKET_DOT_SIZE / 2,
-      c + vy - MARKET_DOT_SIZE / 2,
-      MARKET_DOT_SIZE,
-      NODE_FILL,
-      MARKET_DOT_STROKE_WIDTH,
-      true
-    );
-  // Neutral on purpose: the triangle is the market glyph's own wiring, not a
-  // dependency the user drew (same rule as `createWardleyMarket`).
-  const tri = (a: string, b: string) => ({
-    type: 'connector',
-    mode: ConnectorMode.Straight,
-    stroke: MARKET_LINK_COLOR,
-    strokeStyle: StrokeStyle.Solid,
-    strokeWidth: MARKET_LINK_WIDTH,
-    frontEndpointStyle: PointStyle.None,
-    rearEndpointStyle: PointStyle.None,
-    source: { id: a },
-    target: { id: b },
-  });
-  return {
-    circle: node('market', 0, 0, MARKET_SIZE, NODE_FILL),
-    d0: dotAt(verts[0][0], verts[0][1]),
-    d1: dotAt(verts[1][0], verts[1][1]),
-    d2: dotAt(verts[2][0], verts[2][1]),
-    t0: tri('d0', 'd1'),
-    t1: tri('d1', 'd2'),
-    t2: tri('d2', 'd0'),
-    label: label(MARKET_SIZE + 8, 2, 'Market'),
-  };
-}
-
-const single = (el: Record<string, unknown>): SurfaceElementsJSON => ({
-  a: el,
-});
-const nodeWithLabel = (
-  kind: WardleyNodeKind,
-  d: number,
-  fill: string,
-  name: string
-): SurfaceElementsJSON => ({
-  n: node(kind, 0, 0, d, fill),
-  l: label(d + 8, d / 2 - 13, name),
-});
-
 const ATTRS =
   'width="100%" height="100%" viewBox="0 0 135 80" xmlns="http://www.w3.org/2000/svg"';
 const bgPreview = (extra = '') =>
@@ -277,6 +85,19 @@ const bgPreview = (extra = '') =>
 const dotPreview = (fill: string, sw = 2) =>
   `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="13" fill="${fill}" stroke="#1f2328" stroke-width="${sw}"/></svg>`;
 
+/** The two fat arrows: the same outline, mirrored — the direction IS the kind. */
+const arrowPreview = (rightwards: boolean) =>
+  `<svg ${ATTRS} fill="none"><path d="${
+    rightwards
+      ? 'M32 32 H80 V23 L103 40 L80 57 V48 H32 Z'
+      : 'M103 32 H55 V23 L32 40 L55 57 V48 H103 Z'
+  }" fill="#bfbfbf" stroke="#1f2328" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
+
+/** The zone, in its Peace wash — the pair differs on the outline and on nothing else. */
+const areaPreview = (outline: string) =>
+  `<svg ${ATTRS} fill="none">${outline}</svg>`;
+
+/** A hand-composed template — what is left once the artefacts are derived. */
 function tpl(
   name: string,
   preview: string,
@@ -290,88 +111,135 @@ function tpl(
   };
 }
 
+/**
+ * A zone, plus the one thing a snapshot cannot say.
+ *
+ * `createWardleyArea` lowers the zone the moment it exists, to just above the
+ * framework backgrounds it covers — otherwise the wash sits on top of every
+ * component it groups and eats their clicks. That depth is relative to the map
+ * ALREADY ON THE BOARD, which a snapshot knows nothing about, so the panel
+ * replays it on the freshly inserted element instead.
+ */
+function areaTemplate(id: string, preview: string): Template {
+  return {
+    ...templateFromCommand(byId(id), preview),
+    afterInsert: (std, insertedIds) =>
+      lowerWardleyArea(std.get(GfxControllerIdentifier), insertedIds[0]),
+  };
+}
+
 export const wardleyTemplateCategory: TemplateCategory = {
   name: 'Wardley',
   templates: [
     ...wardleyMaps,
-    tpl('Map background', bgPreview(), { bg: bg('classic') }),
-    tpl(
-      'Opportunity gradient',
+    templateFromCommand(
+      byId('wardley.addBackground'),
+      bgPreview(),
+      'Map background'
+    ),
+    templateFromCommand(
+      byId('wardley.addOpportunityBackground'),
       bgPreview(
         '<rect x="22" y="12" width="98" height="52" fill="#eef4fb" opacity="0.6"/>'
       ),
-      { bg: bg('opportunity') }
+      'Opportunity gradient'
     ),
-    tpl(
-      'Benefit gradient',
+    templateFromCommand(
+      byId('wardley.addBenefitBackground'),
       bgPreview(
         '<rect x="22" y="12" width="98" height="26" fill="#e6eef8" opacity="0.6"/>'
       ),
-      { bg: bg('benefit') }
+      'Benefit gradient'
     ),
-    tpl(
-      'Evolution gradient',
+    templateFromCommand(
+      byId('wardley.addEvolutionBackground'),
       bgPreview(
         '<rect x="22" y="12" width="98" height="52" fill="#e3e2e4" opacity="0.5"/>'
       ),
-      { bg: bg('evolution-gradient') }
+      'Evolution gradient'
     ),
-    tpl(
-      'Component',
+    templateFromCommand(
+      byId('wardley.addComponent'),
       dotPreview('#ffffff', 1.5),
-      nodeWithLabel('component', NODE_SIZE, NODE_FILL, 'Component')
+      'Component'
     ),
-    tpl(
-      'Anchor',
-      `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="13" fill="#fff" stroke="#1f2328" stroke-width="1.5"/><circle cx="67" cy="36" r="3.5" fill="#1f2328"/><path d="M59 48 q8 -9 16 0" stroke="#1f2328" stroke-width="1.5" fill="none"/></svg>`,
-      nodeWithLabel('anchor', NODE_SIZE, NODE_FILL, 'Anchor')
-    ),
-    tpl(
-      'Ecosystem',
-      `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="15" fill="#fff" stroke="#1f2328" stroke-width="1.5"/><circle cx="67" cy="40" r="11" fill="none" stroke="#1f2328"/><circle cx="67" cy="40" r="5" fill="#fff" stroke="#1f2328"/></svg>`,
-      nodeWithLabel('ecosystem', ECOSYSTEM_SIZE, NODE_FILL, 'Ecosystem')
-    ),
-    tpl(
-      'Method',
+    templateFromCommand(
+      byId('wardley.addMethod'),
       `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="15" fill="#d9d9d9" stroke="#1f2328" stroke-width="1.5"/><circle cx="67" cy="40" r="7" fill="#fff" stroke="#1f2328"/></svg>`,
-      nodeWithLabel('method', METHOD_SIZE, METHOD_FILL, 'Component')
+      'Method'
     ),
-    tpl(
-      'Pipeline',
-      `<svg ${ATTRS} fill="none"><rect x="34" y="40" width="66" height="14" fill="#fff" stroke="#1f2328"/><rect x="60" y="33" width="14" height="14" fill="#fff" stroke="#1f2328"/></svg>`,
-      pipeline()
-    ),
-    tpl(
-      'Market',
+    templateFromCommand(
+      byId('wardley.addMarket'),
       `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="16" fill="#fff" stroke="#1f2328"/><circle cx="67" cy="30" r="3.5" fill="#fff" stroke="#1f2328" stroke-width="1.5"/><circle cx="75" cy="46" r="3.5" fill="#fff" stroke="#1f2328" stroke-width="1.5"/><circle cx="59" cy="46" r="3.5" fill="#fff" stroke="#1f2328" stroke-width="1.5"/><path d="M67 30 L75 46 L59 46 Z" stroke="#1f2328" stroke-width="0.8" fill="none"/></svg>`,
-      market()
+      'Market'
     ),
-    tpl(
-      'Inertia',
+    templateFromCommand(
+      byId('wardley.addEcosystem'),
+      `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="15" fill="#fff" stroke="#1f2328" stroke-width="1.5"/><circle cx="67" cy="40" r="11" fill="none" stroke="#1f2328"/><circle cx="67" cy="40" r="5" fill="#fff" stroke="#1f2328"/></svg>`,
+      'Ecosystem'
+    ),
+    templateFromCommand(
+      byId('wardley.addAnchor'),
+      `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="13" fill="#fff" stroke="#1f2328" stroke-width="1.5"/><circle cx="67" cy="36" r="3.5" fill="#1f2328"/><path d="M59 48 q8 -9 16 0" stroke="#1f2328" stroke-width="1.5" fill="none"/></svg>`,
+      'Anchor'
+    ),
+    templateFromCommand(
+      byId('wardley.addPipeline'),
+      `<svg ${ATTRS} fill="none"><rect x="34" y="40" width="66" height="14" fill="#fff" stroke="#1f2328"/><rect x="60" y="33" width="14" height="14" fill="#fff" stroke="#1f2328"/></svg>`,
+      'Pipeline'
+    ),
+    templateFromCommand(
+      byId('wardley.addInertia'),
       `<svg ${ATTRS} fill="none"><rect x="63" y="22" width="8" height="36" fill="#1f2328"/></svg>`,
-      single(inertia())
+      'Inertia'
     ),
+    templateFromCommand(
+      byId('wardley.addPorter'),
+      `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="13" fill="#fff" stroke="#1f2328" stroke-width="1.5"/><g stroke="${WARDLEY_RED}" stroke-width="2" stroke-linecap="round"><line x1="67" y1="26" x2="67" y2="19"/><line x1="81" y1="40" x2="88" y2="40"/><line x1="67" y1="54" x2="67" y2="61"/><line x1="53" y1="40" x2="46" y2="40"/></g><g fill="${WARDLEY_RED}"><path d="M67 13 L71 21 H63 Z"/><path d="M94 40 L86 44 V36 Z"/><path d="M67 67 L63 59 H71 Z"/><path d="M40 40 L48 36 V44 Z"/></g></svg>`
+    ),
+    templateFromCommand(byId('wardley.addAccelerator'), arrowPreview(true)),
+    templateFromCommand(byId('wardley.addDecelerator'), arrowPreview(false)),
     // NEUTRAL on purpose (`docs/adr/0010` § Compatibility). This is a horizontal
     // stroke bound to nothing — a sample of a STYLE, in a palette. It was typed
     // `wardley:dependency` only because the helper defaults to that role, and a
     // sample of a stroke makes no claim about who depends on whom. Same call the
     // market glyph's own wiring already makes.
+    //
+    // Hand-written, and the one pair that cannot derive: `linkTool` and
+    // `evolutionArrow` ACTIVATE a tool rather than draw anything, so there is no
+    // artefact to record — the user draws it.
     tpl(
       'Link',
       `<svg ${ATTRS} fill="none"><path d="M24 40 H110" stroke="#666" stroke-width="2.4"/></svg>`,
-      single(
-        connect({ position: [0, 0] }, { position: [160, 0] }, { typed: false })
-      )
+      {
+        a: connect(
+          { position: [0, 0] },
+          { position: [160, 0] },
+          { typed: false }
+        ),
+      }
     ),
     tpl(
       'Evolution arrow',
       `<svg ${ATTRS} fill="none"><path d="M24 40 H100" stroke="#d6455d" stroke-width="2.4" stroke-dasharray="6 4"/><path d="M98 33 L112 40 L98 47 Z" fill="#d6455d"/></svg>`,
-      single(
-        connect(
+      {
+        a: connect(
           { position: [0, 0] },
           { position: [160, 0] },
           { evolution: true, typed: false }
-        )
+        ),
+      }
+    ),
+    areaTemplate(
+      'wardley.addAreaRect',
+      areaPreview(
+        '<rect x="24" y="16" width="87" height="48" rx="2" fill="#c6dbfc" fill-opacity="0.25" stroke="#5b9cf6" stroke-width="1.5"/>'
+      )
+    ),
+    areaTemplate(
+      'wardley.addAreaPolygon',
+      areaPreview(
+        '<path d="M67 12 L110 43 L94 68 H40 L24 43 Z" fill="#c6dbfc" fill-opacity="0.25" stroke="#5b9cf6" stroke-width="1.5" stroke-linejoin="round"/>'
       )
     ),
   ],

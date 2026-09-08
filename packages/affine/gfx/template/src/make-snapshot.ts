@@ -1,4 +1,8 @@
-import { SURFACE_TEXT_UNIQ_IDENTIFIER } from '@labre/std/gfx';
+import {
+  generateKeyBetween,
+  SURFACE_TEXT_UNIQ_IDENTIFIER,
+  SURFACE_YMAP_UNIQ_IDENTIFIER,
+} from '@labre/std/gfx';
 
 /** A surface-elements map as it appears inside a template's DocSnapshot. */
 export type SurfaceElementsJSON = Record<string, Record<string, unknown>>;
@@ -17,15 +21,48 @@ export function surfaceText(text: string) {
 }
 
 /**
+ * Serialize a plain record into the surface `Y.Map` JSON form used inside
+ * snapshots — a group's `children`, a mindmap's node table. Same seam as
+ * {@link surfaceText}: what `SurfaceBlockTransformer.toSnapshot` emits.
+ */
+export function surfaceYMap(json: Record<string, unknown>) {
+  return {
+    [SURFACE_YMAP_UNIQ_IDENTIFIER]: true,
+    json,
+  };
+}
+
+/**
  * Wrap a surface-elements map into the minimal `page → surface` DocSnapshot a
  * template's `content` expects. Block/element ids are remapped on insert by the
- * template job's `replaceIdMiddleware`, and z-order indices are regenerated, so
- * callers only need stable-within-snapshot ids and meaningful element props.
+ * template job's `replaceIdMiddleware`.
+ *
+ * Z-order indices are regenerated on insert too, but IN THE SNAPSHOT'S OWN
+ * ORDER: `createRegenerateIndexMiddleware` sorts the elements by their `index`
+ * (group-aware) and only then mints fresh keys — and it skips any element that
+ * carries no `index` at all. So a missing `index` is filled in here, in key
+ * (insertion) order, which is the order a creation action added the elements.
  */
 export function makeTemplateSnapshot(
   elements: SurfaceElementsJSON,
   title = 'Template'
 ) {
+  const indexed: SurfaceElementsJSON = {};
+  let last: string | null = null;
+
+  for (const [id, element] of Object.entries(elements)) {
+    const copy = { ...element };
+    // The middleware keys its fresh indexes by the element's OWN `id` field,
+    // not by the map key: a hand-written element without one would collect
+    // every other element's key under `undefined` and land at one shared depth.
+    if (copy['id'] === undefined) copy['id'] = id;
+    if (copy['index'] === undefined) {
+      last = generateKeyBetween(last, null);
+      copy['index'] = last;
+    }
+    indexed[id] = copy;
+  }
+
   return {
     type: 'page',
     meta: {
@@ -49,7 +86,7 @@ export function makeTemplateSnapshot(
           type: 'block',
           id: 'block:template-surface',
           flavour: 'affine:surface',
-          props: { elements },
+          props: { elements: indexed },
           children: [],
         },
       ],

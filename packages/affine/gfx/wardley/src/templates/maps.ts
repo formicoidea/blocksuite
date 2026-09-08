@@ -2,6 +2,7 @@ import {
   makeTemplateSnapshot,
   type SurfaceElementsJSON,
   surfaceText,
+  surfaceYMap,
   type Template,
 } from '@labre/affine-gfx-template';
 import {
@@ -14,8 +15,6 @@ import {
 } from '@labre/affine-model';
 
 import {
-  INERTIA_COLOR,
-  LABEL_FONT_SIZE,
   LINK_GREY,
   LINK_STROKE_WIDTH,
   NODE_FILL,
@@ -29,6 +28,13 @@ import {
 } from '@labre/affine-block-surface';
 
 import { WARDLEY_BACKGROUND } from '../background';
+import {
+  WARDLEY_LABEL_H,
+  WARDLEY_LABEL_W,
+  wardleyInertiaProps,
+  wardleyLabelProps,
+  wardleyNodeProps,
+} from '../presets';
 import { WARDLEY_ROLE } from '../roles';
 
 /**
@@ -104,6 +110,13 @@ const bg = (variant = 'classic') => ({
   xywh: `[0,0,${W},${H}]`,
 });
 
+/**
+ * A component of a shipped map, at (evolution, value).
+ *
+ * {@link wardleyNodeProps} says what a component IS; the two overrides are
+ * NOTATION and stay: a thick rim marks a user "need", and a red one marks the
+ * future position of a capability that has not moved yet.
+ */
 function dot(
   e: number,
   v: number,
@@ -114,40 +127,24 @@ function dot(
   const cx = ex(e);
   const cy = vy(v);
   return {
-    type: 'wardleyNode',
-    kind: 'component',
-    // Templates carry the same semantic roles as the toolbox, so a map started
-    // from a preset validates exactly like a hand-drawn one.
-    role: WARDLEY_ROLE.component,
-    shapeType: 'ellipse',
-    filled: true,
+    ...wardleyNodeProps('component', {
+      xywh: `[${cx - D / 2},${cy - D / 2},${D},${D}]`,
+    }),
     fillColor: fill,
     strokeColor: stroke,
     strokeWidth: sw,
-    shapeStyle: ShapeStyle.General,
-    roughness: 0,
-    xywh: `[${cx - D / 2},${cy - D / 2},${D},${D}]`,
   };
 }
 const comp = (e: number, v: number) => dot(e, v, 1);
 const future = (e: number, v: number) => dot(e, v, 2, WARDLEY_RED);
+/** A stakeholder: an anchor, drawn a third bigger than a component. */
 function stake(e: number, v: number) {
   const cx = ex(e);
   const cy = vy(v);
   const d = 24;
-  return {
-    type: 'wardleyNode',
-    kind: 'anchor',
-    role: WARDLEY_ROLE.anchor,
-    shapeType: 'ellipse',
-    filled: true,
-    fillColor: NODE_FILL,
-    strokeColor: NODE_STROKE,
-    strokeWidth: 1,
-    shapeStyle: ShapeStyle.General,
-    roughness: 0,
+  return wardleyNodeProps('anchor', {
     xywh: `[${cx - d / 2},${cy - d / 2},${d},${d}]`,
-  };
+  });
 }
 
 type LblOpts = {
@@ -157,10 +154,23 @@ type LblOpts = {
   color?: string;
   size?: number;
   w?: number;
+  /**
+   * Drop the label role — for a text that names no artefact.
+   *
+   * The same call `connect`'s `typed: false` makes in the palette: W3 is
+   * written about the NAME of a thing, and "limited by" is a remark about a
+   * LINK. A role there would put the annotation in the same conversation as
+   * the components it sits between.
+   */
+  neutral?: boolean;
 };
 function lbl(e: number, v: number, text: string, o: LblOpts = {}) {
   const cx = ex(e);
   const cy = vy(v);
+  // 200 rather than the toolbox's `WARDLEY_LABEL_W`: a shipped map names
+  // things like "Capture a moment", and a box narrower than its words wraps
+  // them onto two lines. The width is layout, not notation — what the preset
+  // owns is everything else about the label.
   const w = o.w ?? 200;
   const dx = o.dx ?? 12;
   const dy = o.dy ?? -10;
@@ -168,24 +178,31 @@ function lbl(e: number, v: number, text: string, o: LblOpts = {}) {
   const x =
     align === 'right' ? cx - w - dx : align === 'center' ? cx - w / 2 : cx + dx;
   return {
-    type: 'text',
-    text: surfaceText(text),
-    // The NAME of an artefact, so it carries the label role W3 is written on.
+    // The NAME of an artefact — {@link wardleyLabelProps} says what that is.
     // The free texts these presets also use for notes and legends stay neutral:
     // they name nothing and nothing measures them.
-    role: WARDLEY_ROLE.label,
-    color: o.color ?? NODE_STROKE,
-    fontFamily: FontFamily.Inter,
-    fontSize: o.size ?? LABEL_FONT_SIZE,
-    textAlign:
-      align === 'right'
-        ? TextAlign.Right
-        : align === 'center'
-          ? TextAlign.Center
-          : TextAlign.Left,
-    xywh: `[${x},${cy + dy},${w},26]`,
+    ...wardleyLabelProps(text, x, cy + dy, align),
+    // A snapshot stores the words as a serialized `Y.Text`, where
+    // `addElement` takes a plain string.
+    text: surfaceText(text),
+    // A wider box for a long name; the deliberate departures a shipped map
+    // makes on top of the preset.
+    xywh: `[${x},${cy + dy},${w},${WARDLEY_LABEL_H}]`,
+    ...(o.size === undefined ? {} : { fontSize: o.size }),
+    ...(o.color === undefined ? {} : { color: o.color }),
+    ...(o.neutral ? { role: undefined } : {}),
   };
 }
+
+/**
+ * The group a node and its name travel as — what the toolbox has written since
+ * #51 and what these maps had never carried, so dragging a component out of a
+ * shipped map left its name behind.
+ */
+const pair = (node: string, label: string) => ({
+  type: 'group',
+  children: surfaceYMap({ [node]: true, [label]: true }),
+});
 
 /**
  * A link between two nodes of a shipped map.
@@ -231,19 +248,7 @@ function link(
 function inertia(e: number, v: number) {
   const cx = ex(e);
   const cy = vy(v);
-  return {
-    type: 'shape',
-    shapeType: 'rect',
-    role: WARDLEY_ROLE.inertia,
-    filled: true,
-    fillColor: INERTIA_COLOR,
-    strokeColor: INERTIA_COLOR,
-    strokeWidth: 0,
-    shapeStyle: ShapeStyle.General,
-    roughness: 0,
-    radius: 0,
-    xywh: `[${cx - 4},${cy - 22},8,44]`,
-  };
+  return wardleyInertiaProps({ xywh: `[${cx - 4},${cy - 22},8,44]` });
 }
 
 function panel(x: number, y: number, w: number, h: number) {
@@ -357,34 +362,49 @@ function teaShop(): SurfaceElementsJSON {
       dy: -28,
       w: 120,
     }),
+    businessG: pair('business', 'businessL'),
     public: stake(0.78, 0.93),
     publicL: lbl(0.78, 0.93, 'Public', { align: 'center', dy: -28, w: 120 }),
+    publicG: pair('public', 'publicL'),
     cupOfTea: comp(0.62, 0.74),
     cupOfTeaL: lbl(0.62, 0.74, 'Cup of Tea', { align: 'right' }),
+    cupOfTeaG: pair('cupOfTea', 'cupOfTeaL'),
     cup: comp(0.8, 0.7),
     cupL: lbl(0.8, 0.7, 'Cup'),
+    cupG: pair('cup', 'cupL'),
     tea: comp(0.83, 0.6),
     teaL: lbl(0.83, 0.6, 'Tea'),
+    teaG: pair('tea', 'teaL'),
     hotWater: comp(0.8, 0.47),
     hotWaterL: lbl(0.8, 0.47, 'Hot Water'),
+    hotWaterG: pair('hotWater', 'hotWaterL'),
     water: comp(0.81, 0.34),
     waterL: lbl(0.81, 0.34, 'Water'),
+    waterG: pair('water', 'waterL'),
     kettle: comp(0.36, 0.38),
     kettleL: lbl(0.36, 0.38, 'Kettle', { align: 'right', dy: 6 }),
+    kettleG: pair('kettle', 'kettleL'),
     electric: future(0.56, 0.38),
     electricL: lbl(0.56, 0.38, 'Electric Kettle'),
+    electricG: pair('electric', 'electricL'),
     power: comp(0.7, 0.1),
     powerL: lbl(0.7, 0.1, 'Power', { align: 'right', dy: 6 }),
+    powerG: pair('power', 'powerL'),
     powerFut: future(0.88, 0.1),
     powerFutL: lbl(0.88, 0.1, 'Power'),
+    powerFutG: pair('powerFut', 'powerFutL'),
     // ABOVE the link it annotates, not across it. Written on the line it reads
     // as a label nobody can read — which is the finding W3 raises, and it was
     // raising it on the map that ships as the canonical example.
+    //
+    // NEUTRAL: it is a remark about a LINK, not the name of an artefact, so it
+    // travels with nothing and nothing measures it (see `LblOpts.neutral`).
     limitedBy: lbl(0.56, 0.43, 'limited by', {
       align: 'center',
       w: 120,
       size: 13,
       dy: -34,
+      neutral: true,
     }),
     ann1a: ann(0.5, 0.385),
     ann1t: annTxt(0.5, 0.385, '1'),
@@ -422,6 +442,7 @@ function kodak(): SurfaceElementsJSON {
     title: title("Wardley map of Kodak's 2005 inertia to digital"),
     user: stake(0.54, 0.92),
     userL: lbl(0.54, 0.92, 'User'),
+    userG: pair('user', 'userL'),
     capture: dot(CAPTURE[0], CAPTURE[1], 3),
     // To the LEFT, like the other two capability names: to the right of this
     // node runs the future dependency towards digital storage, and a name
@@ -430,16 +451,21 @@ function kodak(): SurfaceElementsJSON {
     captureL: lbl(CAPTURE[0], CAPTURE[1], 'Capture a moment', {
       align: 'right',
     }),
+    captureG: pair('capture', 'captureL'),
     film: comp(0.52, 0.62),
     filmL: lbl(0.52, 0.62, 'Film camera', { align: 'right' }),
+    filmG: pair('film', 'filmL'),
     digital: future(0.74, 0.62),
     digitalL: lbl(0.74, 0.62, 'Digital camera', { color: WARDLEY_RED }),
+    digitalG: pair('digital', 'digitalL'),
     roll: comp(0.52, 0.4),
     rollL: lbl(0.52, 0.4, 'Photographic film', { align: 'right' }),
+    rollG: pair('roll', 'rollL'),
     storage: future(STORAGE[0], STORAGE[1]),
     storageL: lbl(STORAGE[0], STORAGE[1], 'Digital storage', {
       color: WARDLEY_RED,
     }),
+    storageG: pair('storage', 'storageL'),
     inertiaBar: inertia(barE, barV),
     l1: link('user', 'capture'),
     l2: link('capture', 'film'),

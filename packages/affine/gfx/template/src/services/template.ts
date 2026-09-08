@@ -81,6 +81,13 @@ export class TemplateJob {
 
   job: Transformer;
 
+  /**
+   * The surface-element ids minted for this insertion, in the snapshot's own
+   * key order. Filled by `replaceIdMiddleware`; read by a template's
+   * `afterInsert`, which needs the FRESH ids of what it just dropped.
+   */
+  insertedElementIds: string[] = [];
+
   model: SurfaceBlockModel;
 
   slots = {

@@ -275,6 +275,10 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
   private async _insertTemplate(template: Template, bound: Bound) {
     this._loadingTemplate = template;
 
+    // Kept before the clone: `afterInsert` is a closure the template author
+    // wrote, and `cloneDeep` does not survive a function.
+    const original = template;
+
     template = cloneDeep(template);
 
     const center = {
@@ -301,6 +305,8 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
       }
 
       const insertedBound = await templateJob.insertTemplate(template.content);
+
+      original.afterInsert?.(this.edgeless.std, templateJob.insertedElementIds);
 
       if (insertedBound && template.type === 'template') {
         const padding = 20 / this.gfx.viewport.zoom;
