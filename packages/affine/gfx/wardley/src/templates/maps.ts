@@ -30,7 +30,6 @@ import {
 import { WARDLEY_BACKGROUND } from '../background';
 import {
   WARDLEY_LABEL_H,
-  WARDLEY_LABEL_W,
   wardleyInertiaProps,
   wardleyLabelProps,
   wardleyNodeProps,
