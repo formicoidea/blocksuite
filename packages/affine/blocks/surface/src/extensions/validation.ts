@@ -1950,7 +1950,8 @@ function raise(
  */
 function evaluateElementInBackground(
   rule: ValidationRule,
-  elements: readonly GfxPrimitiveElementModel[]
+  elements: readonly GfxPrimitiveElementModel[],
+  incremental?: IncrementalContext
 ): Violation[] {
   const subjectRole = rule.appliesTo;
   if (subjectRole === undefined) return [];
@@ -1958,8 +1959,11 @@ function evaluateElementInBackground(
   const backgrounds = backgroundsOf(rule, elements);
   if (backgrounds.length === 0) return [];
 
+  // Subjects filter here; the `backgrounds` index above stays whole.
+  const judged = incremental?.subjects;
   const violations: Violation[] = [];
   for (const el of elements) {
+    if (judged !== undefined && !judged.has(el.id)) continue;
     // Cheapest possible exit for a neutral element: no role, no evaluation.
     if (el.role === undefined) continue;
     if (!roleIsA(el.role, subjectRole, rule.roles)) continue;
@@ -2210,7 +2214,8 @@ function centreOf(bound: Bound): Point {
  */
 function evaluateOrientationAgainstAxis(
   rule: ValidationRule,
-  elements: readonly GfxPrimitiveElementModel[]
+  elements: readonly GfxPrimitiveElementModel[],
+  incremental?: IncrementalContext
 ): Violation[] {
   const subjectRole = rule.appliesTo;
   const against = rule.against;
@@ -2230,8 +2235,11 @@ function evaluateOrientationAgainstAxis(
   // it. Perpendicular (90°) plus the declared dead zone.
   const limit = Math.cos(((90 + against.toleranceDeg) * Math.PI) / 180);
 
+  // Subjects filter here; the `backgrounds` index above stays whole.
+  const judged = incremental?.subjects;
   const violations: Violation[] = [];
   for (const el of elements) {
+    if (judged !== undefined && !judged.has(el.id)) continue;
     if (el.role === undefined) continue;
     if (!roleIsA(el.role, subjectRole, rule.roles)) continue;
 
@@ -3201,7 +3209,8 @@ function departsFromTones(
  */
 function evaluateToneConvention(
   rule: ValidationRule,
-  elements: readonly GfxPrimitiveElementModel[]
+  elements: readonly GfxPrimitiveElementModel[],
+  incremental?: IncrementalContext
 ): Violation[] {
   const subjectRole = rule.appliesTo;
   const tone = rule.tone;
@@ -3230,8 +3239,11 @@ function evaluateToneConvention(
   }
 
   const backgrounds = backgroundsOf(rule, elements);
+  // Subjects filter here; the `backgrounds` index above stays whole.
+  const judged = incremental?.subjects;
   const violations: Violation[] = [];
   for (const el of elements) {
+    if (judged !== undefined && !judged.has(el.id)) continue;
     if (el.role === undefined) continue;
     if (!roleIsA(el.role, subjectRole, rule.roles)) continue;
     if (!departsFromTones(el, allowed)) continue;
@@ -3267,7 +3279,8 @@ function evaluateToneConvention(
  */
 function evaluateMajorityFact(
   rule: ValidationRule,
-  elements: readonly GfxPrimitiveElementModel[]
+  elements: readonly GfxPrimitiveElementModel[],
+  incremental?: IncrementalContext
 ): Violation[] {
   const subjectRole = rule.appliesTo;
   const majority = rule.majority;
@@ -3301,10 +3314,15 @@ function evaluateMajorityFact(
     if (fact === majority.value) counts.matching += 1;
   }
 
+  // Subjects filter below; the TALLY above stays whole — a majority counted
+  // over a dirty subset is not a majority. The subject here is the FRAME, which
+  // is what the finding is raised on.
+  const judged = incremental?.subjects;
   const violations: Violation[] = [];
   // Sorted, so a board with two qualifying maps always reports them the same
   // way whichever order the surface happened to be walked in.
   for (const id of [...tally.keys()].sort()) {
+    if (judged !== undefined && !judged.has(id)) continue;
     const counts = tally.get(id)!;
     // THE GATE: nothing here carries the fact, so there is no majority to be in.
     if (counts.known === 0) continue;
@@ -3390,7 +3408,8 @@ function boundEnds(el: unknown): [string, string] | null {
  */
 function evaluateRelativeOrder(
   rule: ValidationRule,
-  elements: readonly GfxPrimitiveElementModel[]
+  elements: readonly GfxPrimitiveElementModel[],
+  incremental?: IncrementalContext
 ): Violation[] {
   const order = rule.relativeOrder;
   const def = rule.background;
@@ -3427,8 +3446,12 @@ function evaluateRelativeOrder(
     return centre[0] * axis.forward[0] + centre[1] * axis.forward[1];
   };
 
+  // Subjects filter here; the `byId` index above stays whole, or an end outside
+  // the subset would look like a deleted element.
+  const judged = incremental?.subjects;
   const violations: Violation[] = [];
   for (const edge of edges) {
+    if (judged !== undefined && !judged.has(edge.id)) continue;
     const ends = boundEnds(edge);
     if (ends === null) continue;
     const [sourceId, targetId] = ends;
@@ -3586,14 +3609,16 @@ function namedElements(ids: readonly string[]): string[] {
  * pair-wise sweep over the nodes: the rule is about relations somebody drew,
  * never about every couple that could have had one.
  *
- * An {@link IncrementalContext} is deliberately NOT honoured, exactly like
- * `relative-order-along-axis`: a dirty set names the elements that moved, and
- * this family's verdict does not depend on where anything is. Re-reading every
- * edge is the cost of the linear pass it already was.
+ * Since PF5.4 an {@link IncrementalContext} filters the EDGES it judges, and
+ * the two-hop `'relations'` closure is what makes the pair walk below still
+ * right: a dirty edge puts its ends in the closure, and every SIBLING edge on
+ * those ends comes in with them — which is exactly what the duplicate and
+ * exclusivity verdicts read.
  */
 function evaluateRelationEndpoints(
   rule: ValidationRule,
-  elements: readonly GfxPrimitiveElementModel[]
+  elements: readonly GfxPrimitiveElementModel[],
+  incremental?: IncrementalContext
 ): Violation[] {
   const endpoints = rule.endpoints;
   if (endpoints === undefined) return [];
@@ -3682,6 +3707,10 @@ function evaluateRelationEndpoints(
   const needsPairs =
     endpoints.forbidDuplicate === true || exclusivePairs.length > 0;
 
+  // Subjects filter here and on the neutral pass below; the `byId` index and
+  // the two role lists above stay whole.
+  const judged = incremental?.subjects;
+
   const violations: Violation[] = [];
   // Every relation drawn between one UNORDERED pair of elements, which is the
   // grain both the duplicate and the exclusivity questions are asked at. Filled
@@ -3689,6 +3718,7 @@ function evaluateRelationEndpoints(
   const between = new Map<string, DrawnRelation[]>();
 
   for (const { el: edge, role } of edges) {
+    if (judged !== undefined && !judged.has(edge.id)) continue;
     const ends = endpointIds(edge);
     if (ends === null) continue;
     const [sourceId, targetId] = ends;
@@ -3780,6 +3810,7 @@ function evaluateRelationEndpoints(
   // else — a link from an artefact to itself is not evidence that a typed
   // relation was meant.
   for (const el of neutral) {
+    if (judged !== undefined && !judged.has(el.id)) continue;
     const ends = boundEnds(el);
     if (ends === null) continue;
     const [sourceId, targetId] = ends;
@@ -3979,7 +4010,8 @@ function containingBackground(
  */
 function evaluateElementInZone(
   rule: ValidationRule,
-  elements: readonly GfxPrimitiveElementModel[]
+  elements: readonly GfxPrimitiveElementModel[],
+  incremental?: IncrementalContext
 ): Violation[] {
   const subjectRole = rule.appliesTo;
   const inZone = rule.inZone;
@@ -4015,8 +4047,11 @@ function evaluateElementInZone(
   const regionsOf = new Map<string, ZoneRegion[]>();
   const extent = inZone.measure === 'extent';
 
+  // Subjects filter here; the `backgrounds` index above stays whole.
+  const judged = incremental?.subjects;
   const violations: Violation[] = [];
   for (const el of elements) {
+    if (judged !== undefined && !judged.has(el.id)) continue;
     if (el.role === undefined) continue;
     if (!roleIsA(el.role, subjectRole, rule.roles)) continue;
 
@@ -4136,7 +4171,8 @@ function evaluateElementInZone(
  */
 function evaluateViewAdmissibility(
   rule: ValidationRule,
-  elements: readonly GfxPrimitiveElementModel[]
+  elements: readonly GfxPrimitiveElementModel[],
+  incremental?: IncrementalContext
 ): Violation[] {
   const def = rule.admissibility;
   if (def === undefined) return [];
@@ -4163,8 +4199,11 @@ function evaluateViewAdmissibility(
   // is walked.
   if (views.length === 0) return [];
 
+  // Subjects filter here; the `views` index above stays whole.
+  const judged = incremental?.subjects;
   const violations: Violation[] = [];
   for (const el of elements) {
+    if (judged !== undefined && !judged.has(el.id)) continue;
     // Cheapest possible exit for a neutral element: no role, no evaluation.
     const role = el.role;
     if (role === undefined) continue;
@@ -4248,7 +4287,8 @@ function evaluateViewAdmissibility(
  */
 function evaluateEdgeDegree(
   rule: ValidationRule,
-  elements: readonly GfxPrimitiveElementModel[]
+  elements: readonly GfxPrimitiveElementModel[],
+  incremental?: IncrementalContext
 ): Violation[] {
   const subjectRole = rule.appliesTo;
   const degree = rule.degree;
@@ -4329,8 +4369,12 @@ function evaluateEdgeDegree(
   // common case and must not pay for the frames it never names.
   let backgrounds: BackgroundInstance[] | null = null;
 
+  // Subjects filter here; the DEGREE counts above are tallied over every edge
+  // on the surface, or a node's degree would be the degree of its neighbourhood.
+  const judged = incremental?.subjects;
   const violations: Violation[] = [];
   for (const subject of subjects) {
+    if (judged !== undefined && !judged.has(subject.el.id)) continue;
     const words =
       minIn !== undefined && subject.in < minIn
         ? (degree.tooFewIn ?? rule)
@@ -4412,7 +4456,8 @@ function evaluateEdgeDegree(
  */
 function evaluateRoleCount(
   rule: ValidationRule,
-  elements: readonly GfxPrimitiveElementModel[]
+  elements: readonly GfxPrimitiveElementModel[],
+  incremental?: IncrementalContext
 ): Violation[] {
   const count = rule.roleCount;
   if (count === undefined) return [];
@@ -4460,10 +4505,15 @@ function evaluateRoleCount(
     if (arms) armed!.add(frame.id);
   }
 
+  // Subjects filter below; the TALLY above stays whole — a count over a dirty
+  // subset is not a count. The subject here is the FRAME, which is what the
+  // finding is raised on.
+  const judged = incremental?.subjects;
   const violations: Violation[] = [];
   // Sorted, so a board with several offending frames always reports them the
   // same way whichever order the surface happened to be walked in.
   for (const id of [...tally.keys()].sort()) {
+    if (judged !== undefined && !judged.has(id)) continue;
     // A frame the guard has not armed is not judged at all — not walked, not
     // found compliant. That is the difference between "this notation requires
     // one" and "this notation requires one WHEN the other is there".
@@ -4523,7 +4573,8 @@ function evaluateRoleCount(
  */
 function evaluateEdgeLocality(
   rule: ValidationRule,
-  elements: readonly GfxPrimitiveElementModel[]
+  elements: readonly GfxPrimitiveElementModel[],
+  incremental?: IncrementalContext
 ): Violation[] {
   const locality = rule.locality;
   if (locality === undefined) return [];
@@ -4545,8 +4596,11 @@ function evaluateEdgeLocality(
 
   const same = locality.mode === 'same-background';
 
+  // Subjects filter here; the `byId` index and the frame plots above stay whole.
+  const judged = incremental?.subjects;
   const violations: Violation[] = [];
   for (const edge of edges) {
+    if (judged !== undefined && !judged.has(edge.id)) continue;
     const ends = boundEnds(edge);
     if (ends === null) continue;
     const [sourceId, targetId] = ends;
@@ -4834,7 +4888,8 @@ function elementLabel(el: unknown): string {
  */
 function evaluateLabelPresence(
   rule: ValidationRule,
-  elements: readonly GfxPrimitiveElementModel[]
+  elements: readonly GfxPrimitiveElementModel[],
+  incremental?: IncrementalContext
 ): Violation[] {
   const subjectRole = rule.appliesTo;
   const label = rule.label;
@@ -4845,8 +4900,11 @@ function evaluateLabelPresence(
   // for the frames it never has to name.
   let backgrounds: BackgroundInstance[] | null = null;
 
+  // Subjects filter here; nothing above it is an index this family shares.
+  const judged = incremental?.subjects;
   const violations: Violation[] = [];
   for (const el of elements) {
+    if (judged !== undefined && !judged.has(el.id)) continue;
     // Cheapest possible exit for a neutral element: no role, no evaluation.
     if (el.role === undefined) continue;
     if (!roleIsA(el.role, subjectRole, rule.roles)) continue;
@@ -4867,13 +4925,45 @@ function evaluateLabelPresence(
  * where exactly that is known; every other caller — the first evaluation, a
  * gesture that must land immediately, the bench, a test — evaluates in full.
  *
- * Only {@link evaluateNoOverlap} honours it. The element-local families are
- * already constant per element and would gain nothing but a way to be subtly
- * wrong.
+ * Since PF5.4 the TWELVE families that are not `'surface'` honour it, and not
+ * one of them computes what it means: {@link runRules} derives the SUBJECTS
+ * each rule must judge from {@link dirtyClosure} — which reads {@link scopeOf}
+ * and nothing else — and hands them down. A family's whole part in this is one
+ * early `continue` in the loop it raises from; its indexes still span the
+ * surface, or an edge whose far end is outside the subset would look dangling
+ * and a majority would be counted over a handful.
+ *
+ * The other three never see `subjects` and are not written to look for it, on
+ * purpose: {@link evaluateNoOverlap} keeps the pair logic it has had since
+ * PF5.13, and `attachment` and `reachability` are declared `'surface'` in
+ * {@link RULE_SCOPES}, so they evaluate in full. Giving them a filter that
+ * cannot fire would read as an invitation to narrow their table entry, which is
+ * exactly the change that would make them wrong.
  */
 export interface IncrementalContext {
   dirty: ReadonlySet<string>;
   previous: readonly Violation[];
+  /**
+   * The frames each element was attributed to at the PREVIOUS pass — the one
+   * fact about a move that the current surface cannot reconstruct, since an
+   * element that has left a frame no longer says where it was.
+   *
+   * The manager's memory ({@link frameMembership}). Absent — every caller but
+   * the debounced path — the closure reads the current attribution alone, which
+   * is safe for everything except a `'frame'`-scope verdict about the frame an
+   * element has just LEFT, and that is precisely why the manager keeps it.
+   */
+  wasIn?: ReadonlyMap<string, readonly string[]>;
+  /**
+   * Filled by {@link runRules}, per rule: the subjects this evaluation must
+   * JUDGE. Absent means judge everything — a full pass for this rule, which is
+   * what a `'surface'` scope, a dirty frame and the crossover guard all resolve
+   * to.
+   *
+   * Never set by a caller: it is an answer about ONE rule, and a context is
+   * handed in for a whole pass.
+   */
+  subjects?: ReadonlySet<string>;
 }
 
 const RULE_FAMILIES: Record<
@@ -4975,6 +5065,481 @@ export function scopeOf(rule: ValidationRule): RuleScope {
   // A `scope` that is not one of the four gives -1 on both sides only if the
   // family is unknown too; either way the fallback is the widest answer.
   return SCOPE_ORDER[widest] ?? 'surface';
+}
+
+/**
+ * The key a frame-role GROUP is memoised under: the framework and the role,
+ * never the rule.
+ *
+ * Two rules of one framework framing against the same role look at the same
+ * instances, and resolving them twice would pay a surface walk per rule for one
+ * answer. `null` for a rule that frames against nothing.
+ */
+function frameKey(rule: ValidationRule): string | null {
+  if (rule.backgroundRole === undefined) return null;
+  // Joined by NUL, which no framework id and no role id contains.
+  return `${rule.framework}\u0000${rule.backgroundRole}`;
+}
+
+/**
+ * Every (element, frame) attribution, deliberately OVER-approximated: the frame
+ * {@link attributeBackground} names, plus every frame whose box holds the
+ * element's centre.
+ *
+ * The union of what the frame families actually ask — `attributeBackground`'s
+ * contains-or-nearest, `containingBackground`'s whole containment, and
+ * `plotContaining`'s centre-in-plot — read WITHOUT the plot arithmetic, so one
+ * answer serves every rule framing against the role whatever geometry each one
+ * declares. A plot is a sub-region of the box, so centre-in-plot implies
+ * centre-in-box; whole containment implies it too. Over-approximating widens a
+ * closure and can never lose a verdict.
+ *
+ * ponytail: the two halves are individually redundant on the SEVEN PACKS
+ * SHIPPED TODAY — the fuzz still passes with either one deleted, and fails the
+ * moment both go. They stop being redundant as soon as a framework declares a
+ * background margin big enough to push a contained element's centre out of its
+ * own plot while another frame's plot holds it, which is a geometry no pack has
+ * drawn yet and none is stopped from drawing. Two `Bound` tests per element,
+ * over frames counted in units; not worth trading for an argument that has to
+ * be re-derived every time a pack adds a margin.
+ */
+function attributeAll(
+  elements: readonly GfxPrimitiveElementModel[],
+  frames: readonly BackgroundInstance[],
+  add: (elementId: string, frameId: string) => void
+): void {
+  if (frames.length === 0) return;
+  for (const el of elements) {
+    const bound = el.elementBound;
+    const attributed = attributeBackground(bound, frames);
+    if (attributed !== null) add(el.id, attributed.id);
+    const centre = centreOf(bound);
+    for (const frame of frames) {
+      if (frame.bound.containsPoint(centre)) add(el.id, frame.id);
+    }
+  }
+}
+
+/**
+ * The frames each element is attributed to, for the FRAME-scope rules
+ * registered — the manager's memory of a pass, handed to the next one as
+ * {@link IncrementalContext.wasIn}.
+ *
+ * The one fact the current surface cannot reconstruct: an element that has left
+ * a frame no longer says where it was, and the frame it left has one fewer
+ * subject to count. Without it a `'frame'`-scope rule has no honest incremental
+ * answer at all, which is exactly what {@link dirtyClosure} falls back to.
+ *
+ * ## Two depths, and why the shallow one is not optional
+ *
+ * The full attribution — which frame every element is on — is built for the
+ * `'frame'` scope only, since no other scope reads it. A framework like Wardley,
+ * whose rules are element, relations and surface, never pays for that walk.
+ *
+ * But every PIVOTAL element records itself under its own id — the same
+ * statement about a frame ("it is on itself"), asked at no cost beyond a role
+ * read and a prop read. Two kinds are pivotal:
+ *
+ * - a **frame** of any rule that frames against a background;
+ * - an element that **declares a level of requirement** (`validationProfile`),
+ *   because the levels in force decide the severity AND the moment of every
+ *   rule on the board, and they are INHERITED by containment
+ *   ({@link inheritChosenProfiles}) — so one of them is never a fact about one
+ *   subject.
+ *
+ * Those entries are what let {@link runRules} and {@link dirtyClosure} tell a
+ * dirty element that WAS one of the two from one that was never anything of the
+ * sort. That is the case a deletion makes unknowable, and that a role or a level
+ * changed AWAY makes invisible even while the element is still there. Without
+ * it, an incremental pass keeps verdicts measured against a map the user has
+ * just stopped calling a map, or judged at a level nobody holds any more.
+ *
+ * Real-time rules only, and the DECLARED moment, exactly like
+ * {@link backgroundElementIds} and for the same reason: an on-demand rule never
+ * takes part in an incremental pass, so it has nothing to invalidate.
+ */
+export function frameMembership(
+  rules: readonly ValidationRule[],
+  elements: readonly GfxPrimitiveElementModel[]
+): ReadonlyMap<string, readonly string[]> {
+  const membership = new Map<string, string[]>();
+  const add = (id: string, frameId: string) => {
+    const held = membership.get(id);
+    if (held === undefined) membership.set(id, [frameId]);
+    else if (!held.includes(frameId)) held.push(frameId);
+  };
+
+  const done = new Set<string>();
+  let levelled = false;
+  for (const rule of rules) {
+    if (!isRealtime(rule)) continue;
+    levelled = true;
+    const key = frameKey(rule);
+    if (key === null || done.has(key)) continue;
+    done.add(key);
+    const frames = backgroundsOf(rule, elements);
+    // The shallow half: every frame, on itself.
+    for (const frame of frames) add(frame.id, frame.id);
+    if (scopeOf(rule) !== 'frame') continue;
+    attributeAll(elements, frames, add);
+  }
+
+  // The level-bearers, on themselves. One prop read per element, and only when
+  // there is a rule for a level to govern.
+  if (levelled) {
+    for (const el of elements) {
+      if (typeof el.validationProfile === 'string') add(el.id, el.id);
+    }
+  }
+  return membership;
+}
+
+/**
+ * Whether the LEVELS IN FORCE may have moved since `previous` was computed — in
+ * which case nothing from it may be carried, because it is an answer to a
+ * different question.
+ *
+ * A level is not a fact about one subject: it decides each rule's severity and
+ * its MOMENT ({@link momentOf}), so a change to one can put a whole family on or
+ * off the drawing path at once, and it is inherited by containment, so moving
+ * the frame that carries one re-levels everything it holds. There is no closure
+ * of that; there is only "did anything about it change".
+ *
+ * Answered against the memory {@link frameMembership} keeps: a dirty element
+ * that declares a level NOW, or was pivotal at the last pass. A caller that
+ * keeps no memory gets the first half alone — which is the PF5.13 contract this
+ * slice inherited, unchanged, and never worse than it.
+ */
+function levelsMayHaveMoved(
+  elements: readonly GfxPrimitiveElementModel[],
+  incremental: IncrementalContext
+): boolean {
+  const { dirty, wasIn } = incremental;
+  for (const el of elements) {
+    if (!dirty.has(el.id)) continue;
+    if (typeof el.validationProfile === 'string') return true;
+  }
+  if (wasIn === undefined) return false;
+  for (const id of dirty) {
+    if (wasIn.get(id)?.includes(id) === true) return true;
+  }
+  return false;
+}
+
+/**
+ * What ONE pass has to re-judge, and what it may keep — derived from the dirty
+ * set and {@link scopeOf}, and from nothing else.
+ */
+export interface DirtyClosure {
+  /**
+   * The subjects `rule` must judge, or `null` for "judge everything" — a full
+   * pass for this rule, which is what a `'surface'` scope, a touched frame and
+   * a missing memory all resolve to.
+   */
+  subjectsOf(rule: ValidationRule): ReadonlySet<string> | null;
+  /**
+   * The previous findings of `rule` this pass keeps unchanged, given the
+   * subjects it judged. Call it ONLY with the set {@link subjectsOf} answered.
+   */
+  carried(rule: ValidationRule, subjects: ReadonlySet<string>): Violation[];
+}
+
+/**
+ * The closure of a change (PF5.4): for each rule, which subjects a pass must
+ * re-judge for its answer to be the one a FULL pass would give.
+ *
+ * Framework-agnostic by construction — it reads roles only through
+ * {@link backgroundsOf}, ends only through {@link rawEndpointIds}, and geometry
+ * only through `elementBound`. It never asks what anything IS.
+ *
+ * ## The three closures
+ *
+ * - `'element'` — the dirty set itself. A verdict about an element's own props
+ *   changes when those props change and at no other time.
+ * - `'relations'` — the dirty set, plus the ends of every dirty edge, plus every
+ *   edge touching one of those ends. Two hops, on purpose: a dirty edge reaches
+ *   its ends, and its ends reach their SIBLING edges — which is precisely what
+ *   the duplicate and exclusivity verdicts of `relation-endpoints` read.
+ * - `'frame'` — the dirty set, plus every frame a dirty element is or WAS
+ *   attributed to, plus everything attributed to one of those frames. The frame
+ *   ids are in the set themselves, since `role-count` and `majority-fact` raise
+ *   their findings ON the frame.
+ *
+ * ## Where it refuses to answer
+ *
+ * Each of these returns `null`, i.e. a full pass for that rule, and each is a
+ * case where a narrower answer would be a GUESS:
+ *
+ * - **a frame of the rule is dirty** — moving, resizing or deleting one
+ *   re-attributes every finding measured against it. The deletion is the case a
+ *   "is a current background dirty" test cannot see on its own, so the previous
+ *   findings are asked too, exactly as {@link evaluateNoOverlap} asks them.
+ * - **a dirty element is GONE, for a `'relations'` rule** — a removal reports an
+ *   id and nothing else, so the ends of a deleted edge cannot be recovered, and
+ *   the nodes it used to bind would keep a degree nobody counts any more.
+ * - **no `wasIn`, for a `'frame'` rule** — see {@link frameMembership}.
+ *
+ * ## Cost
+ *
+ * Lazy throughout: a board of element-scope rules alone never walks an edge,
+ * and one whose frames nothing touched never builds a membership map. The
+ * relations closure is two passes over the elements, shared by every
+ * relations-scope rule; the frame membership is one pass per frame ROLE, shared
+ * by every rule framing against it.
+ */
+export function dirtyClosure(
+  elements: readonly GfxPrimitiveElementModel[],
+  dirty: ReadonlySet<string>,
+  previous: readonly Violation[],
+  wasIn?: ReadonlyMap<string, readonly string[]>
+): DirtyClosure {
+  const alive = new Set<string>();
+  for (const el of elements) alive.add(el.id);
+  // A dirty id that is no longer on the surface: whatever it was bound to went
+  // with it, and no walk of what is left can find out what that was.
+  let buried = false;
+  for (const id of dirty) {
+    if (!alive.has(id)) {
+      buried = true;
+      break;
+    }
+  }
+
+  const framesByKey = new Map<string, BackgroundInstance[]>();
+  const framesOf = (rule: ValidationRule): BackgroundInstance[] => {
+    const key = frameKey(rule);
+    if (key === null) return [];
+    let frames = framesByKey.get(key);
+    if (frames === undefined) {
+      frames = backgroundsOf(rule, elements);
+      framesByKey.set(key, frames);
+    }
+    return frames;
+  };
+
+  /**
+   * Whether anything dirty was a FRAME at the last pass — of any rule, which is
+   * the safe over-approximation and costs one walk of the dirty set.
+   *
+   * A frame records itself in {@link frameMembership}, so "it was a frame" is
+   * "its own id is among the frames it was attributed to". That is the one fact
+   * about a departed or re-typed frame the current surface cannot answer.
+   */
+  let wasFrame: boolean | undefined;
+  const dirtyWasFrame = (): boolean => {
+    if (wasFrame !== undefined) return wasFrame;
+    wasFrame = false;
+    for (const id of dirty) {
+      if (wasIn?.get(id)?.includes(id) === true) {
+        wasFrame = true;
+        break;
+      }
+    }
+    return wasFrame;
+  };
+
+  const previousByRule = new Map<string, Violation[]>();
+  for (const violation of previous) {
+    const held = previousByRule.get(violation.ruleId);
+    if (held === undefined) previousByRule.set(violation.ruleId, [violation]);
+    else held.push(violation);
+  }
+
+  let relations: ReadonlySet<string> | null | undefined;
+  const relationsClosure = (): ReadonlySet<string> | null => {
+    if (relations !== undefined) return relations;
+    if (buried) return (relations = null);
+
+    // One pass, two indexes: what each edge binds, and which edges name each
+    // element. Self-loops included — a loop IS a sentence about its node, and
+    // it counts on both sides of a degree.
+    const endsOf = new Map<string, [string, string]>();
+    const incident = new Map<string, string[]>();
+    for (const el of elements) {
+      const ends = rawEndpointIds(el);
+      if (ends === null) continue;
+      endsOf.set(el.id, ends);
+      for (const end of ends) {
+        const held = incident.get(end);
+        if (held === undefined) incident.set(end, [el.id]);
+        else if (!held.includes(el.id)) held.push(el.id);
+      }
+    }
+
+    /**
+     * The closure is exactly this: **every edge naming something in the set is
+     * in the set**.
+     *
+     * Not a fixed number of hops, and the difference is the whole correctness
+     * of the carry-over below. A finding of a relations family names its edge
+     * AND the two elements the edge binds, so it is dropped as soon as any one
+     * of the three is being re-judged — and it is only re-raised if the EDGE is
+     * too. A set that held an element without holding the edges that name it
+     * would therefore lose findings that nothing raises again, which is a
+     * verdict quietly disappearing from a live board.
+     *
+     * Seeded with the dirty set and the ends of every dirty edge, because those
+     * are the two ways a change reaches a relation: the edge itself moved, or
+     * one of the things it binds did.
+     *
+     * On any ordinary board this settles in exactly two hops — an artefact is
+     * not the endpoint of anything — and costs what "the dirty set plus the
+     * edges touching it" costs. It walks further only where an element is an
+     * edge AND an endpoint at once, which is the one shape the two-hop version
+     * got wrong.
+     */
+    const closure = new Set<string>();
+    const queue: string[] = [];
+    const visit = (id: string) => {
+      if (closure.has(id)) return;
+      closure.add(id);
+      queue.push(id);
+    };
+    for (const id of dirty) visit(id);
+    for (const id of dirty) {
+      const ends = endsOf.get(id);
+      if (ends === undefined) continue;
+      visit(ends[0]);
+      visit(ends[1]);
+    }
+    // `head` walks the queue rather than shifting it: a shift is O(n) on a real
+    // array, which would turn this linear walk quadratic.
+    for (let head = 0; head < queue.length; head++) {
+      for (const edge of incident.get(queue[head]) ?? []) visit(edge);
+    }
+    return (relations = closure);
+  };
+
+  const membershipByKey = new Map<string, Map<string, string[]>>();
+  const membershipOf = (rule: ValidationRule): Map<string, string[]> => {
+    const key = frameKey(rule)!;
+    let map = membershipByKey.get(key);
+    if (map === undefined) {
+      const built = new Map<string, string[]>();
+      attributeAll(elements, framesOf(rule), (id, frameId) => {
+        const held = built.get(id);
+        if (held === undefined) built.set(id, [frameId]);
+        else if (!held.includes(frameId)) held.push(frameId);
+      });
+      map = built;
+      membershipByKey.set(key, map);
+    }
+    return map;
+  };
+
+  /**
+   * The frames whose CONTENT changed, per rule — the only reason a finding
+   * carried over from the last pass can be invalidated by something that is not
+   * one of its own elements.
+   *
+   * Empty for every scope but `'frame'`, and deliberately so: an `'element'` or
+   * `'relations'` verdict reads its frame for ATTRIBUTION only, and any change
+   * to the frame itself already took the rule through a full pass above.
+   */
+  const affectedByRule = new Map<string, ReadonlySet<string>>();
+
+  const frameClosure = (rule: ValidationRule): ReadonlySet<string> | null => {
+    if (wasIn === undefined) return null;
+    const frames = framesOf(rule);
+    // Nothing to be attributed to: the frame scope collapses to the element one.
+    if (frames.length === 0) return dirty;
+    const mine = new Set(frames.map(frame => frame.id));
+    const membership = membershipOf(rule);
+
+    const affected = new Set<string>();
+    for (const id of dirty) {
+      // Where it is now...
+      for (const frameId of membership.get(id) ?? []) {
+        if (mine.has(frameId)) affected.add(frameId);
+      }
+      // ...and where it was, which is the half the surface cannot answer.
+      for (const frameId of wasIn.get(id) ?? []) {
+        if (mine.has(frameId)) affected.add(frameId);
+      }
+    }
+    affectedByRule.set(rule.id, affected);
+    if (affected.size === 0) return dirty;
+
+    const subjects = new Set(dirty);
+    for (const frameId of affected) subjects.add(frameId);
+    for (const [id, held] of membership) {
+      if (held.some(frameId => affected.has(frameId))) subjects.add(id);
+    }
+    return subjects;
+  };
+
+  return {
+    subjectsOf(rule) {
+      if (rule.backgroundRole !== undefined) {
+        // No memory of what the frames WERE: a dirty element may have stopped
+        // being one — deleted, or simply re-typed — and every attribution it
+        // held would silently keep the verdict it had. See
+        // {@link frameMembership}; the manager always hands this down.
+        if (wasIn === undefined) return null;
+        // A frame that IS dirty re-attributes everything measured against it...
+        if (framesOf(rule).some(frame => dirty.has(frame.id))) return null;
+        // ...and so does one that WAS, which is what the memory is for.
+        if (dirtyWasFrame()) return null;
+        // ...and so does one whose findings are the only trace it left, for a
+        // pass that was handed no memory of the frame but does hold its
+        // findings ({@link evaluateNoOverlap} makes the same test).
+        const mine = previousByRule.get(rule.id);
+        if (
+          mine?.some(
+            violation =>
+              violation.backgroundId !== undefined &&
+              dirty.has(violation.backgroundId)
+          )
+        ) {
+          return null;
+        }
+      }
+
+      switch (scopeOf(rule)) {
+        case 'element':
+          return dirty;
+        case 'relations':
+          return relationsClosure();
+        case 'frame':
+          return frameClosure(rule);
+        default:
+          return null;
+      }
+    },
+
+    carried(rule, subjects) {
+      const mine = previousByRule.get(rule.id);
+      if (mine === undefined) return [];
+      const affected = affectedByRule.get(rule.id);
+      return mine.filter(violation => {
+        // Judged again: the pass that judged it owns the answer, whatever it
+        // turns out to be. Keeping this one too would report the finding twice.
+        if (
+          violation.elementIds.some(id => !alive.has(id) || subjects.has(id))
+        ) {
+          return false;
+        }
+        const frameId = violation.backgroundId;
+        if (frameId === undefined) return true;
+        // The frame is tested against the AFFECTED set and never against
+        // `subjects`: the relations closure reaches a frame the moment a dirty
+        // edge is bound to one, and dropping every finding attributed to that
+        // frame would lose the ones nothing re-raises. Its ATTRIBUTION cannot
+        // have changed anyway — a dirty frame is a full pass, above.
+        //
+        // ponytail: for the FOUR FRAME-SCOPE FAMILIES SHIPPED TODAY this whole
+        // line is redundant, and the fuzz says so — it passes with the test
+        // reduced to `true`. It holds because each of them raises either ON the
+        // frame or on an element attributed to it, and both are already in
+        // `subjects` whenever the frame is affected. A frame-scope family whose
+        // finding named something attributed ELSEWHERE — the shape
+        // `edge-locality` already has, at a scope it does not yet claim — would
+        // carry a stale verdict without it. One set lookup per carried finding
+        // is the price of not having to re-check that argument per family.
+        return alive.has(frameId) && affected?.has(frameId) !== true;
+      });
+    },
+  };
 }
 
 /**
@@ -5124,6 +5689,43 @@ function runRules(
   const index = profiles.length > 0 ? indexProfiles(profiles) : null;
   const chosen = index ? readChosenProfiles(elements) : null;
 
+  /**
+   * What this pass may build on, which is `incremental` unless the LEVELS in
+   * force may have moved under it.
+   *
+   * They are a property of the whole pass and not of any subject: a level
+   * decides each rule's severity and its MOMENT, so one change to one of them
+   * can put a whole family on or off the drawing path, and `previous` is then
+   * an answer to a different question — empty for a family that was on the
+   * other moment, which no carry-over and no dirty-set walk can reconstruct. So
+   * the answer is not "re-judge more", it is "there is nothing here to build
+   * on", and that applies to {@link evaluateNoOverlap} exactly as it does to
+   * the twelve families that filter on subjects.
+   *
+   * A board with no profile registered has no regime to change and pays nothing
+   * for the question.
+   */
+  const context =
+    incremental !== undefined &&
+    index !== null &&
+    levelsMayHaveMoved(elements, incremental)
+      ? undefined
+      : incremental;
+
+  /**
+   * The closure of the change, built ONCE for the whole pass and lazily inside
+   * ({@link dirtyClosure}) — `null` when this pass has nothing to build it from.
+   *
+   * The crossover guard is {@link evaluateNoOverlap}'s, for the same reason and
+   * as one comparison: past half the surface, deriving what NOT to walk costs
+   * more than walking it. `no-overlap` keeps its own guard on its own
+   * participants, so it is not weakened by this one being coarser.
+   */
+  const closure =
+    context === undefined || context.dirty.size * 2 >= elements.length
+      ? null
+      : dirtyClosure(elements, context.dirty, context.previous, context.wasIn);
+
   const violations: Violation[] = [];
   for (const rule of rules) {
     // The other moment's rules are not this pass's business — checked FIRST,
@@ -5135,16 +5737,30 @@ function runRules(
     // before a single element is touched.
     if (index && chosen && isRuleSilent(rule, chosen, index)) continue;
 
-    let raised = RULE_FAMILIES[rule.family](rule, elements, incremental);
+    // What this rule must JUDGE. `null` — a surface scope, a touched frame, no
+    // closure at all — is the full pass every caller had before PF5.4.
+    const subjects = closure?.subjectsOf(rule) ?? null;
+    let raised = RULE_FAMILIES[rule.family](
+      rule,
+      elements,
+      subjects === null ? context : { ...context!, subjects }
+    );
     if (index && chosen && raised.length > 0) {
       raised = applyProfiles(rule, raised, chosen, index);
     }
-    if (raised.length === 0) continue;
-
     // Exceptions are read LAST, and independently of the profile: an
     // arbitration a user made is theirs, and changing the level of requirement
     // never revokes one (PF9.3).
-    applyExceptions(rule, raised, elements);
+    if (raised.length > 0) applyExceptions(rule, raised, elements);
+
+    // What this rule did NOT judge keeps the verdict it already had — profile
+    // and exception included, since `previous` is a finished answer and both
+    // passes were applied to it when it was made. A change to either marks its
+    // element dirty ({@link VERDICT_PROPS}), so nothing carried can be stale.
+    if (subjects !== null) {
+      const carried = closure!.carried(rule, subjects);
+      if (carried.length > 0) violations.push(...carried);
+    }
     violations.push(...raised);
   }
   return violations;
@@ -5798,6 +6414,18 @@ export class ValidationManager extends InteractivityExtension {
    */
   private _backgrounds: ReadonlySet<string> = new Set();
 
+  /**
+   * Where every element WAS, frame by frame, at the last evaluation — the other
+   * half of the memory {@link _backgrounds} is, and for the same kind of reason.
+   *
+   * A `'frame'`-scope verdict is about a frame's whole content, so an element
+   * that has just LEFT one changes the answer there as much as it does where it
+   * landed — and the surface, which only knows where things are now, cannot say
+   * where anything was. See {@link frameMembership}: empty, and free, unless a
+   * frame-scope rule is registered.
+   */
+  private _membership: ReadonlyMap<string, readonly string[]> = new Map();
+
   private _rules: readonly ValidationRule[] | null = null;
 
   /** Registered rules, resolved once. Empty when every framework is flagged off. */
@@ -5902,6 +6530,7 @@ export class ValidationManager extends InteractivityExtension {
     this._dirty.clear();
     this._evaluated = false;
     this._backgrounds = new Set();
+    this._membership = new Map();
     this.timeline.clear();
     // Supersede any check-up still yielding between two rules, and forget the
     // last one: both are session state, and a stale answer outliving the
@@ -5986,11 +6615,12 @@ export class ValidationManager extends InteractivityExtension {
       surface.elementModels,
       this._activeProfiles,
       incremental && this._evaluated && dirty.size > 0 && !frameTouched
-        ? { dirty, previous }
+        ? { dirty, previous, wasIn: this._membership }
         : undefined
     );
     this._evaluated = true;
     this._backgrounds = backgroundElementIds(rules, surface.elementModels);
+    this._membership = frameMembership(rules, surface.elementModels);
     // Stay silent when nothing changed: `violations$` is the seam a host panel
     // subscribes to, and a clean board must not wake it on every debounce tick.
     if (violations.length === 0 && this.violations$.peek().length === 0) return;
