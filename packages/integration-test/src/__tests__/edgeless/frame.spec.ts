@@ -257,6 +257,29 @@ describe('frame', () => {
     expect(service.layer.compare(frame, bg)).toBeGreaterThan(0);
   });
 
+  test('a frame drawn on an EDGY board renders above it', async () => {
+    const surface = service.surface;
+
+    // The recette of 2026-09-08: an EDGY board declared itself a plain
+    // primitive, so the frame guard never recognised it as a background and
+    // the frame went under the board's white paint. Same gesture, same map,
+    // same expectation as the Wardley case above — the model base class is
+    // what makes them one behaviour.
+    const boardId = surface.addElement({
+      type: 'edgyBoard',
+      xywh: '[0,0,1600,1000]',
+    });
+    await wait();
+
+    const frame = service.frame.createFrameOnBound(
+      new Bound(700, 350, 400, 300)
+    );
+    await wait();
+
+    const board = surface.getElementById(boardId)!;
+    expect(service.layer.compare(frame, board)).toBeGreaterThan(0);
+  });
+
   test('a frame drawn on a background still renders behind its own content', async () => {
     const surface = service.surface;
 
