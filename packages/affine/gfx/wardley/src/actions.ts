@@ -9,13 +9,10 @@ import { ConnectorTool } from '@labre/affine-gfx-connector';
 import { createGroupCommand } from '@labre/affine-gfx-group';
 import {
   ConnectorMode,
-  FontFamily,
   FontWeight,
   FrameworkBackgroundElementModel,
   PointStyle,
-  ShapeStyle,
   StrokeStyle,
-  TextFitMode,
   WardleyBackgroundElementModel,
   type WardleyBgVariant,
 } from '@labre/affine-model';
@@ -38,13 +35,10 @@ import {
 import { WARDLEY_OWM_EXPORT, WARDLEY_OWM_IMPORT } from './interchange';
 import {
   HANDLE_SIZE,
-  INERTIA_COLOR,
   INERTIA_SIZE,
-  LABEL_FONT_SIZE,
   LABEL_GAP,
   LINK_GREY,
   LINK_STROKE_WIDTH,
-  NODE_STROKE,
   PORTER_DEFAULT_LETTER,
   WARDLEY_RED,
 } from './node/consts';
@@ -56,6 +50,10 @@ import {
   wardleyCanonicalBox,
   wardleyHandleBox,
   wardleyHandleProps,
+  wardleyInertiaProps,
+  WARDLEY_LABEL_H,
+  WARDLEY_LABEL_W,
+  wardleyLabelProps,
   wardleyMarketDotBoxes,
   wardleyMarketDotProps,
   wardleyMarketLinkPairs,
@@ -96,8 +94,8 @@ import { WARDLEY_ROLE } from './roles';
  * The fix is to make the variant part of the declaration — one axis/end-label
  * set per variant, each naming its own `labelKey` — rather than a bag of prop
  * overrides applied at creation. Out of scope here (it changes what a variant
- * IS); duplicated verbatim in `templates/index.ts`, and both copies go away
- * together.
+ * IS). This is now the ONLY copy: the four background templates are derived
+ * from these four commands, so the table goes away in one place.
  */
 const BACKGROUND_VARIANT_DEFAULTS: Record<
   WardleyBgVariant,
@@ -125,16 +123,10 @@ const BACKGROUND_VARIANT_DEFAULTS: Record<
 
 type Surface = NonNullable<GfxController['surface']>;
 
-/** Height of the native free-text labels (Inter, size 18). */
-const LABEL_H = LABEL_FONT_SIZE + 8;
-/**
- * Width of a label box, whatever it reads.
- *
- * A number rather than a measurement, which is why a RIGHT-aligned label has to
- * subtract it: the box does not shrink to the words, so the only way to make
- * the words end on a given edge is to start the box a full width before it.
- */
-const LABEL_W = 120;
+// The label box, now owned by `presets.ts` — the local names stay so the four
+// placements below keep reading as they did.
+const LABEL_H = WARDLEY_LABEL_H;
+const LABEL_W = WARDLEY_LABEL_W;
 
 /**
  * The single-circle node flavours: one connectable ellipse + a label to its
@@ -206,21 +198,9 @@ function addLabel(
   textAlign: 'left' | 'center' | 'right' = 'left',
   fontWeight: FontWeight = FontWeight.Regular
 ) {
-  return surface.addElement({
-    type: 'text',
-    text,
-    fontWeight,
-    // Semantic identity (PF1, revised in PF13.4): a Wardley label is a free
-    // text element like any other, so its ROLE is the only thing that tells W3
-    // it must not land on top of a node. A free text the user typed elsewhere
-    // stays neutral and is never evaluated.
-    role: WARDLEY_ROLE.label,
-    fontFamily: FontFamily.Inter,
-    fontSize: LABEL_FONT_SIZE,
-    color: NODE_STROKE,
-    textAlign,
-    xywh: new Bound(x, y, LABEL_W, LABEL_H).serialize(),
-  });
+  return surface.addElement(
+    wardleyLabelProps(text, x, y, textAlign, fontWeight)
+  );
 }
 
 /** Create a wardley map background of the given variant, viewport-centered. */
@@ -300,23 +280,11 @@ export function createWardleyInertia(gfx: GfxController) {
 
   const { w, h } = INERTIA_SIZE;
   const { centerX, centerY } = gfx.viewport;
-  const id = gfx.surface.addElement({
-    type: 'shape',
-    shapeType: 'rect',
-    // The inertia bar has no element type of its own — it IS a plain filled
-    // rect — so the role is the whole of its semantics (PF13.5).
-    role: WARDLEY_ROLE.inertia,
-    filled: true,
-    fillColor: INERTIA_COLOR,
-    strokeColor: INERTIA_COLOR,
-    strokeWidth: 0,
-    shapeStyle: ShapeStyle.General,
-    roughness: 0,
-    radius: 0,
-    // the inertia bar has a canonical size: text overflows, never deforms
-    textFitMode: TextFitMode.Overflow,
-    xywh: new Bound(centerX - w / 2, centerY - h / 2, w, h).serialize(),
-  });
+  const id = gfx.surface.addElement(
+    wardleyInertiaProps({
+      xywh: new Bound(centerX - w / 2, centerY - h / 2, w, h).serialize(),
+    })
+  );
   finish(gfx, id);
 }
 
@@ -510,19 +478,32 @@ export function createWardleyArea(gfx: GfxController, shape: WardleyAreaShape) {
   const xywh = wardleyAreaBox(shape, cx, cy);
   const id = surface.addElement(wardleyAreaProps(shape, { xywh }));
 
-  const model = surface.getElementById(id);
-  if (model) {
-    const over = wardleyAreaIndexOver(
-      stackedElementsOf(surface, id),
-      Bound.deserialize(xywh)
-    );
-    // `null` is "nothing under it": the back of the surface, minted by the
-    // layer itself so an empty board gets the layer's own initial index rather
-    // than a key invented here.
-    model.index = over ?? gfx.layer.getReorderedIndex(model, 'back');
-  }
+  lowerWardleyArea(gfx, id);
 
   finish(gfx, id);
+}
+
+/**
+ * Send one already-placed area to the depth it belongs at — see
+ * {@link createWardleyArea} for why a zone is lowered at all.
+ *
+ * Extracted so the TEMPLATE can call it: a snapshot cannot express this, because
+ * the depth is relative to whatever map is already on the board rather than to
+ * anything inside the template.
+ */
+export function lowerWardleyArea(gfx: GfxController, id: string): void {
+  const surface = gfx.surface;
+  const model = surface?.getElementById(id);
+  if (!surface || !model) return;
+
+  const over = wardleyAreaIndexOver(
+    stackedElementsOf(surface, id),
+    Bound.deserialize(model.xywh)
+  );
+  // `null` is "nothing under it": the back of the surface, minted by the
+  // layer itself so an empty board gets the layer's own initial index rather
+  // than a key invented here.
+  model.index = over ?? gfx.layer.getReorderedIndex(model, 'back');
 }
 
 /**

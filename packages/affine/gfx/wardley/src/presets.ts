@@ -2,6 +2,7 @@ import {
   ConnectorMode,
   DEFAULT_POLYGON_VERTICES,
   FontFamily,
+  FontWeight,
   PointStyle,
   ShapeStyle,
   StrokeStyle,
@@ -26,6 +27,7 @@ import {
   ECOSYSTEM_LABEL,
   ECOSYSTEM_SIZE,
   HANDLE_SIZE,
+  INERTIA_COLOR,
   LABEL_DEFAULT,
   LABEL_FONT_SIZE,
   MARKET_DOT_RING,
@@ -293,6 +295,84 @@ export function wardleyNodeProps(
     ...(outline
       ? { vertices: outline.map(([x, y]) => [x, y]), isClosed: true }
       : {}),
+    xywh: box.xywh,
+  };
+}
+
+/** Height of the native free-text labels (Inter, size 18). */
+export const WARDLEY_LABEL_H = LABEL_FONT_SIZE + 8;
+
+/**
+ * Width of a label box, whatever it reads.
+ *
+ * A number rather than a measurement, which is why a RIGHT-aligned label has to
+ * subtract it: the box does not shrink to the words, so the only way to make
+ * the words end on a given edge is to start the box a full width before it.
+ */
+export const WARDLEY_LABEL_W = 120;
+
+/**
+ * The NAME beside an artefact, as props — a native free-text element.
+ *
+ * Here rather than at the creation site for the reason the rest of this pack
+ * gives: the templates re-stated it by hand and drifted (a 140-wide box against
+ * this 120), so what a Wardley label IS has to have exactly one description.
+ *
+ * `text` is a plain STRING, as `Surface.addElement` takes it; a snapshot writes
+ * the same field as a serialized `Y.Text`, which is the one key an authoring
+ * kit overrides on the way into a template.
+ */
+export function wardleyLabelProps(
+  text: string,
+  x: number,
+  y: number,
+  textAlign: 'left' | 'center' | 'right' = 'left',
+  fontWeight: FontWeight = FontWeight.Regular
+): Record<string, unknown> & { type: string } {
+  return {
+    type: 'text',
+    text,
+    fontWeight,
+    // Semantic identity (PF1, revised in PF13.4): a Wardley label is a free
+    // text element like any other, so its ROLE is the only thing that tells W3
+    // it must not land on top of a node. A free text the user typed elsewhere
+    // stays neutral and is never evaluated.
+    role: WARDLEY_ROLE.label,
+    fontFamily: FontFamily.Inter,
+    fontSize: LABEL_FONT_SIZE,
+    color: NODE_STROKE,
+    textAlign,
+    xywh: new Bound(x, y, WARDLEY_LABEL_W, WARDLEY_LABEL_H).serialize(),
+  };
+}
+
+/**
+ * An INERTIA bar, as props — a plain filled rect, and the whole of its
+ * semantics is the role.
+ *
+ * A preset for the same reason every other one here exists: the creation site
+ * and the shipped maps both draw one, and the hand-written copy in the
+ * templates had already lost `textFitMode` — the one line that keeps the bar's
+ * canonical size when somebody types into it.
+ */
+export function wardleyInertiaProps(box: {
+  xywh: string;
+}): Record<string, unknown> & { type: string } {
+  return {
+    type: 'shape',
+    shapeType: 'rect',
+    // The inertia bar has no element type of its own — it IS a plain filled
+    // rect — so the role is the whole of its semantics (PF13.5).
+    role: WARDLEY_ROLE.inertia,
+    filled: true,
+    fillColor: INERTIA_COLOR,
+    strokeColor: INERTIA_COLOR,
+    strokeWidth: 0,
+    shapeStyle: ShapeStyle.General,
+    roughness: 0,
+    radius: 0,
+    // the inertia bar has a canonical size: text overflows, never deforms
+    textFitMode: TextFitMode.Overflow,
     xywh: box.xywh,
   };
 }

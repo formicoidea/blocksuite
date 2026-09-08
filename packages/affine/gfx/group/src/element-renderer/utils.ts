@@ -16,7 +16,9 @@ import {
 } from './consts.js';
 
 export function titleRenderParams(group: GroupElementModel, zoom: number) {
-  let text = group.title.toString().trim();
+  // A group loaded without a title (older documents, hand-written templates)
+  // must not take the whole canvas down with it.
+  let text = (group.title?.toString() ?? '').trim();
   const font = getGroupTitleFont(zoom);
   const lineWidth = getLineWidth(text, font);
   const lineHeight = getLineHeight(

@@ -1,3 +1,5 @@
+import type { BlockStdScope } from '@labre/std';
+
 export type Template = {
   /**
    * name of the sticker
@@ -24,6 +26,20 @@ export type Template = {
    * `sticker`: sticker template, only contains one image block under surface block
    */
   type: 'template' | 'sticker';
+
+  /**
+   * Id of the command this template was derived from, when it was derived
+   * rather than hand-written (see `snapshotFromAction`). Lets a coverage test
+   * assert that every framework artefact command has a template.
+   */
+  commandId?: string;
+
+  /**
+   * Run once the template's elements are on the surface, with the FRESH
+   * element ids in snapshot order — for a template whose final shape depends
+   * on what is already on the board.
+   */
+  afterInsert?: (std: BlockStdScope, insertedIds: string[]) => void;
 };
 
 export type TemplateCategory = {
