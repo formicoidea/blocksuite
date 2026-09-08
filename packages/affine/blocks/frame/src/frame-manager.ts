@@ -1,5 +1,8 @@
-import type { SurfaceBlockModel } from '@labre/affine-block-surface';
-import { Overlay } from '@labre/affine-block-surface';
+import type {
+  StackedElement,
+  SurfaceBlockModel,
+} from '@labre/affine-block-surface';
+import { indexOverBackgrounds, Overlay } from '@labre/affine-block-surface';
 import type { FrameBlockModel } from '@labre/affine-model';
 import { FrameworkBackgroundElementModel } from '@labre/affine-model';
 import { EditPropsStore } from '@labre/affine-shared/services';
@@ -153,6 +156,7 @@ export class EdgelessFrameManager extends GfxExtension {
   constructor(gfx: GfxController) {
     super(gfx);
     this._watchElementAdded();
+    this._watchFrameMoved();
   }
 
   static framePresentationComparator<
@@ -215,7 +219,7 @@ export class EdgelessFrameManager extends GfxExtension {
       .applyLastProps('affine:frame', {
         title: new Text(new Y.Text(`Frame ${this.frames.length + 1}`)),
         xywh: bound.serialize(),
-        index: this.gfx.layer.generateIndex(true),
+        index: this.frameIndexAt(bound),
         presentationIndex: this.generatePresentationIndex(),
       });
 
@@ -230,6 +234,98 @@ export class EdgelessFrameManager extends GfxExtension {
     }
 
     return frameModel;
+  }
+
+  /**
+   * The index a frame gets when it is placed at `bound`.
+   *
+   * A frame's index is deliberately at the BACK of the stack, so it renders
+   * behind everything it owns. On a bare canvas that is right. On a framework
+   * board it is not: a Wardley map — a C4 board, a BPMN pool, any
+   * `FrameworkBackgroundElementModel` — is an OPAQUE canvas element, so a
+   * frame sent behind the whole surface goes behind the paint and only the
+   * part overhanging the board stays visible. The back of the SURFACE and the
+   * back of the BOARD are two different depths.
+   *
+   * So the frame lands just above the topmost background it covers, which is
+   * still behind every artefact drawn on that board — the depth a Wardley zone
+   * already needed, for the same reason, in #213. See
+   * {@link indexOverBackgrounds}.
+   */
+  frameIndexAt(bound: Bound) {
+    return (
+      indexOverBackgrounds(this._stackedElements(), bound) ??
+      this.gfx.layer.generateIndex(true)
+    );
+  }
+
+  /**
+   * The top-level elements of the canvas — blocks as well as canvas elements,
+   * since both are interleaved by index when the surface paints — minus the
+   * one being placed.
+   */
+  private _stackedElements(exclude?: GfxModel): StackedElement[] {
+    return this.gfx.layer.layers.reduce<StackedElement[]>(
+      (all, layer) =>
+        all.concat(
+          layer.elements
+            .filter(element => element.group === null && element !== exclude)
+            .map(element => ({
+              index: element.index,
+              xywh: element.xywh,
+              isBackground: element instanceof FrameworkBackgroundElementModel,
+            }))
+        ),
+      []
+    );
+  }
+
+  /**
+   * A frame DROPPED onto a framework background is raised above it, exactly as
+   * a frame drawn there is ({@link frameIndexAt}) — same gesture, arriving a
+   * moment later.
+   *
+   * Only ever upwards, and only while the frame is actually BELOW a background
+   * it overlaps. So a frame already above one is left alone (a drag writes an
+   * index at most once, and only on the move that buries it), and undo is safe
+   * for the same reason: the restored position is the one the frame came from,
+   * where nothing overlapping was above it. A frame the author sent to the
+   * back on purpose is only raised again if they move it — on a board, moving
+   * a frame means wanting to see it.
+   */
+  private _watchFrameMoved() {
+    this._disposable.add(
+      this.gfx.doc.slots.blockUpdated.subscribe(payload => {
+        if (
+          payload.type !== 'update' ||
+          !payload.isLocal ||
+          payload.flavour !== 'affine:frame' ||
+          payload.props.key !== 'xywh'
+        ) {
+          return;
+        }
+
+        const frame = this.gfx.getElementById(payload.id);
+        // A nested frame keeps its parent's ordering: `compare` reads the
+        // ancestor's index, so raising the child would change nothing.
+        if (!frame || !isFrameBlock(frame) || frame.group !== null) return;
+
+        const siblings = this._stackedElements(frame);
+        const box = frame.elementBound;
+        const buried = siblings.some(
+          element =>
+            element.isBackground &&
+            element.index > frame.index &&
+            Bound.deserialize(element.xywh).isOverlapWithBound(box)
+        );
+        if (!buried) return;
+
+        const over = indexOverBackgrounds(siblings, box);
+        if (over !== null) {
+          this.gfx.updateElement(frame, { index: over });
+        }
+      })
+    );
   }
 
   private _watchElementAdded() {

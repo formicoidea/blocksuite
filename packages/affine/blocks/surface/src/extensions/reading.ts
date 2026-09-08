@@ -32,7 +32,10 @@ import {
   backgroundPlot,
   type FrameworkBackgroundDef,
 } from '../framework-background/def.js';
-import { backgroundTransitionBands } from '../framework-background/facts.js';
+import {
+  backgroundTransitionBands,
+  containingFrame,
+} from '../framework-background/facts.js';
 
 /**
  * **The reversed reading** (MF3): what the tool can say about a component the
@@ -437,7 +440,7 @@ const centreOf = (bound: Bound): [number, number] => [
 ];
 
 /**
- * The frame the subject sits ON — containment of its CENTRE, and nothing else.
+ * The frame the subject sits ON — the one that WHOLLY CONTAINS it (PF2.4).
  *
  * Deliberately not the "nearest map" attribution the validation engine uses: a
  * finding has to be filed against some map even when the subject is off in the
@@ -445,18 +448,14 @@ const centreOf = (bound: Bound): [number, number] => [
  * invented fact. A component beside the map has no phase, and the panel says
  * nothing rather than something plausible.
  *
- * The centre, not the whole bound: a node overhanging the edge of the map is
- * still on it to every reader.
+ * The whole bound and not the centre: a node overhanging the edge of the map is
+ * not on it yet, which is what the engine already says about it.
  *
  * ## Two frames under one component
  *
- * The first match in DOCUMENT order wins — not the smallest, not the topmost.
- * Deterministic, and deliberately not clever: z-order is a paint concern and
- * "the smallest frame containing it" is a rule nobody declared. Two overlapping
- * maps of different sizes are a board that has not decided what it is, and a
- * reading that quietly picked one of them by area would be harder to argue with
- * than one that picked the first. The day a framework needs nesting, this is the
- * one function to change.
+ * Ties go to the SMALLER id, which is the tie-break `containingFrame` and the
+ * engine share — one function for one question, and an answer that cannot
+ * depend on the order a `Y.Map` was rebuilt in.
  */
 function frameOf(
   element: GfxPrimitiveElementModel,
@@ -466,22 +465,16 @@ function frameOf(
   const frame = profile.frame;
   if (!frame) return null;
 
-  const [cx, cy] = centreOf(element.elementBound);
-  for (const candidate of elements) {
-    if (candidate.id === element.id) continue;
-    if (candidate.role === undefined) continue;
-    if (!roleIsA(candidate.role, frame.backgroundRole, profile.roles)) continue;
-    const bound = candidate.elementBound;
-    if (
-      cx >= bound.x &&
-      cx <= bound.x + bound.w &&
-      cy >= bound.y &&
-      cy <= bound.y + bound.h
-    ) {
-      return candidate;
-    }
-  }
-  return null;
+  return containingFrame(
+    element.elementBound,
+    elements.filter(
+      candidate =>
+        candidate.id !== element.id &&
+        candidate.role !== undefined &&
+        roleIsA(candidate.role, frame.backgroundRole, profile.roles)
+    ),
+    candidate => candidate.elementBound
+  );
 }
 
 /**

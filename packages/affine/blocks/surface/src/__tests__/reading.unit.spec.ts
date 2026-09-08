@@ -589,6 +589,34 @@ describe('the evolution phase', () => {
       )!.phase
     ).toBeUndefined();
   });
+
+  it('is absent for an element STRADDLING the frame edge (PF2.4)', () => {
+    // The map ends at x = 1000 and this box runs 990 → 1010: its centre is on
+    // the map, its box is not. Membership is whole containment, so the panel
+    // says nothing — the same answer the validation engine and the audit give.
+    expect(
+      read(
+        element({
+          id: 'a',
+          role: 'test:component',
+          bound: [990, 100, 20, 20],
+        }),
+        [map()]
+      )!.phase
+    ).toBeUndefined();
+  });
+
+  it('is read for an element FLUSH with the frame — contains is inclusive', () => {
+    // `Bound.contains` uses `>=` / `<=` on all four edges, so a component
+    // exactly the size of the map is on it. The one boundary all three readers
+    // share, pinned here so it cannot drift.
+    expect(
+      read(
+        element({ id: 'a', role: 'test:component', bound: [0, 0, 1000, 500] }),
+        [map()]
+      )!.phase
+    ).toBeDefined();
+  });
 });
 
 describe('the naming convention', () => {

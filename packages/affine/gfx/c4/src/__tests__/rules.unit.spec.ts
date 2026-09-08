@@ -253,14 +253,14 @@ describe('what the framework ships', () => {
   });
 
   /**
-   * Five families for sixteen rules, and the fifth is the one this slice added.
+   * Six families for sixteen rules, and the sixth is the one this slice added.
    *
    * Pinned because the count is an argument the header makes: C4 needs no
    * swimlane question, no graph traversal and no cardinality per frame, so the
    * families it uses are few — and `view-admissibility` joined them only because
-   * its question is asked of the SHEET, which none of the other four can express.
+   * its question is asked of the SHEET, which none of the other five can express.
    */
-  it('needs five families, and declares no subject role for the level rules', () => {
+  it('needs six families, and declares no subject role for the level rules', () => {
     expect([...new Set(C4_RULES.map(rule => rule.family))].sort()).toEqual([
       'edge-degree',
       'element-in-background',

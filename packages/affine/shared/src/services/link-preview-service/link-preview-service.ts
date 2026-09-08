@@ -23,6 +23,16 @@ export type LinkPreviewResponseData = {
   favicons?: string[];
 };
 
+/**
+ * Returns extra headers to send with a link preview request.
+ */
+export type LinkPreviewHeadersFn = () =>
+  | Record<string, string>
+  | Promise<Record<string, string>>;
+
+/** Third-party endpoint used for X/Twitter status URLs by default. */
+const DEFAULT_TWITTER_PREVIEW_ENDPOINT = 'https://api.fxtwitter.com/status/';
+
 export interface LinkPreviewProvider {
   /**
    * Query link preview data for a given URL
@@ -40,6 +50,27 @@ export interface LinkPreviewProvider {
    * Get the endpoint for link preview
    */
   endpoint: string;
+
+  /**
+   * Set a hook returning extra headers, merged over `Content-Type` on every
+   * request sent to the configured endpoint (e.g. an `Authorization` header).
+   * Pass `null` to remove it.
+   *
+   * Optional: hosts implementing this provider themselves may omit it.
+   */
+  setHeaders?: (fn: LinkPreviewHeadersFn | null) => void;
+
+  /**
+   * Set the endpoint used for X/Twitter status URLs.
+   *
+   * The value is a **prefix**: the tweet id is appended to it, so
+   * `https://example.com/tweet/` is fetched as
+   * `https://example.com/tweet/1234567890`. Pass `null` to disable the special
+   * path entirely, sending tweet URLs through the standard endpoint instead.
+   *
+   * Optional: hosts implementing this provider themselves may omit it.
+   */
+  setTwitterEndpoint?: (endpoint: string | null) => void;
 }
 
 export const LinkPreviewServiceIdentifier =
@@ -57,6 +88,10 @@ export class LinkPreviewService
 
   private _endpoint: string = DEFAULT_LINK_PREVIEW_ENDPOINT;
 
+  private _headers: LinkPreviewHeadersFn | null = null;
+
+  private _twitterEndpoint: string | null = DEFAULT_TWITTER_PREVIEW_ENDPOINT;
+
   constructor(private readonly _cache: LinkPreviewCacheProvider) {
     super();
   }
@@ -68,6 +103,18 @@ export class LinkPreviewService
   setEndpoint = (endpoint: string) => {
     this._endpoint = endpoint;
   };
+
+  setHeaders = (fn: LinkPreviewHeadersFn | null) => {
+    this._headers = fn;
+  };
+
+  setTwitterEndpoint = (endpoint: string | null) => {
+    this._twitterEndpoint = endpoint;
+  };
+
+  private readonly _resolveHeaders = async (): Promise<
+    Record<string, string>
+  > => (this._headers ? await this._headers() : {});
 
   private readonly _fetchTwitterPreview = async (
     url: string,
@@ -81,9 +128,18 @@ export class LinkPreviewService
           `Invalid tweet URL: ${url}`
         );
       }
-      const apiUrl = `https://api.fxtwitter.com/status/${match[1]}`;
+      const endpoint =
+        this._twitterEndpoint ?? DEFAULT_TWITTER_PREVIEW_ENDPOINT;
+      const apiUrl = `${endpoint}${match[1]}`;
+      // Never leak the host headers (a JWT, typically) to the default third-party endpoint.
+      const headers =
+        endpoint === DEFAULT_TWITTER_PREVIEW_ENDPOINT
+          ? undefined
+          : await this._resolveHeaders();
 
-      const response = await fetch(apiUrl, { signal }).then(res => res.json());
+      const response = await fetch(apiUrl, { headers, signal }).then(res =>
+        res.json()
+      );
       const tweet = response?.tweet;
       if (!tweet) {
         throw new BlockSuiteError(
@@ -114,6 +170,7 @@ export class LinkPreviewService
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...(await this._resolveHeaders()),
       },
       body: JSON.stringify({ url }),
       signal,
@@ -162,7 +219,7 @@ export class LinkPreviewService
     url: string,
     signal?: AbortSignal
   ): Promise<Partial<LinkPreviewData>> => {
-    if (this._isTwitterUrl(url)) {
+    if (this._twitterEndpoint !== null && this._isTwitterUrl(url)) {
       return this._fetchTwitterPreview(url, signal);
     }
     return this._fetchStandardPreview(url, signal);
