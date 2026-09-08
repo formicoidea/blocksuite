@@ -2,7 +2,7 @@ import {
   type ViewExtensionContext,
   ViewExtensionProvider,
 } from '@labre/affine-ext-loader';
-import { extendTemplateCategory } from '@labre/affine-gfx-template';
+import { TemplateCategoryExtension } from '@labre/affine-gfx-template';
 
 import { effects } from './effects';
 import { MindmapElementRendererExtension } from './element-renderer';
@@ -32,7 +32,6 @@ export class MindmapRenderViewExtension extends ViewExtensionProvider {
   override effect(): void {
     super.effect();
     effects();
-    extendTemplateCategory(mindmapTemplateCategory);
   }
 
   override setup(context: ViewExtensionContext) {
@@ -44,6 +43,12 @@ export class MindmapRenderViewExtension extends ViewExtensionProvider {
     context.register(MindMapDragExtension);
     context.register(MindMapIndicatorOverlay);
     context.register(MindMapInteraction);
+    if (this.isEdgeless(context.scope)) {
+      // The Mind Map Templates-panel category stays on the ALWAYS-ON half, on
+      // purpose: it must survive the `mindmap` flag, which only hides the
+      // senior button ({@link MindmapToolViewExtension}).
+      context.register(TemplateCategoryExtension(mindmapTemplateCategory));
+    }
   }
 }
 

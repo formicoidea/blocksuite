@@ -1,6 +1,6 @@
 import {
   createTemplateJob,
-  EdgelessTemplatePanel,
+  templateManagerFor,
 } from '@labre/affine/gfx/template';
 import type { BlockStdScope } from '@labre/std';
 import { beforeEach, describe, expect, test } from 'vitest';
@@ -27,11 +27,11 @@ describe('Framework template catalog', () => {
   ];
 
   test('the catalog exposes every framework + Other category, not cat stickers', async () => {
-    const cats = await EdgelessTemplatePanel.templates.categories();
+    const cats = await templateManagerFor(std).categories();
     expect(cats).toEqual(expect.arrayContaining(CATEGORIES));
     expect(cats).not.toContain('Paws and pals');
 
-    const other = await EdgelessTemplatePanel.templates.list('Other');
+    const other = await templateManagerFor(std).list('Other');
     expect(other.map(t => t.name)).toEqual(
       expect.arrayContaining([
         'SWOT',
@@ -46,7 +46,7 @@ describe('Framework template catalog', () => {
   test('every template in every category inserts valid elements', async () => {
     const surface = getSurface(window.doc, window.editor).model;
     for (const cat of CATEGORIES) {
-      const list = await EdgelessTemplatePanel.templates.list(cat);
+      const list = await templateManagerFor(std).list(cat);
       expect(list.length).toBeGreaterThan(0);
       for (const template of list) {
         const before = surface.elementModels.length;
@@ -62,10 +62,10 @@ describe('Framework template catalog', () => {
   });
 
   test('the BPMN category is registered with its templates', async () => {
-    const cats = await EdgelessTemplatePanel.templates.categories();
+    const cats = await templateManagerFor(std).categories();
     expect(cats).toContain('BPMN');
 
-    const bpmn = await EdgelessTemplatePanel.templates.list('BPMN');
+    const bpmn = await templateManagerFor(std).list('BPMN');
     const names = bpmn.map(t => t.name);
     expect(names).toEqual(
       expect.arrayContaining([
@@ -82,7 +82,7 @@ describe('Framework template catalog', () => {
 
   test('the simple-process template inserts a pool, nodes and connectors', async () => {
     const surface = getSurface(window.doc, window.editor).model;
-    const tpl = (await EdgelessTemplatePanel.templates.list('BPMN')).find(
+    const tpl = (await templateManagerFor(std).list('BPMN')).find(
       t => t.name === 'Simple process'
     )!;
 
@@ -96,5 +96,49 @@ describe('Framework template catalog', () => {
     expect(counts.bpmnPool).toBe(1);
     expect(counts.bpmnNode).toBe(6); // start, 3 tasks, gateway, end
     expect(counts.connector).toBe(6);
+  });
+});
+
+/**
+ * The same catalogue, on an editor whose flags switch two frameworks OFF — in
+ * the SAME browser page as the all-on editors above, which is the whole point.
+ *
+ * Until 0.38.2 a category was appended to a module-level Set from `effect()`,
+ * once per process: the categories the default editor registered outlived it,
+ * so this editor would have listed Wardley, Cynefin and Estuarine although its
+ * own flags forbid them — the shipped symptom of #244, where a framework
+ * switched off in the host kept its shelf in the Templates panel until a full
+ * reload. Categories now come from the editor's own DI container.
+ *
+ * Its own `setupEditor`, not the `beforeEach` above: that one mounts the
+ * default all-on editor, and mounting a second on top would leave two editors
+ * in one page.
+ */
+describe('Framework template catalog with a framework switched off', () => {
+  let std!: BlockStdScope;
+
+  beforeEach(async () => {
+    const cleanup = await setupEditor('edgeless', undefined, {
+      flags: { wardley: false, 'cynefin-estuarine': false },
+    });
+    std = getDocRootBlock(window.doc, window.editor, 'edgeless').std;
+    return cleanup;
+  });
+
+  test('only the frameworks this editor enables have a category', async () => {
+    const cats = await templateManagerFor(std).categories();
+
+    // What the flag takes away is the shelf that CREATES a map — the renderer
+    // that paints one already drawn is always on (`docs/adr/0009`).
+    expect(cats).not.toContain('Wardley');
+    expect(cats).not.toContain('Cynefin');
+    expect(cats).not.toContain('Estuarine');
+
+    // …and nothing else moved: the built-in category, the frameworks left on,
+    // and Mind Map — registered by an always-on extension, so it is there
+    // whatever the flags say.
+    expect(cats).toEqual(
+      expect.arrayContaining(['Other', 'EDGY', 'BPMN', 'Mind Map'])
+    );
   });
 });

@@ -1,4 +1,6 @@
 import { PivotRecordPickerExtension } from '@labre/affine/blocks/surface';
+import { ViewExtensionManager } from '@labre/affine/ext-loader';
+import { getInternalViewExtensions } from '@labre/affine/extensions/view';
 import { RefNodeSlotsProvider } from '@labre/affine/inlines/reference';
 import {
   CommunityCanvasTextFonts,
@@ -60,6 +62,14 @@ export function createTestEditor(store: Store, workspace: Workspace) {
   const defaultExtensions = getTestCommonExtensions(editor);
   editor.pageSpecs = [...viewManager.get('page'), ...defaultExtensions];
   editor.edgelessSpecs = [...viewManager.get('edgeless'), ...defaultExtensions];
+
+  // Recette hook: `applyFlags({ wardley: false })` in the console re-mounts the
+  // edgeless std with another flag set WITHOUT a reload — what the SaaS host
+  // does when a framework is switched off in its settings (#244).
+  window.applyFlags = flags => {
+    const views = new ViewExtensionManager(getInternalViewExtensions(flags));
+    editor.edgelessSpecs = [...views.get('edgeless'), ...defaultExtensions];
+  };
 
   editor.std
     .get(RefNodeSlotsProvider)

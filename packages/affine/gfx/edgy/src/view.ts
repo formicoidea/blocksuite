@@ -11,7 +11,7 @@ import {
   type ViewExtensionContext,
   ViewExtensionProvider,
 } from '@labre/affine-ext-loader';
-import { extendTemplateCategory } from '@labre/affine-gfx-template';
+import { TemplateCategoryExtension } from '@labre/affine-gfx-template';
 import { BlockFlavourIdentifier, CommandExtension } from '@labre/std';
 import { RoleVocabularyExtension } from '@labre/std/gfx';
 
@@ -90,7 +90,6 @@ export class EdgyViewExtension extends ViewExtensionProvider {
     super.effect();
     // Defines the senior button and its menu — tooling-only custom elements.
     effects();
-    extendTemplateCategory(edgyTemplateCategory);
   }
 
   override setup(context: ViewExtensionContext) {
@@ -138,6 +137,8 @@ export class EdgyViewExtension extends ViewExtensionProvider {
       // profile, so it goes with the flag without either side naming the other.
       context.register(ReadingProfileExtension(EDGY_READING));
       context.register(edgySeniorTool);
+      // The Templates-panel category — tooling, so it goes with the flag (#244).
+      context.register(TemplateCategoryExtension(edgyTemplateCategory));
       // The eight EDGY commands: the sub-menu renders them, Settings ›
       // Shortcuts finally lists them, and a host override on an id binds.
       context.register(CommandExtension(edgyCommands, edgyCommandIcons));

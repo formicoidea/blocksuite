@@ -10,7 +10,7 @@ import {
   type ViewExtensionContext,
   ViewExtensionProvider,
 } from '@labre/affine-ext-loader';
-import { extendTemplateCategory } from '@labre/affine-gfx-template';
+import { TemplateCategoryExtension } from '@labre/affine-gfx-template';
 import {
   ToolbarModuleExtension,
   toolbarModuleKey,
@@ -115,7 +115,6 @@ export class C4ViewExtension extends ViewExtensionProvider {
     super.effect();
     // Defines the senior button and its menu — tooling-only custom elements.
     effects();
-    extendTemplateCategory(c4TemplateCategory);
   }
 
   override setup(context: ViewExtensionContext) {
@@ -136,6 +135,8 @@ export class C4ViewExtension extends ViewExtensionProvider {
         context.register(ReadingProfileExtension(reading));
       }
       context.register(c4SeniorTool);
+      // The Templates-panel category — tooling, so it goes with the flag (#244).
+      context.register(TemplateCategoryExtension(c4TemplateCategory));
       context.register(CommandExtension(c4Commands, c4CommandIcons));
       // The flag-gated half of the selected BOARD's row, through the `custom:`
       // flavour slot — the shape wardley, bpmn and the context map all use to

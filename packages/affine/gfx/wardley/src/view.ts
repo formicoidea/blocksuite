@@ -18,7 +18,7 @@ import {
   type ViewExtensionContext,
   ViewExtensionProvider,
 } from '@labre/affine-ext-loader';
-import { extendTemplateCategory } from '@labre/affine-gfx-template';
+import { TemplateCategoryExtension } from '@labre/affine-gfx-template';
 import { BlockFlavourIdentifier, CommandExtension } from '@labre/std';
 import { RoleVocabularyExtension } from '@labre/std/gfx';
 
@@ -96,7 +96,6 @@ export class WardleyViewExtension extends ViewExtensionProvider {
     super.effect();
     // Defines the senior button and its menu — tooling-only custom elements.
     effects();
-    extendTemplateCategory(wardleyTemplateCategory);
   }
 
   override setup(context: ViewExtensionContext) {
@@ -205,6 +204,8 @@ export class WardleyViewExtension extends ViewExtensionProvider {
       // the flag without either side naming the other.
       context.register(ReadingProfileExtension(WARDLEY_READING));
       context.register(wardleySeniorTool);
+      // The Templates-panel category — tooling, so it goes with the flag (#244).
+      context.register(TemplateCategoryExtension(wardleyTemplateCategory));
       // The Wardley commands — thirteen artefacts plus the two directions of
       // the OWM DSL — ONE registration for both faces: the
       // enumerable registry the sub-menu renders from, and — through

@@ -18,6 +18,8 @@ declare global {
 
   interface Window {
     editor: TestAffineEditorContainer;
+    /** Re-mount the edgeless std with another flag set, no reload (#244). */
+    applyFlags: (flags: import('@labre/affine/flags').BlockFlags) => void;
     doc: Blocks;
     collection: Workspace;
     blockSchemas: z.infer<typeof BlockSchema>[];

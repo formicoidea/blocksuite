@@ -1,5 +1,8 @@
-import { ViewExtensionProvider } from '@labre/affine-ext-loader';
-import { extendTemplateCategory } from '@labre/affine-gfx-template';
+import {
+  type ViewExtensionContext,
+  ViewExtensionProvider,
+} from '@labre/affine-ext-loader';
+import { TemplateCategoryExtension } from '@labre/affine-gfx-template';
 
 import { aggregateTemplateCategory } from './templates';
 
@@ -18,8 +21,10 @@ import { aggregateTemplateCategory } from './templates';
 export class DddTemplatesViewExtension extends ViewExtensionProvider {
   override name = 'affine-ddd-templates';
 
-  override effect(): void {
-    super.effect();
-    extendTemplateCategory(aggregateTemplateCategory);
+  override setup(context: ViewExtensionContext) {
+    super.setup(context);
+    if (this.isEdgeless(context.scope)) {
+      context.register(TemplateCategoryExtension(aggregateTemplateCategory));
+    }
   }
 }

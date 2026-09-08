@@ -11,7 +11,7 @@ import {
   type ViewExtensionContext,
   ViewExtensionProvider,
 } from '@labre/affine-ext-loader';
-import { extendTemplateCategory } from '@labre/affine-gfx-template';
+import { TemplateCategoryExtension } from '@labre/affine-gfx-template';
 import { ToolbarModuleExtension } from '@labre/affine-shared/services';
 import { BlockFlavourIdentifier, CommandExtension } from '@labre/std';
 import { RoleVocabularyExtension } from '@labre/std/gfx';
@@ -81,7 +81,6 @@ export class BpmnViewExtension extends ViewExtensionProvider {
     super.effect();
     // Defines the senior button and its menu — tooling-only custom elements.
     effects();
-    extendTemplateCategory(bpmnTemplateCategory);
   }
 
   override setup(context: ViewExtensionContext) {
@@ -142,6 +141,8 @@ export class BpmnViewExtension extends ViewExtensionProvider {
         context.register(ReadingProfileExtension(reading));
       }
       context.register(bpmnSeniorTool);
+      // The Templates-panel category — tooling, so it goes with the flag (#244).
+      context.register(TemplateCategoryExtension(bpmnTemplateCategory));
       context.register(CommandExtension(bpmnCommands, bpmnCommandIcons));
     }
   }

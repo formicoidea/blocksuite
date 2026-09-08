@@ -8,7 +8,7 @@ import {
   type ViewExtensionContext,
   ViewExtensionProvider,
 } from '@labre/affine-ext-loader';
-import { extendTemplateCategory } from '@labre/affine-gfx-template';
+import { TemplateCategoryExtension } from '@labre/affine-gfx-template';
 import { ToolbarModuleExtension } from '@labre/affine-shared/services';
 import { BlockFlavourIdentifier, CommandExtension } from '@labre/std';
 import { RoleVocabularyExtension } from '@labre/std/gfx';
@@ -88,8 +88,6 @@ export class CynefinEstuarineViewExtension extends ViewExtensionProvider {
     super.effect();
     // Defines the senior button and its menu — tooling-only custom elements.
     effects();
-    extendTemplateCategory(cynefinTemplateCategory);
-    extendTemplateCategory(estuarineTemplateCategory);
   }
 
   override setup(context: ViewExtensionContext) {
@@ -133,6 +131,14 @@ export class CynefinEstuarineViewExtension extends ViewExtensionProvider {
       // free element on a Cynefin board carries no role and stays unreadable.
       context.register(ReadingProfileExtension(ESTUARINE_READING));
       context.register(cynefinEstuarineSeniorTool);
+      // Both Templates-panel categories — tooling, so they go with the flag
+      // (#244).
+      context.register(
+        TemplateCategoryExtension(
+          cynefinTemplateCategory,
+          estuarineTemplateCategory
+        )
+      );
       context.register(
         CommandExtension(cynefinEstuarineCommands, cynefinEstuarineCommandIcons)
       );
