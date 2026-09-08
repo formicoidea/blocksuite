@@ -1,5 +1,29 @@
 # @labre/affine-inline-link
 
+## 0.38.0
+
+### Patch Changes
+
+- 4566e8f: fix(blocks): hide the link toolbar's Card/Embed view conversions when the target block's view is disabled
+
+  With `{ bookmark: false }` (resp. `{ embed: false }`) the inline link toolbar
+  still offered "Card view" / "Embed view"; choosing one created a block whose
+  view extension was gated, so the link vanished into an empty block. The
+  conversions now check that the flavour they would create has a registered
+  view (`std.getView`), and the whole view dropdown disappears when no
+  conversion remains.
+
+- Updated dependencies [6a7c31a]
+- Updated dependencies [6aa0081]
+  - @labre/affine-model@0.38.0
+  - @labre/affine-shared@0.38.0
+  - @labre/affine-components@0.38.0
+  - @labre/affine-inline-reference@0.38.0
+  - @labre/affine-ext-loader@0.38.0
+  - @labre/global@0.38.0
+  - @labre/std@0.38.0
+  - @labre/store@0.38.0
+
 ## 0.37.0
 
 ### Patch Changes

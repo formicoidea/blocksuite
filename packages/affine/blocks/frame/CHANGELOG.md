@@ -1,5 +1,48 @@
 # @labre/affine-block-frame
 
+## 0.38.0
+
+### Patch Changes
+
+- 206b5a1: fix(edgeless): a framework background never covers what is drawn on it
+
+  - A board, map or pool created AFTER the elements it surrounds now lands under them instead of hiding them.
+  - Anything dropped onto a board that sits above it is raised just above that board, and still below the board's own artefacts.
+  - Superposed boards stack in the order they were placed, each under its own artefacts — a cross-reading is now possible.
+  - One rule for every framework: EDGY, Wardley, C4, BPMN, Cynefin, Estuarine and the DDD boards all answer the same way.
+
+- b202320: fix(edgeless): a frame drawn on a framework board stays visible above it
+
+  A frame is deliberately sent to the back of the stack so it renders behind its
+  own content — but a Wardley map, a C4 board or a BPMN pool is an opaque canvas
+  element, so the frame went behind the board and only the strip overhanging it
+  stayed visible. A frame now lands just above the topmost board it covers
+  (still behind everything the frame owns), whether it is drawn there or dragged
+  onto it afterwards.
+
+- Updated dependencies [28c0609]
+- Updated dependencies [206b5a1]
+- Updated dependencies [6a7c31a]
+- Updated dependencies [90a23e1]
+- Updated dependencies [b202320]
+- Updated dependencies [6aa0081]
+- Updated dependencies [f28a24f]
+- Updated dependencies [13d17cf]
+- Updated dependencies [65bfe30]
+- Updated dependencies [dd22937]
+- Updated dependencies [2b18c93]
+  - @labre/affine-block-surface@0.38.0
+  - @labre/affine-model@0.38.0
+  - @labre/affine-shared@0.38.0
+  - @labre/affine-gfx-pointer@0.38.0
+  - @labre/affine-widget-edgeless-toolbar@0.38.0
+  - @labre/affine-widget-frame-title@0.38.0
+  - @labre/affine-components@0.38.0
+  - @labre/affine-ext-loader@0.38.0
+  - @labre/global@0.38.0
+  - @labre/std@0.38.0
+  - @labre/store@0.38.0
+
 ## 0.37.0
 
 ### Patch Changes

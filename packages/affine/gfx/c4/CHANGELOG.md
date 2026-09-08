@@ -1,5 +1,52 @@
 # @labre/affine-gfx-c4
 
+## 0.38.0
+
+### Patch Changes
+
+- 3fcaf5d: feat(edgeless): C4 gains a Templates category, derived from its commands
+
+  C4 was the only framework the senior menu's Templates panel had nothing for: the
+  pack shipped with thirteen commands and no category at all, so a C4 diagram
+  could only ever be started from the sub-menu. The panel now offers the twelve
+  artefacts the toolbox draws — the board, the nine element kinds with their
+  external variants, and the two boundaries — each with a preview in the stencil's
+  own colours.
+
+  Every one of them is DERIVED: the template is the command, run once against a
+  recording surface, so a component dropped from the panel arrives as the five
+  elements the button produces — the shape, its name, its type line, its
+  description and the group that makes them one thing — with the type line reading
+  the stencil's own prompt and a boundary carrying its variant and its role
+  together. A parity test re-runs each command and compares, so the panel cannot
+  drift away from the toolbox the way hand-written palettes did.
+
+- Updated dependencies [28c0609]
+- Updated dependencies [206b5a1]
+- Updated dependencies [6a7c31a]
+- Updated dependencies [90a23e1]
+- Updated dependencies [b202320]
+- Updated dependencies [6aa0081]
+- Updated dependencies [f28a24f]
+- Updated dependencies [5bf6a03]
+- Updated dependencies [13d17cf]
+- Updated dependencies [65bfe30]
+- Updated dependencies [dd22937]
+- Updated dependencies [2b18c93]
+  - @labre/affine-block-surface@0.38.0
+  - @labre/affine-model@0.38.0
+  - @labre/affine-shared@0.38.0
+  - @labre/affine-gfx-ddd-shared@0.38.0
+  - @labre/affine-gfx-template@0.38.0
+  - @labre/affine-gfx-connector@0.38.0
+  - @labre/affine-gfx-pointer@0.38.0
+  - @labre/affine-gfx-shape@0.38.0
+  - @labre/affine-gfx-text@0.38.0
+  - @labre/affine-widget-edgeless-toolbar@0.38.0
+  - @labre/affine-ext-loader@0.38.0
+  - @labre/global@0.38.0
+  - @labre/std@0.38.0
+
 ## 0.37.0
 
 ### Minor Changes

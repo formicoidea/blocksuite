@@ -1,5 +1,67 @@
 # @labre/affine-gfx-wardley
 
+## 0.38.0
+
+### Patch Changes
+
+- b202320: fix(edgeless): a frame drawn on a framework board stays visible above it
+
+  A frame is deliberately sent to the back of the stack so it renders behind its
+  own content — but a Wardley map, a C4 board or a BPMN pool is an opaque canvas
+  element, so the frame went behind the board and only the strip overhanging it
+  stayed visible. A frame now lands just above the topmost board it covers
+  (still behind everything the frame owns), whether it is drawn there or dragged
+  onto it afterwards.
+
+- 13d17cf: feat(edgeless): Wardley palette templates are derived from the creation commands
+
+  A template of the senior menu's Templates panel used to be a hand-written copy
+  of what the toolbox creates, and every copy had drifted: no template grouped a
+  node with its name (the toolbox has since #51), the four map backgrounds
+  carried no `wardley:map` role and stayed resizable, the inertia bar lost its
+  text-fit mode, and five artefacts (Porter's forces, accelerator, decelerator,
+  the two areas) had no template at all.
+
+  `@labre/affine-gfx-template` gains `snapshotFromAction` / `templateFromCommand`:
+  a template is now produced by running the command itself against a recording
+  surface, so it cannot disagree with the toolbox. Snapshots carry an explicit
+  z-order for every element, and a template may declare `afterInsert` for a depth
+  that depends on what is already on the board (a Wardley area lands under the
+  components it covers, above the map). The two shipped maps (Tea Shop, Kodak
+  inertia) are rebuilt on the same presets, with every node grouped with its
+  label. A parity test guards both directions: every artefact command has its
+  template, every template matches its command.
+
+  Inserting a template (or pasting) that holds a group inside a group could
+  shuffle the paint order: the z-order sort looked one level of grouping up only,
+  which made its comparison cyclic. It now orders by the whole group chain, the
+  same order the canvas paints in.
+
+- Updated dependencies [28c0609]
+- Updated dependencies [206b5a1]
+- Updated dependencies [6a7c31a]
+- Updated dependencies [90a23e1]
+- Updated dependencies [b202320]
+- Updated dependencies [6aa0081]
+- Updated dependencies [f28a24f]
+- Updated dependencies [13d17cf]
+- Updated dependencies [65bfe30]
+- Updated dependencies [dd22937]
+- Updated dependencies [2b18c93]
+  - @labre/affine-block-surface@0.38.0
+  - @labre/affine-model@0.38.0
+  - @labre/affine-shared@0.38.0
+  - @labre/affine-gfx-template@0.38.0
+  - @labre/affine-gfx-group@0.38.0
+  - @labre/affine-gfx-connector@0.38.0
+  - @labre/affine-gfx-pointer@0.38.0
+  - @labre/affine-gfx-shape@0.38.0
+  - @labre/affine-widget-edgeless-toolbar@0.38.0
+  - @labre/affine-ext-loader@0.38.0
+  - @labre/global@0.38.0
+  - @labre/std@0.38.0
+  - @labre/store@0.38.0
+
 ## 0.37.0
 
 ### Patch Changes

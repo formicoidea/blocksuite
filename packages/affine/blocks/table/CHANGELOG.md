@@ -1,5 +1,23 @@
 # @labre/affine-block-table
 
+## 0.38.0
+
+### Patch Changes
+
+- Updated dependencies [6a7c31a]
+- Updated dependencies [6aa0081]
+  - @labre/affine-model@0.38.0
+  - @labre/affine-shared@0.38.0
+  - @labre/affine-components@0.38.0
+  - @labre/affine-inline-preset@0.38.0
+  - @labre/affine-rich-text@0.38.0
+  - @labre/data-view@0.38.0
+  - @labre/affine-widget-slash-menu@0.38.0
+  - @labre/affine-ext-loader@0.38.0
+  - @labre/global@0.38.0
+  - @labre/std@0.38.0
+  - @labre/store@0.38.0
+
 ## 0.37.0
 
 ### Patch Changes
