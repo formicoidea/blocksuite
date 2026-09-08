@@ -1,5 +1,150 @@
 # @labre/affine-block-surface
 
+## 0.38.0
+
+### Minor Changes
+
+- 28c0609: perf(edgeless): audit rules leave the real-time path under the profile in force
+
+  An `audit` finding is dropped before anything is drawn, yet the rules raising
+  one were still walked on every gesture. The moment a rule is evaluated at is now
+  decided against the LEVEL IN FORCE — the framework's default profile, and the one
+  each frame on the board has chosen — rather than against its own declaration: a
+  rule no level in force shows is evaluated by a check-up instead of by the drawing
+  path. A frame switched to a level that promotes it gets it back on the next
+  gesture, because choosing a level already marks the frame dirty. Check-ups still
+  evaluate everything, with the same severities, so no finding is lost and nothing
+  visible changes.
+
+  On the default (sketch) level of every framework that ships one, the whole rule
+  pack now costs the gesture path nothing: 22 BPMN rules, 16 C4, 5
+  ddd-context-map, 4 ddd-core-domain, 4 Wardley, 3 event-storming, 2 EDGY. Raising
+  a board gives back exactly what that level shows — 16 of 22 on `bpmn.descriptive`,
+  9 of 16 on `c4.strict`.
+
+  `onDemandRules(rules)` is replaced by `checkupRules(rules, elements, profiles)`,
+  which answers the same question against the surface the check-up would run on.
+
+- 2b18c93: feat(edgeless): a host can seed validation and check-ups with its own dirty set (the selection)
+
+  `ValidationManager.evaluate` now takes `true` (the debounced path, as before) or
+  `{ dirty }` — the caller's own dirty set, run through the same pipeline and the
+  same guards, with any pending debounce folded in rather than dropped.
+  `evaluateCheckup(rules, elements, profiles, seed)` and
+  `ValidationManager.runCheckup(element, seed)` do the same for the on-demand
+  moment: the closure of the seed is judged and nothing is carried, so the answer
+  is exactly the fresh verdicts there.
+
+  The contract, for a seed `S`: `seeded ⊆ full`, and `seeded ∩ touching(S) =
+full ∩ touching(S)` — a partial answer, never a wrong one. A frame id in the
+  seed means "re-judge this board" and lands on the existing dirty-frame guard,
+  i.e. a full pass. No UI changes.
+
+### Patch Changes
+
+- 206b5a1: fix(edgeless): a framework background never covers what is drawn on it
+
+  - A board, map or pool created AFTER the elements it surrounds now lands under them instead of hiding them.
+  - Anything dropped onto a board that sits above it is raised just above that board, and still below the board's own artefacts.
+  - Superposed boards stack in the order they were placed, each under its own artefacts — a cross-reading is now possible.
+  - One rule for every framework: EDGY, Wardley, C4, BPMN, Cynefin, Estuarine and the DDD boards all answer the same way.
+
+- 90a23e1: fix(edgeless): an element belongs to a board only when it is wholly inside it
+
+  The reading panel, the audit facts and the BPMN pool facts now answer "which
+  board is this on" exactly as the validation engine does: full containment of the
+  element's bound in the board's, ties broken by the smaller id. A node straddling
+  the edge of a map is no longer read or audited as a member — the audit reports it
+  with its id and role and nothing else, like an element on bare canvas, instead of
+  attributing it to the nearest map. Inner regions keep the centre test: a BPMN
+  lane or a Wardley evolution stage is meant to be straddled, a board is not.
+
+- b202320: fix(edgeless): a frame drawn on a framework board stays visible above it
+
+  A frame is deliberately sent to the back of the stack so it renders behind its
+  own content — but a Wardley map, a C4 board or a BPMN pool is an opaque canvas
+  element, so the frame went behind the board and only the strip overhanging it
+  stayed visible. A frame now lands just above the topmost board it covers
+  (still behind everything the frame owns), whether it is drawn there or dragged
+  onto it afterwards.
+
+- f28a24f: perf(edgeless): overlap checks no longer compare every pair of artefacts
+
+  The readability pass sorts the artefacts it compares by their left edge and
+  stops each comparison as soon as the next one starts further right than the
+  current one ends, instead of testing all of them against all of them. Of the
+  couples that survive that, the ones that share no vertical extent are now
+  dropped on two subtractions, before the rule's own pair test is built.
+
+  On a 2000-element reference map the whole validation pass drops from 15.3 ms to
+  6.3 ms, and the overlap family alone from 10.7 ms to 3.8 ms — from the whole
+  frame to a fraction of one. At 4000 elements the family goes from 42.6 ms to
+  14.0 ms.
+
+  The findings are identical: of the two million couples the old pass compared on
+  a 4000-element map, 27 037 could possibly have overlapped, and those are exactly
+  the ones still compared.
+
+- 13d17cf: feat(edgeless): Wardley palette templates are derived from the creation commands
+
+  A template of the senior menu's Templates panel used to be a hand-written copy
+  of what the toolbox creates, and every copy had drifted: no template grouped a
+  node with its name (the toolbox has since #51), the four map backgrounds
+  carried no `wardley:map` role and stayed resizable, the inertia bar lost its
+  text-fit mode, and five artefacts (Porter's forces, accelerator, decelerator,
+  the two areas) had no template at all.
+
+  `@labre/affine-gfx-template` gains `snapshotFromAction` / `templateFromCommand`:
+  a template is now produced by running the command itself against a recording
+  surface, so it cannot disagree with the toolbox. Snapshots carry an explicit
+  z-order for every element, and a template may declare `afterInsert` for a depth
+  that depends on what is already on the board (a Wardley area lands under the
+  components it covers, above the map). The two shipped maps (Tea Shop, Kodak
+  inertia) are rebuilt on the same presets, with every node grouped with its
+  label. A parity test guards both directions: every artefact command has its
+  template, every template matches its command.
+
+  Inserting a template (or pasting) that holds a group inside a group could
+  shuffle the paint order: the z-order sort looked one level of grouping up only,
+  which made its comparison cyclic. It now orders by the whole group chain, the
+  same order the canvas paints in.
+
+- 65bfe30: perf(edgeless): while drawing, only what a change can affect is re-judged
+
+  Every validation family now re-judges the closure of what actually changed
+  instead of the whole board — the closure is derived from the dependency scope
+  each family declares (`docs/adr/0015`) and from nothing else, and a family whose
+  verdict reads the whole surface still gets a full pass.
+
+  Measured on a Wardley map, all four rules, profiles in force, three labels
+  dragged: the tick is 3.7 ms at 2000 elements, 8.0 ms at 4000 (frame budget
+  16 ms) and 27.3 ms at 8000, against 6.6 / 16.7 / 64.1 ms for the full pass it
+  replaces. Wardley is the pack this helps least — two of its four rules read the
+  whole surface by declaration, and the two it narrows do almost nothing per
+  subject; the saving grows with what a family does to each subject it judges.
+
+  No verdict changes: a fuzz over the seven shipped packs asserts, on random
+  boards under random mutation, that an incremental pass answers exactly what a
+  full pass would.
+
+- dd22937: feat(edgeless): validation rules carry a dependency scope
+
+  - Every rule family declares what a verdict on one subject depends on
+    (`element`, `relations`, `frame`, `surface`), as pure versioned data.
+  - The engine does not consume it: no evaluator reads it, and no verdict changes.
+  - Groundwork for incremental re-evaluation by dirty set (PF5.4).
+
+- Updated dependencies [6a7c31a]
+- Updated dependencies [6aa0081]
+  - @labre/affine-model@0.38.0
+  - @labre/affine-shared@0.38.0
+  - @labre/affine-components@0.38.0
+  - @labre/affine-rich-text@0.38.0
+  - @labre/affine-ext-loader@0.38.0
+  - @labre/global@0.38.0
+  - @labre/std@0.38.0
+  - @labre/store@0.38.0
+
 ## 0.37.0
 
 ### Minor Changes

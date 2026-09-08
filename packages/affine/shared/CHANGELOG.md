@@ -1,5 +1,26 @@
 # @labre/affine-shared
 
+## 0.38.0
+
+### Patch Changes
+
+- 6aa0081: feat(blocks): link previews accept host headers and a configurable X endpoint
+
+  `LinkPreviewService` now exposes `setHeaders(fn)` — a hook whose headers are
+  merged over `Content-Type` on the standard preview request, so a host can send
+  its own `Authorization` header without re-implementing `query`. It also exposes
+  `setTwitterEndpoint(prefix | null)`: a string replaces the `fxtwitter` prefix
+  (the tweet id is appended) and receives the host headers too, while `null`
+  routes tweet URLs through the standard endpoint. Both are optional on
+  `LinkPreviewProvider`, and the default behaviour is unchanged — the third-party
+  fxtwitter endpoint never receives the host headers.
+
+- Updated dependencies [6a7c31a]
+  - @labre/affine-model@0.38.0
+  - @labre/global@0.38.0
+  - @labre/std@0.38.0
+  - @labre/store@0.38.0
+
 ## 0.37.0
 
 ### Patch Changes

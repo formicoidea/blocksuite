@@ -1,5 +1,113 @@
 # @labre/affine
 
+## 0.38.0
+
+### Patch Changes
+
+- 206b5a1: fix(edgeless): a framework background never covers what is drawn on it
+
+  - A board, map or pool created AFTER the elements it surrounds now lands under them instead of hiding them.
+  - Anything dropped onto a board that sits above it is raised just above that board, and still below the board's own artefacts.
+  - Superposed boards stack in the order they were placed, each under its own artefacts — a cross-reading is now possible.
+  - One rule for every framework: EDGY, Wardley, C4, BPMN, Cynefin, Estuarine and the DDD boards all answer the same way.
+
+- Updated dependencies [28c0609]
+- Updated dependencies [206b5a1]
+- Updated dependencies [6a7c31a]
+- Updated dependencies [90a23e1]
+- Updated dependencies [b202320]
+- Updated dependencies [4566e8f]
+- Updated dependencies [6aa0081]
+- Updated dependencies [f28a24f]
+- Updated dependencies [bdcf958]
+- Updated dependencies [3fcaf5d]
+- Updated dependencies [495ceb9]
+- Updated dependencies [5bf6a03]
+- Updated dependencies [5faf2db]
+- Updated dependencies [13d17cf]
+- Updated dependencies [65bfe30]
+- Updated dependencies [dd22937]
+- Updated dependencies [2b18c93]
+  - @labre/affine-block-surface@0.38.0
+  - @labre/affine-block-frame@0.38.0
+  - @labre/affine-model@0.38.0
+  - @labre/affine-gfx-bpmn@0.38.0
+  - @labre/affine-gfx-wardley@0.38.0
+  - @labre/affine-inline-link@0.38.0
+  - @labre/affine-shared@0.38.0
+  - @labre/affine-gfx-c4@0.38.0
+  - @labre/affine-gfx-cynefin-estuarine@0.38.0
+  - @labre/affine-gfx-ddd-shared@0.38.0
+  - @labre/affine-gfx-ddd-event-storming@0.38.0
+  - @labre/affine-gfx-ddd-core-domain@0.38.0
+  - @labre/affine-gfx-ddd-context-map@0.38.0
+  - @labre/affine-gfx-ddd-aggregate@0.38.0
+  - @labre/affine-gfx-edgy@0.38.0
+  - @labre/affine-gfx-template@0.38.0
+  - @labre/affine-gfx-group@0.38.0
+  - @labre/affine-block-attachment@0.38.0
+  - @labre/affine-block-bookmark@0.38.0
+  - @labre/affine-block-edgeless-text@0.38.0
+  - @labre/affine-block-embed@0.38.0
+  - @labre/affine-block-embed-doc@0.38.0
+  - @labre/affine-block-image@0.38.0
+  - @labre/affine-block-note@0.38.0
+  - @labre/affine-block-root@0.38.0
+  - @labre/affine-block-surface-ref@0.38.0
+  - @labre/affine-fragment-doc-title@0.38.0
+  - @labre/affine-fragment-frame-panel@0.38.0
+  - @labre/affine-gfx-brush@0.38.0
+  - @labre/affine-gfx-connector@0.38.0
+  - @labre/affine-gfx-link@0.38.0
+  - @labre/affine-gfx-mindmap@0.38.0
+  - @labre/affine-gfx-note@0.38.0
+  - @labre/affine-gfx-pointer@0.38.0
+  - @labre/affine-gfx-shape@0.38.0
+  - @labre/affine-gfx-text@0.38.0
+  - @labre/affine-widget-drag-handle@0.38.0
+  - @labre/affine-widget-edgeless-auto-connect@0.38.0
+  - @labre/affine-widget-edgeless-dragging-area@0.38.0
+  - @labre/affine-widget-edgeless-selected-rect@0.38.0
+  - @labre/affine-widget-edgeless-toolbar@0.38.0
+  - @labre/affine-widget-edgeless-zoom-toolbar@0.38.0
+  - @labre/affine-widget-frame-title@0.38.0
+  - @labre/affine-widget-keyboard-toolbar@0.38.0
+  - @labre/affine-widget-note-slicer@0.38.0
+  - @labre/affine-widget-remote-selection@0.38.0
+  - @labre/affine-widget-toolbar@0.38.0
+  - @labre/affine-block-callout@0.38.0
+  - @labre/affine-block-code@0.38.0
+  - @labre/affine-block-data-view@0.38.0
+  - @labre/affine-block-database@0.38.0
+  - @labre/affine-block-divider@0.38.0
+  - @labre/affine-block-latex@0.38.0
+  - @labre/affine-block-list@0.38.0
+  - @labre/affine-block-paragraph@0.38.0
+  - @labre/affine-block-table@0.38.0
+  - @labre/affine-components@0.38.0
+  - @labre/affine-fragment-adapter-panel@0.38.0
+  - @labre/affine-fragment-outline@0.38.0
+  - @labre/affine-inline-comment@0.38.0
+  - @labre/affine-inline-footnote@0.38.0
+  - @labre/affine-inline-latex@0.38.0
+  - @labre/affine-inline-mention@0.38.0
+  - @labre/affine-inline-preset@0.38.0
+  - @labre/affine-inline-reference@0.38.0
+  - @labre/affine-rich-text@0.38.0
+  - @labre/affine-widget-linked-doc@0.38.0
+  - @labre/affine-widget-page-dragging-area@0.38.0
+  - @labre/affine-widget-scroll-anchoring@0.38.0
+  - @labre/affine-widget-viewport-overlay@0.38.0
+  - @labre/data-view@0.38.0
+  - @labre/affine-foundation@0.38.0
+  - @labre/affine-widget-slash-menu@0.38.0
+  - @labre/affine-ext-loader@0.38.0
+  - @labre/affine-gfx-turbo-renderer@0.38.0
+  - @labre/global@0.38.0
+  - @labre/std@0.38.0
+  - @labre/store@0.38.0
+  - @labre/sync@0.38.0
+
 ## 0.37.0
 
 ### Patch Changes
