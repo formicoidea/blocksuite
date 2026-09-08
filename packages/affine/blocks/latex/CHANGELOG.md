@@ -1,5 +1,21 @@
 # @labre/affine-block-latex
 
+## 0.38.1
+
+### Patch Changes
+
+- @labre/affine-block-note@0.38.1
+- @labre/affine-components@0.38.1
+- @labre/affine-ext-loader@0.38.1
+- @labre/affine-inline-latex@0.38.1
+- @labre/affine-model@0.38.1
+- @labre/affine-rich-text@0.38.1
+- @labre/affine-shared@0.38.1
+- @labre/affine-widget-slash-menu@0.38.1
+- @labre/global@0.38.1
+- @labre/std@0.38.1
+- @labre/store@0.38.1
+
 ## 0.38.0
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @labre/affine-components
 
+## 0.38.1
+
+### Patch Changes
+
+- @labre/affine-model@0.38.1
+- @labre/affine-shared@0.38.1
+- @labre/global@0.38.1
+- @labre/std@0.38.1
+- @labre/store@0.38.1
+- @labre/sync@0.38.1
+
 ## 0.38.0
 
 ### Patch Changes
