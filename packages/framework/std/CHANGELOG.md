@@ -1,5 +1,13 @@
 # @labre/std
 
+## 0.38.2
+
+### Patch Changes
+
+- 0ffa45b: fix(std): a readonly viewer no longer throws `Cannot remove element in readonly mode` when a remote peer empties a group — surface cascades (delete the emptied group, drop a deleted block from its group) now react to local transactions only
+  - @labre/global@0.38.2
+  - @labre/store@0.38.2
+
 ## 0.38.1
 
 ### Patch Changes

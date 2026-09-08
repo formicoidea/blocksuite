@@ -1,5 +1,16 @@
 # @labre/data-view
 
+## 0.38.2
+
+### Patch Changes
+
+- Updated dependencies [0ffa45b]
+  - @labre/std@0.38.2
+  - @labre/affine-components@0.38.2
+  - @labre/affine-shared@0.38.2
+  - @labre/global@0.38.2
+  - @labre/store@0.38.2
+
 ## 0.38.1
 
 ### Patch Changes
