@@ -1,6 +1,8 @@
 import {
   evaluateCheckup,
   evaluateRules,
+  frameMembership,
+  scopeOf,
   type ValidationProfile,
   type ValidationRule,
   type Violation,
@@ -824,6 +826,30 @@ describe('a drag on a dense map re-judges only what moved', () => {
  *
  * The case below is asserted so that whoever crosses it meets a failing test,
  * not a paragraph.
+ *
+ * ## What PF5.4 moved, and what it did not
+ *
+ * Everything above is the FULL pass — a load, a paste, an undo — and PF5.4 does
+ * not touch it. What it moves is the other number, the DRAG: since PF5.4 every
+ * family re-judges only the closure of what changed (`docs/adr/0015`), where
+ * before only `no-overlap` did. Measured by the last suite in this file, on top
+ * of the prune above, all four rules, profiles in force, three labels dragged,
+ * best of two quiet runs:
+ *
+ * ```
+ *              full pass   tick before (PF5.13)   tick now
+ *  2000 el :     6.6 ms          4.1 ms            3.7 ms   (inside the frame)
+ *  4000 el :    16.7 ms          8.8 ms            8.0 ms   (inside the frame)
+ *  8000 el :    64.1 ms         28.1 ms           27.3 ms   (past it)
+ * ```
+ *
+ * So there are now TWO walls and they are far apart: a board stops OPENING
+ * inside a frame around the figure above, and stops being DRAGGABLE inside one
+ * near 6000 elements. PF5.4's own share of that second figure is ~9 % on THIS
+ * pack — the rest was already `no-overlap`'s — because Wardley's two narrowable
+ * families are linear with a nearly empty body, and the closure removes only
+ * what a family does per subject. It is the pack this slice helps least; the
+ * next figure worth taking is BPMN's or C4's, not another Wardley one.
  */
 describe('the budget horizon, recorded for the next slice', () => {
   it(
@@ -1081,4 +1107,187 @@ describe('a rule switched off costs nothing', () => {
     // in play still happens, because it is what proves the rule can be skipped.
     expect(ms).toBeLessThan(0.5);
   });
+});
+
+/**
+ * The DIRTY TICK past the reference map (PF5.4).
+ *
+ * The suite at the top of this file measures the tick on 500 elements, where
+ * the only family that knew what had changed was `no-overlap`. PF5.4 gave the
+ * other twelve the same knowledge, derived from the dependency scopes of
+ * `docs/adr/0015` and from nothing else. These are the figures past the point
+ * where a linear family stops being free.
+ *
+ * Three sizes, each map built OUTSIDE the timer. `wasIn` is the manager's
+ * memory of where everything was ({@link frameMembership}); without it a rule
+ * framing against a background cannot be narrowed at all, which is why the
+ * 500-element suite above still reads a full pass for those rules.
+ *
+ * ## Where the tick's cost actually goes, measured
+ *
+ * Wardley's four rules straddle the seam this slice draws, and that is what
+ * makes the pack worth measuring here: `orientation-against-axis` (`'element'`)
+ * and W4 `relative-order-along-axis` (`'relations'`) are narrowed to the three
+ * dragged labels; `no-overlap` and W2 `attachment` are `'surface'` and are
+ * evaluated over the whole board on every tick, exactly as before.
+ *
+ * Best of two quiet runs on one developer machine, all four rules, profiles in
+ * force, measured ON TOP of the sweep-and-prune of #227 — the pass a user
+ * actually pays for:
+ *
+ * ```
+ *              full pass   tick before (PF5.13)   tick now   without W2
+ *  2000 el :     6.6 ms          4.1 ms            3.7 ms      3.1 ms
+ *  4000 el :    16.7 ms          8.8 ms            8.0 ms      6.7 ms
+ *  8000 el :    64.1 ms         28.1 ms           27.3 ms     22.9 ms
+ * ```
+ *
+ * Three things this says, and the PR says all three:
+ *
+ * - **The tick is 1.6× to 2.2× cheaper than the full pass**, and a floor on
+ *   that ratio is what is asserted below: it is a statement about the engine,
+ *   where an absolute millisecond count on an unknown machine is not. It used
+ *   to be 3.5× to 6.5×; #227 did not make the tick slower, it made the full
+ *   pass three times faster, and the ratio is a fraction with a moving
+ *   denominator.
+ * - **PF5.4's own share of the tick is ~9 %, and ~3 % at 8000.** The rest was
+ *   already `no-overlap`'s (PF5.13). That is the honest headline on THIS pack,
+ *   and it is small for a reason worth reading before quoting it elsewhere:
+ *   Wardley's two narrowable families are linear with a nearly empty body, and
+ *   their index passes still walk the surface, so what the closure removes is
+ *   the per-subject work after the filter and nothing before it. The slice pays
+ *   off in proportion to what a family does PER SUBJECT. Wardley is therefore
+ *   the pack it helps LEAST, and the one measured here only because this file
+ *   is the one with a 16 ms harness. The figure worth taking next is a pack
+ *   whose families tally, attribute and pair — BPMN's 22 rules, C4's 16.
+ * - **W2 `attachment` costs about a sixth of the tick** (0.6 / 1.2 / 4.1 ms)
+ *   and is paid in full because it is declared `'surface'`: its carriers are
+ *   collected from the whole board, bounded by a tolerance and by no frame
+ *   (`docs/adr/0015`). It does not dominate, so nothing about it is changed
+ *   here; bounding that search to the subject's own frame would let the table
+ *   entry narrow to `'frame'`, and that is a slice of its own.
+ *
+ * The wall is unchanged: at 8000 elements the tick is 27 ms and the frame
+ * budget is 16. What moved is where a DRAG stops fitting, not where a board
+ * stops opening.
+ *
+ * What is ASSERTED here is the equality of the two answers at every size, and a
+ * floor on the ratio from 4000 elements up. The frame budget is logged and not
+ * asserted, unlike everywhere else in this file, and so is the ratio at 2000 —
+ * see the comment on the assertion below for the two measurements that decided
+ * it.
+ */
+describe('the dirty tick, every family (PF5.4)', () => {
+  const SIZES = [2000, 4000, 8000] as const;
+  const tickKey = (violation: Violation) =>
+    `${violation.ruleId}|${violation.elementIds.join('+')}`;
+
+  it('has Wardley rules on both sides of the seam', () => {
+    // Otherwise every figure below is about one half of the mechanism, and the
+    // "W2 is paid in full" claim is unverifiable.
+    const narrowed = WARDLEY_RULES.filter(rule => scopeOf(rule) !== 'surface');
+    expect(narrowed.length).toBeGreaterThan(0);
+    expect(narrowed.length).toBeLessThan(WARDLEY_RULES.length);
+  });
+
+  for (const size of SIZES) {
+    // Built outside every timer, like the horizon suite above: the generator is
+    // linear and the full pass quadratic, so a build left inside a closure
+    // makes the tick look better than it is.
+    const map = referenceMap(size, 'wardley.strict');
+    const previous = evaluateRules(WARDLEY_RULES, map, WARDLEY_PROFILES);
+    const wasIn = frameMembership(WARDLEY_RULES, map);
+    // The worst realistic drag, as in the 500-element suite: three labels, the
+    // element the families have the most to say about.
+    const dirty = new Set(
+      map
+        .filter(el => el.role === WARDLEY_ROLE.label)
+        .slice(0, 3)
+        .map(el => el.id)
+    );
+    const tick = () =>
+      evaluateRules(WARDLEY_RULES, map, WARDLEY_PROFILES, {
+        dirty,
+        previous,
+        wasIn,
+      });
+
+    // The same tick without W2, to price the one family that is `'surface'` and
+    // whose evaluator this slice deliberately leaves alone.
+    const withoutW2 = WARDLEY_RULES.filter(
+      rule => rule.family !== 'attachment'
+    );
+    const previousWithoutW2 = evaluateRules(withoutW2, map, WARDLEY_PROFILES);
+    const tickWithoutW2 = () =>
+      evaluateRules(withoutW2, map, WARDLEY_PROFILES, {
+        dirty,
+        previous: previousWithoutW2,
+        wasIn,
+      });
+
+    it(`reaches exactly the same verdict as a full pass at ${size}`, () => {
+      // The whole point, at every size: a way of NOT doing work, never a
+      // different answer. The fuzz in `@labre/affine-all` proves this over every
+      // shipped pack under random mutation; this one proves the same thing
+      // where the boards are big enough for the closure to matter.
+      expect(tick().map(tickKey).sort()).toEqual(previous.map(tickKey).sort());
+    });
+
+    it(
+      `re-judges a drag on ${size} elements`,
+      () => {
+        // Interleaved, for the reason `pairedMedianMs` documents: the RATIO is
+        // the claim about the engine, and measuring the two one after the other
+        // would let a machine that got busy in between decide it.
+        const [full, dirtyTick] = pairedMedianMs(
+          () => evaluateRules(WARDLEY_RULES, map, WARDLEY_PROFILES),
+          tick,
+          7,
+          3
+        );
+        const whole = sweepMs(tick, 9, 3);
+        const withoutAttachment = sweepMs(tickWithoutW2, 9, 3);
+
+        console.info(
+          `[bench] PF5.4 dirty tick, ${size} elements, ${dirty.size} dragged: ` +
+            `${whole.best.toFixed(2)} ms best, ${whole.median.toFixed(2)} ms ` +
+            `median, against ${full.toFixed(2)} ms for the full pass it ` +
+            `replaces (interleaved medians: ×${(full / dirtyTick).toFixed(1)}). ` +
+            `Budget ${FRAME_BUDGET_MS} ms. Without W2 attachment — 'surface' ` +
+            `scope, so Wardley pays it whole on every tick — the same tick is ` +
+            `${withoutAttachment.best.toFixed(2)} ms best, i.e. W2 is ` +
+            `${(whole.best - withoutAttachment.best).toFixed(2)} ms of it.`
+        );
+
+        // Everything above is LOGGED. Two things are not asserted here, and
+        // both were measured rather than guessed.
+        //
+        // **The frame budget.** Alone, this tick reads 3.7 ms at 2000 and
+        // 8.0 ms at 4000 against the 16 ms frame — 4.3× and 2.0× of room.
+        // Inside the full `yarn test:unit` run, the same sweep's BEST sample
+        // reads 17.8 ms and 34.0 ms: five times the isolated figure, which is
+        // the inflation `sweepMs` documents and which the older budgets in this
+        // file survive only because they measure a 1 ms evaluation. Asserting
+        // it here would fail the suite on a statement about the scheduler, and
+        // there is no CI job to give that statement a fixed machine.
+        //
+        // **The ratio at 2000 elements.** Interleaving cancels load only while
+        // the gap is bigger than the noise, and at this size it is not: the two
+        // `'surface'` families are most of BOTH sides, the quiet ratio is 1.6×,
+        // and under the full parallel run the same pair read 1.20×. So the
+        // ratio is asserted from 4000 up, where it measured 2.0× and 2.2×
+        // quiet, and logged at 2000.
+        if (size > SIZES[0]) {
+          // Deliberately loose. What this guard is FOR is a tick that stopped
+          // being a tick — a closure that narrows nothing, or a `previous` no
+          // longer carried, both of which read ×1.0. It cannot be tightened
+          // into a guard on this slice's own contribution, and pretending
+          // otherwise makes it fail the day the full pass gets faster again:
+          // that is exactly what #227 did to the 2× floor this started at.
+          expect(dirtyTick * 1.25).toBeLessThan(full);
+        }
+      },
+      BENCH_TIMEOUT_MS
+    );
+  }
 });
