@@ -739,24 +739,66 @@ describe('a drag on a dense map re-judges only what moved', () => {
  * ## The budget's horizon — read this before adding a second pair-wise family
  *
  * `no-overlap` is the only super-linear term in the engine: everything else is
- * a constant per element. Measured on this generator, with the three rules of
- * THIS slice and nothing else, EVALUATION ONLY — the map is built outside the
- * timer, or the linear generator dilutes the quadratic engine and every figure
- * below is a statement about the wrong thing. Recorded so the next slice
- * inherits a FIGURE rather than a conclusion:
+ * a constant per element. Measured on this generator, with the four rules of
+ * today and nothing else, EVALUATION ONLY — the map is built outside the timer,
+ * or the linear generator dilutes the quadratic engine and every figure below
+ * is a statement about the wrong thing. Best of interleaved samples, all three
+ * variants measured in ONE session on one quiet developer machine through a
+ * temporary switch, so the ratios are the claim and the absolute numbers are
+ * only the setting:
  *
  * ```
- *   500 elements :   2.0 ms     (the reference map, and the claim in the PR)
- *  1000 elements :   5.2 ms     (still inside, with two thirds of the frame spare)
- *  2000 elements :  15.0 ms     (the whole budget, exactly — this IS the wall)
- *  4000 elements :  50.0 ms     (3× outside)
+ *              every pair    prune on x    + inline y gate
+ *   500 :         1.2 ms        0.9 ms         0.8 ms      (the reference map)
+ *  1000 :         3.6 ms        2.2 ms         1.9 ms
+ *  2000 :        15.3 ms        8.3 ms         6.3 ms      (was the wall)
+ *  4000 :        47.1 ms       22.5 ms        19.0 ms
  * ```
  *
- * Four times the elements is sixteen times the work: the wall is at roughly
- * **2000 elements today** — the one figure this slice hands on, and the same
- * one the `SCALE` line below recomputes on every run (measured across runs on
- * one machine: 1650 to 2100, median ~1930). It moves DOWN as rules are added:
- * each extra pair-wise rule is another full sweep.
+ * The pair-wise family alone, which is what actually changed: 0.86 → 0.52 →
+ * 0.47 ms at 500, 3.34 → 1.53 → 1.32 at 1000, 10.66 → 4.64 → 3.80 at 2000,
+ * 42.62 → 16.50 → 13.97 at 4000.
+ *
+ * Couples actually handed to the collision test, counted at the call site:
+ *
+ * ```
+ *   500 :      31 375        4 593            550
+ *  1000 :     125 250       18 553          1 722
+ *  2000 :     500 500       74 536          6 734
+ *  4000 :   2 001 000      298 769         27 037
+ * ```
+ *
+ * The x prune throws away ~85 % of the couples at every size; of the ones it
+ * keeps, ~91 % share no y extent, and the two subtractions in the loop now say
+ * so before `declared` builds its closures over `couples`. Net of the linear
+ * term the family pays whatever it prunes (subject building — `elementBound`
+ * is a `JSON.parse`, a `text` role is measured ink — about 12 ms of the 4000
+ * figures, read off the naive/pruned pair), a couple inside the x band costs
+ * ~15 ns when it reaches `declared`, and single-digit nanoseconds when the y
+ * gate refuses it. The wall clock improves by much less than the couple count
+ * in both steps, for the same reason each time: what is thrown away is the
+ * cheapest work there was.
+ *
+ * ## What did NOT change: the shape
+ *
+ * It is still quadratic on THIS generator, and for a reason worth writing down:
+ * the reference map is a fixed 1600 × 900 board, so doubling the elements
+ * doubles the DENSITY, and the number of subjects sharing any x band grows with
+ * the element count exactly as the naive count did. The prune and the y gate
+ * divide the constant by three; they do not change the exponent on a board that
+ * is asked to hold twice as much in the same space. A real board that grows in
+ * AREA as it grows in artefacts — which is what a user actually draws — sees a
+ * genuinely near-linear pass.
+ *
+ * So the wall moved by a constant, not by a class: from roughly **2100 elements
+ * to roughly 3600** on this generator and this machine, extrapolated from the
+ * measured 2000 and 4000 points on both sides of the change with the linear
+ * term separated out. Read it as an order of magnitude and not as a number: the
+ * `SCALE` line below recomputes a cruder version of it from the 500 → 1000 pair
+ * on every run, and read 1875 and 2433 on two runs of the same quiet machine
+ * minutes apart, which is exactly why it is logged and never asserted. It still
+ * moves DOWN as rules are added: each extra pair-wise rule is another full
+ * sweep — a cheaper one now, but a whole one.
  *
  * W4 (`docs/adr/0010`) joined the pack without moving that wall, and the suite
  * above says why: it is priced by the RELATIONS somebody drew, so it adds a
@@ -764,14 +806,24 @@ describe('a drag on a dense map re-judges only what moved', () => {
  * and no second sweep. A rule about a pair of elements is not automatically a
  * quadratic rule — a rule about every pair is.
  *
- * So the honest trigger for a spatial index is **the second pair-wise rule, or
- * the first board past ~2000 elements — whichever comes first.** Not "when we
- * have fourteen frameworks": one more `no-overlap` rule halves the headroom on
- * its own, and one dense board reaches the wall without any help.
+ * ## The trigger for a real spatial index
  *
- * "No spatial index, measured first" was the right call for this slice and is
- * the wrong call for the next one that crosses either line. The case below is
- * asserted so that whoever crosses it meets a failing test, not a paragraph.
+ * The one-axis prune IS the cheap half of a spatial index, and it is now spent.
+ * What is left is the density of x-overlapping subjects, and the board that
+ * defeats it is not hypothetical: a framework whose artefacts SPAN the map —
+ * swimlanes, phase bands, a Wardley evolution zone drawn as a full-width
+ * rectangle — puts every subject in every other subject's x band and degenerates
+ * to a walk over every couple. What it does NOT degenerate to any more is the
+ * old cost: those couples now die on two subtractions rather than on `declared`
+ * plus `boundsOverlap`, which is the difference between the last two columns
+ * above. The upgrade path, when a board does that or a second pair-wise family
+ * lands, is to make y an INDEX rather than a filter (sort on y as well and
+ * intersect the two candidate sets) or a uniform grid keyed on the bound; both
+ * cost memory per pass, which is why neither is here yet. The `ponytail:` note in
+ * `evaluateNoOverlap` says the same thing beside the code.
+ *
+ * The case below is asserted so that whoever crosses it meets a failing test,
+ * not a paragraph.
  */
 describe('the budget horizon, recorded for the next slice', () => {
   it(
@@ -819,11 +871,64 @@ describe('the budget horizon, recorded for the next slice', () => {
     BENCH_TIMEOUT_MS
   );
 
+  /**
+   * The two boards past the reference map, MEASURED rather than extrapolated —
+   * and logged rather than asserted.
+   *
+   * 2000 is where the pre-prune curve met the frame exactly and the figure the
+   * last slice handed on as "the wall". On a quiet developer machine it now
+   * comes in around 6 ms best, comfortably inside the budget; on the same
+   * machine running three other heavy sessions it reads 31–38 ms. An absolute
+   * budget at 2000 would therefore be a coin toss, and there is no CI job to
+   * average the mood out — so the figure is printed for whoever is reading the
+   * horizon note and the budget stays asserted where it has eight times the
+   * headroom (the 500-element reference map, above). 4000 is still out of the
+   * frame, at around 20 ms best where it used to be three frames out.
+   *
+   * The claim about the ENGINE — that the curve is not worse than quadratic —
+   * is asserted next door on an interleaved ratio, which is the only kind of
+   * number a shared machine cannot decide.
+   */
+  it(
+    'says what 2000 and 4000 elements cost today',
+    () => {
+      const twoK = referenceMap(2000, 'wardley.strict');
+      const two = sweepMs(
+        () => evaluateRules(WARDLEY_RULES, twoK, WARDLEY_PROFILES),
+        15,
+        5
+      );
+      const fourK = referenceMap(4000, 'wardley.strict');
+      const four = sweepMs(
+        () => evaluateRules(WARDLEY_RULES, fourK, WARDLEY_PROFILES),
+        7,
+        3
+      );
+
+      console.info(
+        `[bench] full evaluation, 2000 elements: median ${two.median.toFixed(3)} ms, ` +
+          `best ${two.best.toFixed(3)} ms (budget ${FRAME_BUDGET_MS} ms) — ` +
+          `4000 elements: median ${four.median.toFixed(3)} ms, best ${four.best.toFixed(3)} ms ` +
+          `— logged, never asserted: see the comment above`
+      );
+
+      // Only that the boards were evaluated at all: a silent pass would make
+      // the figures above a measurement of an early exit.
+      expect(
+        evaluateRules(WARDLEY_RULES, twoK, WARDLEY_PROFILES).length
+      ).toBeGreaterThan(100);
+    },
+    BENCH_TIMEOUT_MS
+  );
+
   it('has exactly ONE pair-wise rule — the second one is the trigger', () => {
     // The enforceable half of the note above. Every `no-overlap` rule is
-    // another full sweep of the participants against themselves, so the second
-    // one halves the headroom on its own — which is why "when we have fourteen
-    // frameworks" was never the honest trigger.
+    // another full sweep of the participants against themselves. The sweep is
+    // pruned on x now, so the second one costs a fraction of what the second
+    // one used to cost — but it is still a whole extra pass over the
+    // participants, and it still comes out of the same 16 ms. Cheaper is not
+    // free, which is why "when we have fourteen frameworks" was never the
+    // honest trigger.
     //
     // When this fails: read the note, measure again, and either build the
     // spatial index or write down why the numbers still say not to. What must
