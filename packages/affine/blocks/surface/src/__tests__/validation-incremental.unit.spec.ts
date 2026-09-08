@@ -49,11 +49,13 @@ const RULE: ValidationRule = {
 function element(
   id: string,
   xywh: [number, number, number, number],
-  role?: string
+  role?: string,
+  extra: Record<string, unknown> = {}
 ): GfxPrimitiveElementModel {
   return {
     id,
     role,
+    ...extra,
     get elementBound() {
       return new Bound(...xywh);
     },
@@ -231,6 +233,214 @@ describe('the bound cannot change the answer', () => {
       expect(full).toHaveLength(30);
     });
   }
+});
+
+/**
+ * The PRUNE, against the dirty loop as an oracle.
+ *
+ * The full pass sorts its subjects by left edge and stops each walk at the
+ * first subject that begins after the current one ends. The dirty loop next to
+ * it was deliberately left NAIVE — it still tests one element against every
+ * participant — so the two halves of this family now enumerate their couples in
+ * two entirely different ways, and the contract at the top of this file makes
+ * one the oracle of the other for free.
+ *
+ * With `previous: []` the incremental branch returns exactly the findings that
+ * TOUCH the dirty set, so that is the subset the full pass is compared on. The
+ * dirty set is kept below the crossover, or the branch falls back to the sweep
+ * and the test compares the prune with itself.
+ *
+ * Random rather than hand-written because the prune's failure mode is a
+ * geometric coincidence — a zero-width bound exactly on another's right edge,
+ * a wide subject sorted last, a path leaving its own box — and a list of cases
+ * somebody thought of is precisely the list that misses the one nobody did.
+ */
+describe('the pruned sweep answers what pair-by-pair testing answers', () => {
+  /**
+   * mulberry32: 32 bits of state, four lines, and the same sequence on every
+   * host — so a board that fails is replayed from the seed in the message
+   * rather than reconstructed from a screenshot.
+   */
+  const mulberry32 = (seed: number) => () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+
+  /** Node against node, node against link, link against link. */
+  const FUZZ_ROLES: RoleDefs = ROLES;
+  const fuzzRule = (minPenetration: number): ValidationRule => ({
+    ...RULE,
+    id: 'test.no-overlap.fuzz',
+    roles: FUZZ_ROLES,
+    minPenetration,
+    overlap: [
+      ['test:node', 'test:node'],
+      ['test:node', 'test:edge'],
+      ['test:edge', 'test:edge'],
+    ],
+  });
+
+  /**
+   * One random board.
+   *
+   * Sizes and widths are deliberately mean: zero-width and zero-height boxes
+   * (a vertical line's bound), x values snapped to a coarse grid so ties and
+   * exact `maxX === x` touches happen often, and edges whose routed path is
+   * measured inside a bound that is the path's own bounding box — the shape a
+   * connector really has, `xywh` being recomputed from the path on every route.
+   */
+  function board(random: () => number) {
+    const size = 5 + Math.floor(random() * 116);
+    const elements = [element('map', [0, 0, 1000, 600], 'test:frame')];
+    for (let i = 0; i < size; i++) {
+      const id = `f${i}`;
+      // A coarse grid on x: exact ties and exact edge-to-edge touches are the
+      // cases the stop condition is about, and they never occur by accident on
+      // continuous coordinates.
+      const x = Math.floor(random() * 20) * 50;
+      const y = Math.floor(random() * 12) * 50;
+      if (random() < 0.4) {
+        const points: [number, number][] = [];
+        for (let k = 0, n = 2 + Math.floor(random() * 3); k < n; k++) {
+          points.push([x + random() * 200, y + random() * 200]);
+        }
+        const xs = points.map(p => p[0]);
+        const ys = points.map(p => p[1]);
+        const minX = Math.min(...xs);
+        const minY = Math.min(...ys);
+        elements.push(
+          element(
+            id,
+            [minX, minY, Math.max(...xs) - minX, Math.max(...ys) - minY],
+            'test:edge',
+            { absolutePath: points }
+          )
+        );
+        continue;
+      }
+      // Zero width and zero height are ordinary here, not exotic: a perfectly
+      // vertical connector and a flat separator both present one.
+      const w = random() < 0.2 ? 0 : Math.floor(random() * 120);
+      const h = random() < 0.2 ? 0 : Math.floor(random() * 120);
+      elements.push(element(id, [x, y, w, h], 'test:node'));
+    }
+    return elements;
+  }
+
+  it('on 200 random boards, and on a random subset of each', () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const random = mulberry32(seed);
+      const rule = fuzzRule([0, 3, 8][seed % 3]);
+      const elements = board(random);
+      const participants = elements.slice(1);
+      const why = `seed ${seed} (${participants.length} participants, minPenetration ${rule.minPenetration})`;
+
+      const full = evaluateRules([rule], elements);
+
+      // The same board, shuffled: the sweep sorts its own subjects now, so the
+      // answer must not remember what order they arrived in.
+      const shuffled = [...elements];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      expect(keys(evaluateRules([rule], shuffled)), why).toEqual(keys(full));
+
+      // Below the crossover, or the branch falls back to the sweep and this
+      // compares the prune with itself.
+      const dirtySize = Math.max(
+        1,
+        Math.floor(random() * Math.max(1, Math.floor(participants.length / 2)))
+      );
+      const dirty = new Set(
+        participants
+          .slice()
+          .sort(() => random() - 0.5)
+          .slice(0, dirtySize)
+          .map(el => el.id)
+      );
+      const incremental = evaluateRules([rule], elements, [], {
+        dirty,
+        previous: [],
+      });
+
+      expect(keys(incremental), why).toEqual(
+        keys(full.filter(v => v.elementIds.some(id => dirty.has(id))))
+      );
+    }
+  });
+});
+
+/**
+ * The stop condition, written out by hand.
+ *
+ * The fuzz above proves the prune agrees with pair-by-pair testing; these say
+ * WHICH cases it is agreeing about, so a future change to the stop condition
+ * fails on the case it broke rather than on a seed.
+ */
+describe('the prune stops at the right subject', () => {
+  const box = (id: string, x: number, y: number, w: number, h: number) =>
+    element(id, [x, y, w, h], 'test:node');
+  const found = (...elements: GfxPrimitiveElementModel[]) =>
+    keys(evaluateRules([RULE], [frame(), ...elements]));
+
+  it('lets a shared EDGE pass: touching is not overlapping', () => {
+    expect(found(box('a', 0, 0, 100, 20), box('b', 100, 0, 100, 20))).toEqual(
+      []
+    );
+  });
+
+  it('lets a zero-width box sitting exactly on another edge pass', () => {
+    expect(found(box('a', 0, 0, 100, 20), box('b', 100, 0, 0, 20))).toEqual([]);
+  });
+
+  it('still catches a zero-width box INSIDE another', () => {
+    // The stop is `>` and not `>=` so this pair is still handed to the
+    // geometry, which is the half that owns the touching question.
+    expect(found(box('a', 0, 0, 100, 20), box('b', 50, 0, 0, 20))).toEqual([
+      'test.no-overlap|a+b|map',
+    ]);
+  });
+
+  it('catches a box nested entirely inside another', () => {
+    expect(found(box('a', 0, 0, 200, 200), box('b', 50, 50, 20, 20))).toEqual([
+      'test.no-overlap|a+b|map',
+    ]);
+  });
+
+  it('reaches PAST a subject that does not collide', () => {
+    // Sorted by left edge the walk meets `mid` first and must not stop there:
+    // `wide` still reaches `far`, which is the whole point of a stop condition
+    // rather than a skip.
+    expect(
+      found(
+        box('wide', 0, 0, 300, 10),
+        box('mid', 100, 500, 10, 10),
+        box('far', 200, 0, 50, 10)
+      )
+    ).toEqual(['test.no-overlap|far+wide|map']);
+  });
+
+  it('finds a wide subject that sorts FIRST', () => {
+    expect(found(box('wide', 0, 0, 400, 20), box('n', 300, 0, 20, 20))).toEqual(
+      ['test.no-overlap|n+wide|map']
+    );
+  });
+
+  it('finds a wide subject that sorts LAST', () => {
+    // `wide` begins after both others, so it is only ever reached as the far
+    // end of somebody else's walk — and `near`, whose own reach stops short of
+    // it, must not be reported.
+    expect(
+      found(
+        box('near', 0, 0, 20, 20),
+        box('over', 150, 0, 100, 20),
+        box('wide', 200, 0, 400, 20)
+      )
+    ).toEqual(['test.no-overlap|over+wide|map']);
+  });
 });
 
 /**

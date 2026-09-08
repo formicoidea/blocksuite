@@ -2715,10 +2715,12 @@ function pathsCross(a: readonly Point[], b: readonly Point[]): boolean {
  *
  * ## Cost, and the dirty set
  *
- * Naive it is O(p²) over the PARTICIPANTS — the elements carrying one of the
- * declared roles, never the whole surface — with every bound read exactly once
- * and a rectangle test as the inner loop. That is what the bench measures on
- * the reference map, and it fits.
+ * The full pass is a SWEEP-AND-PRUNE over the PARTICIPANTS — the elements
+ * carrying one of the declared roles, never the whole surface. Sorted by left
+ * edge, each subject is tested only against the ones that begin before it ends,
+ * so what used to be p²/2 rectangle tests is now p log p plus the couples that
+ * actually share an x band. That is what the bench measures on the reference
+ * map, and it fits with room to spare.
  *
  * With an {@link IncrementalContext} it is O(|dirty| × p): findings that name
  * only untouched elements are carried over from the previous evaluation, and
@@ -2799,11 +2801,61 @@ function evaluateNoOverlap(
     );
   };
 
+  /**
+   * The full pass: sweep-and-prune on x, not every couple.
+   *
+   * Sorted by left edge, a subject only has to be tested against the ones whose
+   * left edge is still inside its own right edge — past that, every remaining
+   * subject starts further right than this one ends, and the list is sorted, so
+   * the walk stops rather than skips.
+   *
+   * The prune is exactly conservative, and not by geometric luck:
+   * {@link subjectsCollide} opens with `boundsOverlap`, which needs
+   * `a.maxX - b.minX > OVERLAP_EPSILON`. A pair the walk stops at has
+   * `b.minX > a.maxX`, i.e. that difference NEGATIVE — a pair the naive sweep
+   * also answered `false` for, whatever geometry it carried. So an `edge`
+   * subject whose bound did not enclose its path would already be missed by the
+   * naive sweep for the same reason, and the prune cannot lose a crossing the
+   * old code found. (In production it does enclose it: a connector's `xywh` IS
+   * the bounding box of its path — `updatePath` in the connector manager — so
+   * nothing is lost either way.) The stop is `>` rather than `>=` so a
+   * zero-width box sitting exactly on another's right edge is still handed to
+   * `subjectsCollide`, which is the half that owns the touching-versus-
+   * overlapping question.
+   *
+   * ponytail: one axis only. The remaining super-linear term is the DENSITY of
+   * subjects sharing an x band — a board where every subject spans the full
+   * width degenerates to the old p²/2, and nothing here notices. The upgrade
+   * path when a real board does that is a second axis (sort on y as well and
+   * intersect the two candidate sets) or a uniform grid keyed on the bound;
+   * both cost memory per pass, which is why neither is here yet.
+   */
   const sweep = () => {
-    for (let i = 0; i < subjects.length; i++) {
-      for (let j = i + 1; j < subjects.length; j++)
-        test(subjects[i], subjects[j]);
+    const order = subjects.map((_, index) => index);
+    order.sort((a, b) => subjects[a].bound.x - subjects[b].bound.x);
+    for (let i = 0; i < order.length; i++) {
+      const a = subjects[order[i]];
+      const reach = a.bound.maxX;
+      for (let j = i + 1; j < order.length; j++) {
+        const b = subjects[order[j]];
+        if (b.bound.x > reach) break;
+        test(a, b);
+      }
     }
+    // Findings come out in x order now rather than in document order. Nothing
+    // reads them ordered — every consumer and every spec keys or sorts them —
+    // but a pass whose output depends on how its input happened to be sorted is
+    // a bad thing to leave lying around, so one line pins it. The ids of a pair
+    // are already sorted against each other by `test`.
+    found.sort((x, y) =>
+      x.elementIds[0] !== y.elementIds[0]
+        ? x.elementIds[0] < y.elementIds[0]
+          ? -1
+          : 1
+        : x.elementIds[1] < y.elementIds[1]
+          ? -1
+          : 1
+    );
     return found;
   };
   if (incremental === undefined) return sweep();
@@ -2834,11 +2886,17 @@ function evaluateNoOverlap(
   /**
    * ...and so does a change big enough that the shortcut is no longer one.
    *
-   * The dirty path costs `dirtyParticipants × p`; the sweep costs `p²/2`. Past
-   * the crossover the "optimisation" is several times the price of the thing it
-   * replaces — measured at 8× and OUT of the 16 ms budget for a lasso drag over
-   * a third of a 500-element map, against 2.2 ms for the sweep it was avoiding.
-   * One comparison buys back the worst case entirely.
+   * The dirty path costs `dirtyParticipants × p`; the sweep costs `p²/2` at
+   * worst and much less than that since it prunes on x. Past the crossover the
+   * "optimisation" is several times the price of the thing it replaces —
+   * measured at 8× and OUT of the 16 ms budget for a lasso drag over a third of
+   * a 500-element map, against 2.2 ms for the sweep it was avoiding. One
+   * comparison buys back the worst case entirely, and the pruned sweep only
+   * makes the comparison more conservative: the branch it falls back to is
+   * cheaper than the one this half of the ratio was calibrated against, never
+   * dearer. The dirty loop itself is left NAIVE on purpose — it is the
+   * independent oracle the fuzz in `validation-incremental.unit.spec.ts`
+   * compares the pruned sweep against.
    */
   let dirtyParticipants = 0;
   const isDirty = subjects.map(subject => {
