@@ -2,39 +2,60 @@ import {
   makeTemplateSnapshot,
   type SurfaceElementsJSON,
   surfaceText,
+  surfaceYMap,
   type Template,
   type TemplateCategory,
+  templateFromCommand,
 } from '@labre/affine-gfx-template';
 import {
   ConnectorMode,
+  type EdgyNodeKind,
   FontFamily,
   PointStyle,
   ShapeStyle,
   StrokeStyle,
   TextAlign,
 } from '@labre/affine-model';
+import type { CommandDescriptor } from '@labre/std';
 
-import { CROP, CROP_LABELED } from '../consts';
-import {
-  EDGY_DYNAMIC_NODES,
-  EDGY_DYNAMIC_RELATIONS,
-  EDGY_ZONE_FILL,
-  edgyElementLabel,
-  type EdgyElementName,
-} from '../metamodel';
-import { EDGY_RELATION_LABEL_DISTANCE, edgyVerbLabelXYWH } from '../relation';
-import { EDGY_ROLE, EDGY_VERB_ROLE } from '../roles';
-import {
-  ACTIVITY_VERTICES,
-  INNER_FONT_SIZE,
-  NODE_FILL,
-  NODE_SIZE,
-  NODE_STROKE,
-  NODE_STROKE_WIDTH,
-  OUTCOME_RADIUS,
-} from '../node/consts';
+import { edgyCommands } from '../commands';
+import { NODE_STROKE, NODE_STROKE_WIDTH } from '../node/consts';
+import { edgyNodeProps, edgyNodeTextProps } from '../presets';
+import { edgyDynamicTemplate } from './dynamic';
+
+/**
+ * The EDGY palette — DERIVED from the toolbox, one template per command.
+ *
+ * Every single-artefact entry below is what its command actually draws, run
+ * once against a recording surface. They used to be hand-written restatements
+ * and had drifted exactly as far as a copy drifts (audit of 2026-09-09): the
+ * four base elements carried no `role` at all, so `edgy.overlapping-artefacts`
+ * never saw them, the auto legend never legended them and the info panel would
+ * not open on them; "People" arrived as two loose elements where the button
+ * groups the glyph with its name; the texts were English literals outside the
+ * translation seam; the label box was 16/24/+70 against the toolbox's
+ * 18/26/+72; and `1.5` was spelled out a second time instead of
+ * `FACETS_SCALE`. Derived, none of that can happen again — and
+ * `templates-parity.unit.spec.ts` re-runs each command and compares.
+ *
+ * The five COMPOSITIONS stay hand-written: a customer journey or an org chart
+ * is an arrangement of a dozen artefacts, which no single command draws. They
+ * are built on the same presets, and the same test checks their composition.
+ */
+
+/** The command a derived template is the picture of. Throws rather than skips. */
+function byId(id: string): CommandDescriptor {
+  const command = edgyCommands.find(entry => entry.id === id);
+  if (!command) throw new Error(`[edgy] templates: no command "${id}"`);
+  return command;
+}
 
 // EDGY facet palette (header / pale sub-card).
+//
+// NOT `EDGY_ZONE_FILL`: the metamodel's palette is ONE pastel per zone — the
+// colour an official element is drawn with — where the overview needs a
+// saturated header AND the pale card that sits on it. Two colours per facet is
+// a different table, not a drifted copy of that one.
 const C = {
   identity: ['#1ec873', '#9fe6c2'],
   organisation: ['#4fd0ea', '#c2eef8'],
@@ -84,16 +105,17 @@ function rect(
 }
 
 /**
- * An EDGY node (kind drives the native shape): outcome/object box, people,
- * activity chevron.
+ * An EDGY node of a COMPOSITION — {@link edgyNodeProps} says what that is, and
+ * this adds the two things an illustration decides for itself.
  *
- * `role` is optional and writes NOTHING when absent: the illustrative templates
- * (journey, blueprint, org chart) stay neutral drawings the engine never looks
- * at, exactly as they were before roles existed. Only the EDGY dynamic template
- * — the one that IS the metamodel — stamps its elements.
+ * `role: undefined` writes nothing, and it is the point: the journey, the
+ * blueprint, the org chart and the facets overview are DRAWINGS the engine
+ * never looks at, a decision `edgy-dynamic.unit.spec.ts` pins. Only the EDGY
+ * dynamic template — the one that IS the metamodel — stamps its elements, and
+ * it does so through the same preset.
  */
 function enode(
-  kind: 'outcome' | 'object' | 'people' | 'activity',
+  kind: EdgyNodeKind,
   x: number,
   y: number,
   w: number,
@@ -103,32 +125,19 @@ function enode(
     text?: string;
     textColor?: string;
     fontSize?: number;
-    role?: string;
   } = {}
 ) {
   const el: Record<string, unknown> = {
-    type: 'edgyNode',
-    kind,
-    filled: true,
-    fillColor: opts.fill ?? NODE_FILL,
-    strokeColor: NODE_STROKE,
-    strokeWidth: kind === 'people' ? 0 : NODE_STROKE_WIDTH,
-    shapeStyle: ShapeStyle.General,
-    roughness: 0,
-    shapeType:
-      kind === 'people' ? 'ellipse' : kind === 'activity' ? 'polygon' : 'rect',
-    radius: kind === 'outcome' ? OUTCOME_RADIUS : 0,
-    xywh: `[${x},${y},${w},${h}]`,
+    ...edgyNodeProps(kind, { xywh: `[${x},${y},${w},${h}]` }),
+    role: undefined,
+    ...(opts.fill === undefined ? {} : { fillColor: opts.fill }),
   };
-  if (kind === 'activity') el.vertices = ACTIVITY_VERTICES;
-  // `undefined` writes nothing: a neutral node keeps no `role` key.
-  if (opts.role !== undefined) el.role = opts.role;
   if (opts.text != null) {
+    Object.assign(el, edgyNodeTextProps(opts.text, opts.fontSize));
+    // A snapshot stores the words as a serialized `Y.Text`, where
+    // `addElement` takes a plain string.
     el.text = surfaceText(opts.text);
-    el.color = opts.textColor ?? NODE_STROKE;
-    el.fontFamily = FontFamily.Inter;
-    el.fontSize = opts.fontSize ?? INNER_FONT_SIZE;
-    el.textAlign = TextAlign.Center;
+    if (opts.textColor !== undefined) el.color = opts.textColor;
   }
   return el;
 }
@@ -151,6 +160,16 @@ function label(
     xywh: `[${x},${y},${w},${h}]`,
   };
 }
+
+/**
+ * The group a node and its name travel as — what `createEdgyPeople` writes and
+ * what these compositions had never carried, so dragging the person out of a
+ * journey left the word "Customer" behind.
+ */
+const pair = (node: string, name: string) => ({
+  type: 'group',
+  children: surfaceYMap({ [node]: true, [name]: true }),
+});
 
 function line(
   x1: number,
@@ -291,6 +310,10 @@ function journey(): SurfaceElementsJSON {
   return {
     cust: enode('people', 40, 120, 64, 64, { fill: '#ffffff' }),
     custL: label(20, 192, 104, 24, 'Customer', { fontSize: 14 }),
+    // The person and its name travel together, as `createEdgyPeople` writes
+    // them. A group is placed AFTER its members: the id middleware remaps
+    // `children` against elements it has already seen.
+    custG: pair('cust', 'custL'),
     band: {
       type: 'shape',
       shapeType: 'polygon',
@@ -440,96 +463,23 @@ function orgChart(): SurfaceElementsJSON {
   };
 }
 
-// ── EDGY dynamic (the relational metamodel, on the facets background) ──
 /**
- * Background scale (from REF coords to model coords): large enough that the
- * default-size nodes breathe inside each zone. The background is cropped to
- * the circles (`cropToCircles`), so its xywh covers CROP × DYN_SCALE.
- */
-export const DYN_SCALE = 4.8;
-
-/**
- * The metamodel itself — the 12 elements and the 24 relations — now lives in
- * `../metamodel.ts`, so the role vocabulary can DERIVE from it without this
- * module and that one importing each other. Re-exported here under the names
- * they have always had: nothing that reads them had to change.
+ * The metamodel itself — the 12 elements and the 24 relations — lives in
+ * `../metamodel.ts`, and the template that draws it in `./dynamic.ts`.
+ * Re-exported here under the names they have always had: nothing that reads
+ * them had to change.
  */
 export {
   EDGY_DYNAMIC_NODES,
   EDGY_DYNAMIC_RELATIONS,
   type EdgyElementName,
 } from '../metamodel';
+export { DYN_SCALE, dynToModel, edgyDynamicTemplate } from './dynamic';
 
-/**
- * Reference coords → template model coords: the background element sits at
- * (0,0) and renders the cropped circles box, so a reference point maps to
- * `(p - CROP.origin) × DYN_SCALE`.
- */
-export function dynToModel(refX: number, refY: number): [number, number] {
-  return [(refX - CROP.x) * DYN_SCALE, (refY - CROP.y) * DYN_SCALE];
-}
-
-function dynamic(): SurfaceElementsJSON {
-  const out: SurfaceElementsJSON = {
-    bg: {
-      type: 'edgy',
-      showLabels: false,
-      showPictos: false,
-      cropToCircles: true,
-      // The frame a finding is attributed to. Stamped here and nowhere else in
-      // this template: the background is what makes the board an EDGY board.
-      role: EDGY_ROLE.facets,
-      xywh: `[0,0,${CROP.w * DYN_SCALE},${CROP.h * DYN_SCALE}]`,
-    },
-  };
-  for (const [key, { kind, cx, cy, w, zone }] of Object.entries(
-    EDGY_DYNAMIC_NODES
-  ) as [EdgyElementName, (typeof EDGY_DYNAMIC_NODES)[EdgyElementName]][]) {
-    const nw = w ?? NODE_SIZE[kind].w;
-    const nh = NODE_SIZE[kind].h;
-    const [mx, my] = dynToModel(cx, cy);
-    const name = edgyElementLabel(key);
-    out[key] = enode(kind, mx - nw / 2, my - nh / 2, nw, nh, {
-      text: name,
-      fill: EDGY_ZONE_FILL[zone],
-      // The OFFICIAL element, not just its kind: this template IS the
-      // metamodel, so its Purpose is a Purpose and not merely an outcome.
-      role: EDGY_ROLE[key],
-    });
-  }
-  EDGY_DYNAMIC_RELATIONS.forEach(([src, dst, verb, t], i) => {
-    out[`rel${i}`] = {
-      type: 'connector',
-      mode: ConnectorMode.Straight,
-      stroke: NODE_STROKE,
-      strokeWidth: 2,
-      strokeStyle: StrokeStyle.Solid,
-      frontEndpointStyle: PointStyle.None,
-      rearEndpointStyle: PointStyle.None,
-      source: { id: src },
-      target: { id: dst },
-      // The verb, as a ROLE — one per canonical verb, derived from this very
-      // table (`../roles.ts`). Source is the subject and target the object
-      // (`docs/adr/0010` tier 1), which is exactly how the row above reads, so
-      // `edgy.non-canonical-link` finds all 24 of these sentences legal.
-      role: EDGY_VERB_ROLE[verb],
-      // Native connector label: the verb travels with the link. The x/y are
-      // re-centred on the path at the first layout, but the w/h ARE the label
-      // box — size it to the verb so the text lays out on one line. The
-      // distance slides the verb along the link like the reference diagram.
-      text: surfaceText(verb),
-      labelXYWH: edgyVerbLabelXYWH(verb),
-      labelOffset: { distance: t ?? EDGY_RELATION_LABEL_DISTANCE },
-    };
-  });
-  return out;
-}
-
-const single = (el: Record<string, unknown>): SurfaceElementsJSON => ({
-  a: el,
-});
 const ATTRS =
   'width="100%" height="100%" viewBox="0 0 135 80" xmlns="http://www.w3.org/2000/svg"';
+
+/** A hand-composed template — what is left once the artefacts are derived. */
 function tpl(
   name: string,
   preview: string,
@@ -542,13 +492,6 @@ function tpl(
     content: makeTemplateSnapshot(elements, name),
   };
 }
-
-/** Exported for direct insertion from the EDGY senior toolbar menu. */
-export const edgyDynamicTemplate: Template = tpl(
-  'EDGY dynamic',
-  `<svg ${ATTRS}><circle cx="55" cy="34" r="18" fill="#00ea4e" opacity="0.9"/><circle cx="80" cy="34" r="18" fill="#034cee" opacity="0.9"/><circle cx="67" cy="54" r="18" fill="#ff0056" opacity="0.9"/><path d="M55 30 H80 M56 31 L66 52 M79 31 L69 52" stroke="#fff" stroke-width="2"/><rect x="51" y="26" width="8" height="8" fill="#fff"/><circle cx="80" cy="30" r="4" fill="#fff"/><path d="M62 49 h6 l3 3 -3 3 h-6 z" fill="#fff"/></svg>`,
-  dynamic()
-);
 
 export const edgyTemplateCategory: TemplateCategory = {
   name: 'EDGY',
@@ -573,39 +516,34 @@ export const edgyTemplateCategory: TemplateCategory = {
       `<svg ${ATTRS} fill="none"><rect x="52" y="12" width="32" height="14" rx="2" fill="#4fd0ea"/><rect x="14" y="38" width="32" height="14" rx="2" fill="#4fd0ea"/><rect x="52" y="38" width="32" height="14" rx="2" fill="#4fd0ea"/><rect x="90" y="38" width="32" height="14" rx="2" fill="#4fd0ea"/><path d="M68 26 V32 M30 32 H106 M30 32 V38 M68 32 V38 M106 32 V38" stroke="#262626"/></svg>`,
       orgChart()
     ),
-    tpl(
-      'Facets diagram',
+    templateFromCommand(
+      byId('edgy.addFacets'),
       `<svg ${ATTRS}><circle cx="55" cy="34" r="18" fill="#00ea4e" opacity="0.9"/><circle cx="80" cy="34" r="18" fill="#034cee" opacity="0.9"/><circle cx="67" cy="54" r="18" fill="#ff0056" opacity="0.9"/></svg>`,
-      single({
-        type: 'edgy',
-        cropToCircles: true,
-        role: EDGY_ROLE.facets,
-        xywh: `[0,0,${CROP_LABELED.w * 1.5},${CROP_LABELED.h * 1.5}]`,
-      })
+      'Facets diagram'
     ),
     edgyDynamicTemplate,
-    tpl(
-      'People',
-      `<svg ${ATTRS} fill="#262626"><circle cx="67" cy="32" r="9" fill="none" stroke="#262626" stroke-width="2.4"/><path d="M50 60 a17 17 0 0 1 34 0" fill="none" stroke="#262626" stroke-width="2.4"/></svg>`,
-      {
-        n: enode('people', 0, 0, 64, 64),
-        l: label(-28, 70, 120, 24, 'People', { fontSize: 16 }),
-      }
+    // The blank board had no template at all until the palette was derived —
+    // the coverage test is what said so.
+    templateFromCommand(
+      byId('edgy.addBoard'),
+      `<svg ${ATTRS} fill="none"><rect x="8" y="9" width="119" height="62" rx="8" fill="#ffffff" stroke="#e0e0e0" stroke-width="2"/><path d="M52 30 H84 M53 31 L66 58 M83 31 L70 58" stroke="#262626" stroke-width="1.4"/><rect x="48" y="26" width="9" height="9" fill="#00ea4e"/><circle cx="84" cy="30" r="4.5" fill="#034cee"/><path d="M61 54 h8 l4 4 -4 4 h-8 z" fill="#ff0056"/></svg>`,
+      'EDGY board'
     ),
-    tpl(
-      'Outcome',
-      `<svg ${ATTRS} fill="none"><rect x="20" y="24" width="95" height="34" rx="6" stroke="#262626" stroke-width="2"/></svg>`,
-      single(enode('outcome', 0, 0, 130, 80, { text: 'Outcome' }))
+    templateFromCommand(
+      byId('edgy.addPeople'),
+      `<svg ${ATTRS} fill="#262626"><circle cx="67" cy="32" r="9" fill="none" stroke="#262626" stroke-width="2.4"/><path d="M50 60 a17 17 0 0 1 34 0" fill="none" stroke="#262626" stroke-width="2.4"/></svg>`
     ),
-    tpl(
-      'Object',
-      `<svg ${ATTRS} fill="none"><rect x="20" y="24" width="95" height="34" stroke="#262626" stroke-width="2"/></svg>`,
-      single(enode('object', 0, 0, 130, 80, { text: 'Object' }))
+    templateFromCommand(
+      byId('edgy.addOutcome'),
+      `<svg ${ATTRS} fill="none"><rect x="20" y="24" width="95" height="34" rx="6" stroke="#262626" stroke-width="2"/></svg>`
     ),
-    tpl(
-      'Activity',
-      `<svg ${ATTRS} fill="none"><path d="M20 24 H98 L116 41 H116 L98 58 H20 Z" stroke="#262626" stroke-width="2" stroke-linejoin="round"/></svg>`,
-      single(enode('activity', 0, 0, 140, 80, { text: 'Activity' }))
+    templateFromCommand(
+      byId('edgy.addObject'),
+      `<svg ${ATTRS} fill="none"><rect x="20" y="24" width="95" height="34" stroke="#262626" stroke-width="2"/></svg>`
+    ),
+    templateFromCommand(
+      byId('edgy.addActivity'),
+      `<svg ${ATTRS} fill="none"><path d="M20 24 H98 L116 41 H116 L98 58 H20 Z" stroke="#262626" stroke-width="2" stroke-linejoin="round"/></svg>`
     ),
   ],
 };
