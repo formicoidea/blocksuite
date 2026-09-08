@@ -742,7 +742,10 @@ export class SurfaceBlockModel extends BlockModel<SurfaceBlockProps> {
           if (isGfxGroupCompatibleModel(payload.model)) {
             this._groupLikeModels.delete(payload.id);
           }
-          {
+          // Same rule as `_watchGroupRelationChange`: the author already
+          // dropped the block from its group, and `removeChild` is a raw
+          // `transact` — on a readonly viewer it would be a silent write.
+          if (payload.isLocal) {
             const group = this.getGroup(payload.id);
             if (group) {
               // oxlint-disable-next-line unicorn/prefer-dom-node-remove
@@ -812,17 +815,26 @@ export class SurfaceBlockModel extends BlockModel<SurfaceBlockProps> {
     ): element is GfxGroupLikeElementModel =>
       element instanceof GfxGroupLikeElementModel;
 
-    const disposable = this.elementUpdated.subscribe(({ id, oldValues }) => {
-      const element = this.getElementById(id)!;
+    const disposable = this.elementUpdated.subscribe(
+      ({ id, oldValues, local }) => {
+        // A cascade belongs to the peer that made the change: the author's own
+        // watcher deletes the group it emptied, and that deletion arrives with
+        // the same sync. Reacting to a REMOTE update with a local write is
+        // redundant on a writeable peer and, on a readonly viewer, the
+        // production exception `Cannot remove element in readonly mode`.
+        if (!local) return;
 
-      if (
-        isGroup(element) &&
-        oldValues['childIds'] &&
-        element.childIds.length === 0
-      ) {
-        this.deleteElement(id);
+        const element = this.getElementById(id)!;
+
+        if (
+          isGroup(element) &&
+          oldValues['childIds'] &&
+          element.childIds.length === 0
+        ) {
+          this.deleteElement(id);
+        }
       }
-    });
+    );
     this.deleted.subscribe(() => {
       disposable.unsubscribe();
     });
