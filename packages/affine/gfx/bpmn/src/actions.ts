@@ -46,7 +46,7 @@ import {
   bpmnBoardFrom,
   bpmnSafeFilename,
 } from './interchange.js';
-import { bpmnNodeProps } from './presets.js';
+import { bpmnNodeProps, bpmnPoolProps } from './presets.js';
 import { BPMN_ROLE } from './roles';
 
 /**
@@ -102,13 +102,13 @@ export function createBpmnPool(std: BlockStdScope) {
   const w = 560;
   const h = 200;
   const { centerX: cx, centerY: cy } = gfx.viewport;
-  const id = surface.addElement({
-    type: 'bpmnPool',
-    // The FRAME the flow objects are drawn in, and a role of its own: a rule
-    // written on the artefacts must never fall on the lane that holds them.
-    role: BPMN_ROLE.pool,
-    xywh: new Bound(cx - w / 2, cy - h / 2, w, h).serialize(),
-  });
+  // What a pool IS lives in one place (`./presets.ts`), beside what a node is
+  // and for the same reason: the shipped cards build their participants from it
+  // too, so a pool laid out by a template and one dropped from the toolbox
+  // cannot say different things. The gesture owns the BOX and nothing else.
+  const id = surface.addElement(
+    bpmnPoolProps({ xywh: new Bound(cx - w / 2, cy - h / 2, w, h).serialize() })
+  );
   finish(gfx, id);
 }
 
