@@ -1,4 +1,5 @@
 import {
+  checkupRules,
   evaluateCheckup,
   evaluateRules,
   type Violation,
@@ -186,11 +187,34 @@ const wire = (id: string, source: string, target: string) =>
 /** A neutral drawing — a note, a cloud, a rectangle somebody thought with. */
 const sketch = (id: string, x = 100, y = 600) => element(id, [x, y, 180, 120]);
 
-const evaluate = (elements: GfxPrimitiveElementModel[]) =>
-  evaluateRules(C4_RULES, elements);
+/**
+ * The DRAWING pass, as the manager runs it: rules AND profiles, always.
+ *
+ * The two are registered together by `C4ViewExtension`, so a board is never
+ * judged by one without the other — and since PF7.6 the profiles decide the
+ * MOMENT as well as the severity. `c4.sketch` is the default and holds all
+ * sixteen rules at `audit`, so on a board nobody raised THIS RETURNS NOTHING,
+ * which is the point of the slice: a diagram drawn from the outside in is not
+ * measured on every gesture. Only the cases about WHEN a rule speaks use it.
+ */
+const drawing = (elements: GfxPrimitiveElementModel[]) =>
+  evaluateRules(C4_RULES, elements, C4_PROFILES);
 
+/** The check-up pass — where a sketch-level board's findings actually are. */
 const checkup = (elements: GfxPrimitiveElementModel[]) =>
-  evaluateCheckup(C4_RULES, elements);
+  evaluateCheckup(C4_RULES, elements, C4_PROFILES);
+
+/**
+ * Everything the pack says about a board, whichever moment says it — and what
+ * a corpus case, which is about WHAT a rule says, asks.
+ *
+ * The two moments partition the rules, so this is the pack's whole verdict on a
+ * board exactly once, and it stays that whatever a level does to the moment.
+ */
+const evaluate = (elements: GfxPrimitiveElementModel[]) => [
+  ...drawing(elements),
+  ...checkup(elements),
+];
 
 const idsOf = (violations: readonly Violation[]) =>
   violations.map(violation => violation.ruleId).sort();
@@ -530,6 +554,75 @@ describe('what the framework ships', () => {
     }
   });
 
+  /**
+   * PF7.6, on the pack where the level in force decides the most.
+   *
+   * Every C4 rule is declared `audit`, and `c4.sketch` — the DEFAULT — spells
+   * that out for all sixteen. An audit finding is dropped before anything draws
+   * it, so on a board nobody raised the whole pack is a check-up: a diagram
+   * drawn from the outside in costs the gesture path nothing at all.
+   *
+   * `c4.strict` is what contradicts that, for the board that CHOOSES it: it
+   * rewrites eleven severities to `warning`, which the canvas does draw, and a
+   * canvas verdict has to be computed while the user draws. Two of the eleven
+   * declare the second moment themselves and keep it — the rule's own statement
+   * is the stronger one — so nine come back.
+   */
+  describe('the level in force decides the moment', () => {
+    /** Every rule `profileId` shows to nobody — `audit`, or silenced outright. */
+    const quietUnder = (profileId: string) => {
+      const profile = C4_PROFILES.find(one => one.id === profileId)!;
+      return C4_RULES.filter(rule => {
+        const severity = Object.hasOwn(profile.rules, rule.id)
+          ? profile.rules[rule.id]
+          : rule.severity;
+        return severity === 'audit' || severity === 'off';
+      }).map(rule => rule.id);
+    };
+
+    /** …plus the ones that declare the second moment whatever a level says. */
+    const declared = C4_RULES.filter(rule => rule.moment === 'on-demand').map(
+      rule => rule.id
+    );
+
+    const expected = (profileId: string) =>
+      [...new Set([...quietUnder(profileId), ...declared])].sort();
+
+    it('takes the whole pack off the drawing path on the sketch default', () => {
+      const ids = checkupRules(C4_RULES, [board()], C4_PROFILES)
+        .map(rule => rule.id)
+        .sort();
+
+      expect(ids).toHaveLength(16);
+      expect(ids).toEqual(expected('c4.sketch'));
+      // …and an empty surface answers the same: no frame, no choice, the
+      // framework default governs.
+      expect(checkupRules(C4_RULES, [], C4_PROFILES)).toHaveLength(16);
+    });
+
+    it('gives back exactly what the review checklist shows', () => {
+      const ids = checkupRules(C4_RULES, [board('c4.strict')], C4_PROFILES)
+        .map(rule => rule.id)
+        .sort();
+
+      expect(ids).toEqual(expected('c4.strict'));
+      expect(ids).toEqual(
+        [
+          // Declared on-demand already, and promoted — the moment they declare
+          // themselves still wins, because it is the stronger statement.
+          UNLABELED_RELATIONSHIP,
+          UNNAMED_ELEMENT,
+          // Audit at every level: never drawn, never computed on a gesture.
+          ISOLATED_SYSTEM,
+          ISOLATED_CONTAINER,
+          ISOLATED_COMPONENT,
+          DATABASE_INITIATES,
+          PERSON_IN_BOUNDARY,
+        ].sort()
+      );
+    });
+  });
+
   it('sanctions every pair of levels but person → person', () => {
     const sentences = C4_RELATIONSHIP_MATRIX.map(
       triplet => `${triplet.source} → ${triplet.target}`
@@ -592,7 +685,7 @@ describe('C1 · a relationship nobody has labelled', () => {
   it('says nothing on the drawing path', () => {
     // The whole point of the moment: the arrow is drawn, then labelled.
     expect(
-      evaluate([board(), system('a'), system('b', 600), rel('r', 'a', 'b', '')])
+      drawing([board(), system('a'), system('b', 600), rel('r', 'a', 'b', '')])
     ).toEqual([]);
   });
 
@@ -610,8 +703,13 @@ describe('C1 · a relationship nobody has labelled', () => {
   });
 
   it('says nothing about a connector carrying no role', () => {
+    // Scoped to this rule: the two systems the wire fails to join are isolated,
+    // and the isolation remarks now ride the same pass (PF7.6).
     expect(
-      checkup([board(), system('a'), system('b', 600), wire('w', 'a', 'b')])
+      only(
+        checkup([board(), system('a'), system('b', 600), wire('w', 'a', 'b')]),
+        UNLABELED_RELATIONSHIP
+      )
     ).toEqual([]);
   });
 });
@@ -631,14 +729,25 @@ describe('C2 · an element nobody has named', () => {
     // kind's own label into the title at creation, so a box reading "Person" is
     // a box whose author has not finished — not a box with no name. Four rules
     // ago this fired on every element the instant it appeared.
-    expect(checkup([board(), person('p'), title('t', 'Person')])).toEqual([]);
-    expect(checkup([board(), container('c'), title('t', 'Web app')])).toEqual(
-      []
-    );
+    expect(
+      only(
+        checkup([board(), person('p'), title('t', 'Person')]),
+        UNNAMED_ELEMENT
+      )
+    ).toEqual([]);
+    expect(
+      only(
+        checkup([board(), container('c'), title('t', 'Web app')]),
+        UNNAMED_ELEMENT
+      )
+    ).toEqual([]);
   });
 
   it('counts whitespace as no name at all', () => {
+    // The lone system is isolated too, and since PF7.6 that remark shares this
+    // pass — the name is the subject here, the second id is the board's own.
     expect(idsOf(checkup([board(), system('s'), title('t', '   ')]))).toEqual([
+      ISOLATED_SYSTEM,
       UNNAMED_ELEMENT,
     ]);
   });
@@ -663,13 +772,16 @@ describe('C2 · an element nobody has named', () => {
     // An empty type line or description is a subtitle nobody filled in, and
     // this rule is written on `c4:title` alone.
     expect(
-      checkup([
-        board(),
-        component('k'),
-        title('t', 'Sign In Controller'),
-        typeLine('tl', ''),
-        description('d', ''),
-      ])
+      only(
+        checkup([
+          board(),
+          component('k'),
+          title('t', 'Sign In Controller'),
+          typeLine('tl', ''),
+          description('d', ''),
+        ]),
+        UNNAMED_ELEMENT
+      )
     ).toEqual([]);
   });
 
@@ -871,18 +983,23 @@ describe('C5 · a relationship that loops onto its own element', () => {
 });
 
 describe('C6–C8 · an element nothing connects', () => {
+  // The three isolation rules are `audit` at EVERY level (`c4.strict` leaves
+  // them there), so since PF7.6 they are check-up rules: an unfinished diagram
+  // is not argued with while it is being drawn.
   it('flags a lone system, container and component', () => {
-    expect(idsOf(evaluate([board(), system('a')]))).toEqual([ISOLATED_SYSTEM]);
-    expect(idsOf(evaluate([board(), container('c')]))).toEqual([
+    expect(idsOf(checkup([board(), system('a')]))).toEqual([ISOLATED_SYSTEM]);
+    expect(idsOf(checkup([board(), container('c')]))).toEqual([
       ISOLATED_CONTAINER,
     ]);
-    expect(idsOf(evaluate([board(), component('k')]))).toEqual([
+    expect(idsOf(checkup([board(), component('k')]))).toEqual([
       ISOLATED_COMPONENT,
     ]);
+    // ...and the drawing path says nothing at all about any of them.
+    expect(drawing([board(), system('a')])).toEqual([]);
   });
 
   it('catches a lone DATABASE with the container rule', () => {
-    expect(idsOf(evaluate([board(), database('d')]))).toEqual([
+    expect(idsOf(checkup([board(), database('d')]))).toEqual([
       ISOLATED_CONTAINER,
     ]);
   });
@@ -909,7 +1026,8 @@ describe('C6–C8 · an element nothing connects', () => {
 
 describe('C9 · a data store that calls somebody', () => {
   it('flags a relationship leaving a database', () => {
-    const violations = evaluate([
+    // `audit` at every level, so a check-up rule since PF7.6.
+    const violations = checkup([
       board(),
       database('d'),
       system('a', 600),
@@ -980,8 +1098,10 @@ describe('C10 · a component belongs inside a boundary', () => {
 });
 
 describe('C11 · a person is never inside the system', () => {
+  // `audit` at every level — an operator drawn inside a process is a point
+  // somebody may be making — so a check-up rule since PF7.6.
   it('flags a person drawn inside a boundary', () => {
-    const violations = evaluate([
+    const violations = checkup([
       board(),
       boundary('bd'),
       person('p', 300, 300),
@@ -1020,7 +1140,7 @@ describe('C11 · a person is never inside the system', () => {
     ]) {
       expect(
         only(
-          evaluate([board(), frame, person('p', 300, 300)]),
+          checkup([board(), frame, person('p', 300, 300)]),
           PERSON_IN_BOUNDARY
         ),
         String(frame.role)
@@ -1649,11 +1769,12 @@ describe('the profile the finding is judged at', () => {
   ];
 
   it('keeps everything an audit on the default profile', () => {
-    const violations = evaluateRules(
-      C4_RULES,
-      conformant().concat(wire('w', 'a', 'b')),
-      C4_PROFILES
-    );
+    const board_ = conformant().concat(wire('w', 'a', 'b'));
+    // Nothing at all on the gesture path: a level that shows no finding costs
+    // no frame (PF7.6). The findings are read where a user asks for them.
+    expect(drawing(board_)).toEqual([]);
+
+    const violations = evaluateCheckup(C4_RULES, board_, C4_PROFILES);
     expect(violations.length).toBeGreaterThan(0);
     for (const violation of violations) {
       expect(violation.severity, violation.ruleId).toBe('audit');
@@ -1694,8 +1815,14 @@ describe('the profile the finding is judged at', () => {
       C4_PROFILES
     );
     expect(only(violations, HOMELESS_COMPONENT)[0].severity).toBe('warning');
-    // The isolation finding was measured against the BOARD, which nobody moved.
-    expect(only(violations, ISOLATED_COMPONENT)[0].severity).toBe('audit');
+    // The isolation finding was measured against the BOARD, which nobody moved
+    // — and since PF7.6 it is a check-up remark, which is where it is read.
+    const remarks = evaluateCheckup(
+      C4_RULES,
+      [board(), strictBoundary, component('k', 900, 600)],
+      C4_PROFILES
+    );
+    expect(only(remarks, ISOLATED_COMPONENT)[0].severity).toBe('audit');
   });
 });
 

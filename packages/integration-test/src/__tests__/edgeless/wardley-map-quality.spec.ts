@@ -645,8 +645,14 @@ describe('map quality', () => {
       validation.checkupSliceMs = CHECKUP_SLICE_MS;
 
       // `done` climbs through every intermediate value: a caller reads the
-      // progression off the same object the results arrive in.
-      expect(seen).toEqual(['0/2', '1/2', '2/2']);
+      // progression off the same object the results arrive in. The total is
+      // the two probes plus every Wardley rule the sketch level leaves at
+      // `audit` (PF7.6), so it is read off the manager rather than pinned.
+      const total = validation.checkupRulesFor(model(map)).length;
+      expect(total).toBeGreaterThan(2);
+      expect(seen).toEqual(
+        Array.from({ length: total + 1 }, (_, i) => `${i}/${total}`)
+      );
     });
 
     test('the panel is the checklist, and shows none of this', async () => {

@@ -405,6 +405,21 @@ describe('what wakes a re-evaluation', () => {
     expect(touchesVerdict({})).toBe(true);
   });
 
+  it('reacts to a change of LEVEL, written or cleared', () => {
+    // Since PF7.6 the level a frame is on decides which rules the drawing path
+    // walks at all, not merely how hard they bite: without this, a board raised
+    // to its review level would keep the promoted rules off the gesture path
+    // until some unrelated drag happened to wake the engine.
+    expect(
+      touchesVerdict({ props: { validationProfile: 'test.strict' } })
+    ).toBe(true);
+    // Choosing the default back DELETES the key, which is why `oldValues` is
+    // read too — and why the rules go quiet again on the same tick.
+    expect(
+      touchesVerdict({ props: {}, oldValues: { validationProfile: 'x' } })
+    ).toBe(true);
+  });
+
   /**
    * A framework can make one more prop verdict-bearing (PO, 25/08/2026).
    *

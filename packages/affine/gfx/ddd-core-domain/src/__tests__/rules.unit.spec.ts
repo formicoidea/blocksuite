@@ -1,4 +1,4 @@
-import { evaluateRules } from '@labre/affine-block-surface';
+import { evaluateCheckup, evaluateRules } from '@labre/affine-block-surface';
 import { Bound } from '@labre/global/gfx';
 import type { GfxPrimitiveElementModel } from '@labre/std/gfx';
 import { describe, expect, it } from 'vitest';
@@ -60,8 +60,16 @@ const movement = (id: string, source: string, target: string) =>
     target: { id: target },
   });
 
+/**
+ * Both moments. `core-domain.off-legend-colour` is `audit` and no level
+ * promotes it, so since PF7.6 it is a check-up rule — what it SAYS is unchanged,
+ * and that is what every case below is about.
+ */
 const ids = (id: string, elements: GfxPrimitiveElementModel[]) =>
-  evaluateRules([rule(id)], elements).map(v => v.elementIds.join('+'));
+  [
+    ...evaluateRules([rule(id)], elements),
+    ...evaluateCheckup([rule(id)], elements),
+  ].map(v => v.elementIds.join('+'));
 
 describe('C1 — an outsourced sub-domain in the Core quadrant', () => {
   const id = 'core-domain.outsourced-core';

@@ -519,6 +519,21 @@ describe(`validation stays inside one frame (${MAP_SIZE}+ elements)`, () => {
     expect(evaluateRules(ON_DEMAND_PROBE, checked)).toEqual([]);
   });
 
+  it('takes the same rule off the path on its SEVERITY alone', () => {
+    // PF7.6, at the bench rather than in a comment: drop the explicit moment
+    // and keep `audit`, and the rule is still never walked on the drawing path.
+    // No timing here — a walk either happens or it does not, and the answer
+    // says so on any machine.
+    const bySeverity = ON_DEMAND_PROBE.map(rule => ({
+      ...rule,
+      moment: undefined,
+    }));
+    const checked = referenceMap(MAP_SIZE);
+
+    expect(evaluateRules(bySeverity, checked)).toEqual([]);
+    expect(evaluateCheckup(bySeverity, checked).length).toBeGreaterThan(0);
+  });
+
   it(
     `stays inside the frame with profiles in force`,
     () => {
