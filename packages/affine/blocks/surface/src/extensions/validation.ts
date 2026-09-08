@@ -138,6 +138,41 @@ export type RuleFamily =
   | 'view-admissibility';
 
 /**
+ * What a verdict on one subject depends on (PF5.3). Ordered: each level
+ * includes the previous.
+ *
+ * - `element` — the subject's own props, plus the frame(s) it is attributed to.
+ *   A dirty frame already forces a full pass, so frames are free here.
+ * - `relations` — the subject, the edges touching it, and the elements at the
+ *   other end of those edges.
+ * - `frame` — every subject of the rule attributed to the same frame: the
+ *   population facts (a majority, a count, an order within a frame, "is there
+ *   another one of these on me").
+ * - `surface` — anything else. Today's behaviour for every family, and the
+ *   answer for anything unknown.
+ *
+ * Declared per FAMILY in {@link RULE_SCOPES} — the evaluator is what decides
+ * what a verdict reads, so the family owns the answer. A rule may only WIDEN
+ * it ({@link ValidationRule.scope}).
+ *
+ * Pure DATA: no evaluator reads it, and PF5.3 changes no verdict. It is the
+ * precondition of PF5.4, which will compute an incremental closure from it.
+ */
+export type RuleScope = 'element' | 'relations' | 'frame' | 'surface';
+
+/**
+ * The four scopes from narrowest to widest — the ONLY place the order lives, so
+ * "widening only" is a `Math.max` over two indexes rather than a test somebody
+ * has to remember to write.
+ */
+const SCOPE_ORDER: readonly RuleScope[] = [
+  'element',
+  'relations',
+  'frame',
+  'surface',
+];
+
+/**
  * WHEN a rule is evaluated (PF5.14).
  *
  * - `realtime` — the default, and what every rule was before this existed:
@@ -1066,6 +1101,16 @@ export interface ValidationRule extends RuleMessage {
    * `'on-demand'` is kept whatever a level says.
    */
   moment?: ValidationMoment;
+  /**
+   * WIDER than the family's own dependency scope, when this rule reads more
+   * than its family usually does (PF5.3).
+   *
+   * A rule — or a host shipping one — can only WIDEN {@link RULE_SCOPES}, never
+   * narrow it: the evaluator is what actually reads the surface, and a rule
+   * claiming to read less than its family does would be data that lies. Absent,
+   * the family's scope applies. See {@link scopeOf}.
+   */
+  scope?: RuleScope;
   /**
    * The role this rule is written on. An element matches when its own role IS
    * that role or SPECIALISES it ({@link roleIsA}), so a rule on
@@ -4779,6 +4824,82 @@ const RULE_FAMILIES: Record<
   'label-presence': evaluateLabelPresence,
   'view-admissibility': evaluateViewAdmissibility,
 };
+
+/**
+ * What a verdict of each family DEPENDS ON (PF5.3) — read off the evaluator
+ * beside it, one line of justification each.
+ *
+ * `Record<RuleFamily, RuleScope>`, so a family added without an entry is a
+ * BUILD error and never a silent `'surface'`. Nothing reads this table yet:
+ * PF5.4 will compute its dirty-set closure from it, and a family that changes
+ * what its evaluator reads has to change its line here on the same commit.
+ *
+ * Over-approximating is always SAFE — a wider scope re-evaluates more than it
+ * had to. Under-approximating is a stale verdict, so a family whose evidence is
+ * ambiguous is declared wider, not narrower.
+ */
+export const RULE_SCOPES: Record<RuleFamily, RuleScope> = {
+  // Own bound against the frames; the frame it is nearest to is attribution only.
+  'element-in-background': 'element',
+  // Own direction against an axis the RULE declares; the frame is attribution only.
+  'orientation-against-axis': 'element',
+  // Widened from 'frame': the carriers it must be posed ON are collected from
+  // the WHOLE surface, bounded by a tolerance and by no frame at all, so a
+  // carrier moving anywhere can flip a subject's verdict.
+  attachment: 'surface',
+  // Pair-wise over every participant on the board; keeps its own dirty-set logic.
+  'no-overlap': 'surface',
+  // Element-local in fact — own colour props against the rule's declared palette
+  // — but kept at the wider level: no evaluator has ever been narrowed by guess.
+  'tone-convention': 'frame',
+  // Tallies the fact over every subject attributed to one frame.
+  'majority-fact': 'frame',
+  // The edge, the bounds of the two elements it binds, and their common frame.
+  'relative-order-along-axis': 'relations',
+  // The ends' roles, plus the sibling edges on the same pair (duplicate,
+  // exclusivity) — one hop through the two ends.
+  'relation-endpoints': 'relations',
+  // Own bound against the zones of the frame that contains it.
+  'element-in-zone': 'element',
+  // Counts every edge naming the node, wherever that edge is drawn.
+  'edge-degree': 'relations',
+  // Counts the subjects contained in one frame's plot, and reports ON the frame.
+  'role-count': 'frame',
+  // The edge and the frames containing its two ends.
+  'edge-locality': 'relations',
+  // Widened from 'frame': the traversal is over the WHOLE surface's arcs, and
+  // its own header says any dirty edge invalidates the answer — re-pointing one
+  // edge orphans or rescues nodes nowhere near it.
+  reachability: 'surface',
+  // Own words; the frame is attribution only.
+  'label-presence': 'element',
+  // Own role against the level the containing view declares; kept at the wider
+  // level for the same reason as `tone-convention`.
+  'view-admissibility': 'frame',
+};
+
+/**
+ * The dependency scope in force for `rule`: the WIDER of its family's and its
+ * own.
+ *
+ * Widening-only by construction rather than by a test — the answer is a
+ * `Math.max` over two positions in {@link SCOPE_ORDER}, so a rule declaring a
+ * narrower scope than its family simply does not get it.
+ *
+ * An unknown family — a serialized rule shipped by a host against a build that
+ * does not have it — resolves to `'surface'`, the safe answer.
+ */
+export function scopeOf(rule: ValidationRule): RuleScope {
+  const family = RULE_SCOPES[rule.family] ?? 'surface';
+  if (rule.scope === undefined) return family;
+  const widest = Math.max(
+    SCOPE_ORDER.indexOf(family),
+    SCOPE_ORDER.indexOf(rule.scope)
+  );
+  // A `scope` that is not one of the four gives -1 on both sides only if the
+  // family is unknown too; either way the fallback is the widest answer.
+  return SCOPE_ORDER[widest] ?? 'surface';
+}
 
 /**
  * The moment `rule` is evaluated at, GIVEN the levels of requirement in force
