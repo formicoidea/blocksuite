@@ -620,11 +620,17 @@ describe('bpmn templates carry the toolbox roles', () => {
     );
   });
 
-  it('finds the eight cards and every element in them', () => {
+  it('finds every card and every element in them', () => {
     // If this ever drops to zero the assertions below become vacuous, which is
     // the failure mode a corpus test is most likely to die of.
-    expect(templates).toHaveLength(8);
-    expect(templateElements.length).toBeGreaterThanOrEqual(26);
+    //
+    // Twenty-one since the palette was derived from the toolbox: the eighteen
+    // artefact commands each ship one card, plus the two worked scenes and the
+    // free sequence-flow swatch. It was eight while six of the seventeen kinds
+    // had a card at all — the exact coverage gap `templates-parity` now pins in
+    // both directions.
+    expect(templates).toHaveLength(21);
+    expect(templateElements.length).toBeGreaterThanOrEqual(40);
   });
 
   it('stamps every node with the role its kind means', () => {
@@ -647,7 +653,10 @@ describe('bpmn templates carry the toolbox roles', () => {
 
   it('types the BOUND connectors, and only those', () => {
     const connectors = templateElements.filter(el => el.type === 'connector');
-    expect(connectors).toHaveLength(9);
+    // Ten: six in "Simple process", three in "Message exchange" — the third is
+    // the sequence flow that closes the customer's process, added to stop the
+    // card violating `bpmn.pool-start-without-end` — and the free swatch.
+    expect(connectors).toHaveLength(10);
     for (const connector of connectors) {
       const ends = connector as {
         source?: { id?: string };
@@ -693,7 +702,10 @@ describe('bpmn templates carry the toolbox roles', () => {
     expect(entries.filter(el => el.type === 'bpmnPool')).toHaveLength(2);
 
     const flows = entries.filter(el => el.type === 'connector');
-    expect(flows).toHaveLength(2);
+    // Three: what happens inside the customer (start → order → done) and the
+    // one message that crosses. The end event and the flow that reaches it are
+    // what makes the card conformant — see `templates-parity.unit.spec.ts`.
+    expect(flows).toHaveLength(3);
     const message = flows.find(f => f.role === BPMN_ROLE.messageFlow);
     const sequence = flows.find(f => f.role === BPMN_ROLE.sequenceFlow);
     expect(message, 'the card draws no message flow').toBeDefined();

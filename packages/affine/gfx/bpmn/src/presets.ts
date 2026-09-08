@@ -28,7 +28,7 @@ import {
   START_WIDTH,
   TASK_RADIUS,
 } from './consts.js';
-import { BPMN_ROLE_OF_KIND } from './roles.js';
+import { BPMN_ROLE, BPMN_ROLE_OF_KIND } from './roles.js';
 
 /**
  * What a BPMN artefact is BORN as — the one description of a node's props, read
@@ -360,6 +360,33 @@ export function bpmnNodeProps(
     // drawn artefact keeps the shape's own inset and puts nothing of its own in
     // the Y.Map.
     ...(fit ? { padding: fit.padding } : {}),
+    xywh: box.xywh,
+  };
+}
+
+/**
+ * One BPMN pool, as the props `surface.addElement` takes.
+ *
+ * The same argument {@link bpmnNodeProps} makes, one artefact over: the palette
+ * hands it a box centred on the viewport and a worked scene hands it the box the
+ * scene lays out, and the element that lands is the same either way. It used to
+ * be spelled out at each site, which is how the shipped cards came to write a
+ * `name` the creation gesture leaves to the model's own default.
+ *
+ * `name` is spread and never defaulted, for the reason `textVerticalAlign` is on
+ * a node: a pool drawn from the toolbox puts no participant name in its Y.Map,
+ * and a scene that names its participants says so explicitly.
+ */
+export function bpmnPoolProps(box: {
+  xywh: string;
+  name?: string;
+}): Record<string, unknown> & { type: string } {
+  return {
+    type: 'bpmnPool',
+    // The FRAME the flow objects are drawn in, and a role of its own: a rule
+    // written on the artefacts must never fall on the lane that holds them.
+    role: BPMN_ROLE.pool,
+    ...(box.name === undefined ? {} : { name: box.name }),
     xywh: box.xywh,
   };
 }
