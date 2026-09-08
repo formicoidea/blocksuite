@@ -5655,6 +5655,18 @@ function applyExceptions(
  * whole surface is re-judged from scratch. Handed in, the pair-wise family
  * re-tests only the couples a change can have affected; the answer is the same,
  * it is just reached without walking the grid against itself.
+ *
+ * ## Two ways to hand one in, and two contracts
+ *
+ * - With a `previous` that IS the last verdict — the manager's debounced path —
+ *   the answer is exactly what a full pass would give, whole. That is PF5.4's
+ *   contract and the fuzz asserts it finding for finding.
+ * - With `previous: []` — a caller SEEDING the pass with its own dirty set, e.g.
+ *   the host's selection (PF7.9) — nothing is carried, so the answer is the
+ *   fresh verdicts on the closure of the seed and nothing else. For a seed `S`:
+ *   `seeded ⊆ full`, and `seeded ∩ touching(S) = full ∩ touching(S)` where
+ *   `touching(S)` is the findings naming an element or a frame of `S`. A partial
+ *   answer, never a wrong one.
  */
 export function evaluateRules(
   rules: readonly ValidationRule[],
@@ -5803,13 +5815,44 @@ export function checkupRules(
  * never reach the timeline, the bracket or the badge. A framework declares them
  * `audit` on top of that, which is the severity for "collected, invisible to the
  * drawing user" — belt and braces, and the braces are structural.
+ *
+ * ## A SEED, i.e. "audit this much of the board" (PF7.9)
+ *
+ * `seed` is a set of element ids the caller wants judged — the host's selection,
+ * typically. It reaches the same pipeline as any other incremental pass, with
+ * `previous` deliberately EMPTY: a seed is not a change to build on, it is a
+ * question about a part of the board, so nothing is carried over and the answer
+ * is exactly the fresh verdicts on the closure of the seed ({@link dirtyClosure}).
+ * `wasIn` is the CURRENT attribution, which is the honest memory here: nothing
+ * moved between the two, so where an element is and where it was are the same
+ * fact.
+ *
+ * The contract, for a seed `S` and against the same call without one:
+ *
+ * - `seeded ⊆ full` — a seeded run never invents a verdict; and
+ * - `seeded ∩ touching(S) = full ∩ touching(S)`, where `touching(S)` is the
+ *   findings naming an element or a frame of `S` — a seeded run never MISSES one
+ *   that is about the seed.
+ *
+ * Everything between the two is what the caller chose not to ask about. A seed
+ * containing a frame asks about that whole map: the frame guards in
+ * {@link dirtyClosure} send every rule measured against it through a full pass.
  */
 export function evaluateCheckup(
   rules: readonly ValidationRule[],
   elements: readonly GfxPrimitiveElementModel[],
-  profiles: readonly ValidationProfile[] = []
+  profiles: readonly ValidationProfile[] = [],
+  seed?: ReadonlySet<string>
 ): Violation[] {
-  return runRules(rules, elements, profiles, 'on-demand');
+  return runRules(
+    rules,
+    elements,
+    profiles,
+    'on-demand',
+    seed === undefined
+      ? undefined
+      : { dirty: seed, previous: [], wasIn: frameMembership(rules, elements) }
+  );
 }
 
 /**
@@ -5843,7 +5886,15 @@ export interface CheckupRun {
   backgroundId: string;
   /** Epoch ms, taken at the moment of the gesture. */
   at: number;
-  /** The remarks so far — complete once {@link done} reaches {@link total}. */
+  /**
+   * The remarks so far — complete once {@link done} reaches {@link total}.
+   *
+   * "Complete" is about the RULES walked, not about the board: a run given a
+   * seed ({@link ValidationManager.runCheckup}) is partial by construction, and
+   * says nothing about the elements the caller did not ask about. The seed is
+   * not recorded here because the only thing that can produce one is the caller
+   * that already holds it.
+   */
   results: readonly Violation[];
   /** Rules evaluated so far. */
   done: number;
@@ -6590,19 +6641,33 @@ export class ValidationManager extends InteractivityExtension {
   /**
    * Evaluate now. Exposed so a host (and the bench) can drive it directly.
    *
-   * `incremental` is the DEBOUNCED path's privilege and nobody else's: it is
-   * the only caller that knows exactly which elements moved since the last
-   * verdict. Everything else — a gesture that must land on the spot, a surface
-   * arriving, a host asking — pays for a full pass, because a full pass is
-   * always right and a wrong dirty set is a board that lies.
+   * An incremental pass is the privilege of WHOEVER KNOWS WHAT CHANGED — the
+   * debounced path by default, and since PF7.9 any caller willing to say so:
+   * `true` runs the debounced path's own accumulated dirty set, an object seeds
+   * the same pipeline with the caller's, `false` (the default) pays for a full
+   * pass. Nothing about the guarantee is relaxed by opening it: a full pass is
+   * always right, and a wrong seed is still a board that lies — so a caller that
+   * is not certain hands in nothing rather than a guess.
+   *
+   * The seed may contain FRAME ids, and that is a request rather than a mistake:
+   * a frame among the dirty ids means "re-judge this board", and it lands on the
+   * {@link _backgrounds} guard below, which is exactly a full pass.
+   *
+   * A pending debounce is never lost: what it had accumulated is folded INTO the
+   * seed and its timer cleared, so one pass answers both questions.
    */
-  evaluate(incremental = false) {
+  evaluate(seed: boolean | { dirty: ReadonlySet<string> } = false) {
     const rules = this._activeRules;
     const surface = this.gfx.surface;
     // Whatever happens below, what accumulated is now accounted for: a dirty
     // set left behind would be replayed against a later, unrelated snapshot.
     const dirty = this._dirty;
     this._dirty = new Set();
+    if (typeof seed === 'object') {
+      for (const id of seed.dirty) dirty.add(id);
+      if (this._pending) clearTimeout(this._pending);
+      this._pending = null;
+    }
     if (rules.length === 0 || !surface) return;
 
     const previous = this.violations$.peek();
@@ -6614,7 +6679,7 @@ export class ValidationManager extends InteractivityExtension {
       rules,
       surface.elementModels,
       this._activeProfiles,
-      incremental && this._evaluated && dirty.size > 0 && !frameTouched
+      seed !== false && this._evaluated && dirty.size > 0 && !frameTouched
         ? { dirty, previous, wasIn: this._membership }
         : undefined
     );
@@ -6811,11 +6876,21 @@ export class ValidationManager extends InteractivityExtension {
    * remounted. So the run is finished with {@link CheckupRun.error} and whatever
    * it had managed to collect.
    *
+   * ## A SEED, i.e. "audit this much of it" (PF7.9)
+   *
+   * `seed` narrows the QUESTION, never the answer's honesty: the run judges the
+   * closure of those ids ({@link evaluateCheckup}) and carries nothing, so what
+   * comes back is `full ∩ about-the-seed` — the same verdicts a whole-board
+   * check-up would have produced there, and none of the ones it would have
+   * produced elsewhere. A host that has a selection can therefore ask about it;
+   * one that has not passes nothing and gets the whole map, as before.
+   *
    * @returns the finished run, or `null` if it was superseded or there was
    * nothing to run.
    */
   async runCheckup(
-    element: GfxPrimitiveElementModel
+    element: GfxPrimitiveElementModel,
+    seed?: ReadonlySet<string>
   ): Promise<CheckupRun | null> {
     const rules = this.checkupRulesFor(element);
     const generation = ++this._checkupGeneration;
@@ -6842,7 +6917,8 @@ export class ValidationManager extends InteractivityExtension {
         for (const remark of evaluateCheckup(
           [rules[i]],
           surface.elementModels,
-          this._activeProfiles
+          this._activeProfiles,
+          seed
         )) {
           // This map's remarks, and only this map's. A family that measures
           // against no frame records no `backgroundId` and is dropped: it has
