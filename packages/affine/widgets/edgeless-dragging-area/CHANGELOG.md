@@ -1,5 +1,18 @@
 # @labre/affine-widget-edgeless-dragging-area
 
+## 0.38.1
+
+### Patch Changes
+
+- @labre/affine-block-note@0.38.1
+- @labre/affine-block-surface@0.38.1
+- @labre/affine-components@0.38.1
+- @labre/affine-ext-loader@0.38.1
+- @labre/affine-model@0.38.1
+- @labre/affine-shared@0.38.1
+- @labre/global@0.38.1
+- @labre/std@0.38.1
+
 ## 0.38.0
 
 ### Patch Changes

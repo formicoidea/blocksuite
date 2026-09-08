@@ -1,5 +1,32 @@
 # @labre/affine-gfx-ddd-core-domain
 
+## 0.38.1
+
+### Patch Changes
+
+- f0e3906: fix(edgeless): each DDD framework registers its own templates category
+
+  The Event Storming, Core Domain Chart and Context Map template categories are
+  now registered by the framework that owns them, under that framework's flag,
+  like every other framework's. The aggregate bundle registers the Aggregate
+  Design Canvas only: it used to import the three sibling framework bundles to
+  register all four, a dependency the published bundle layout does not allow,
+  and the 0.38.0 publish stopped on it.
+
+  - @labre/affine-block-surface@0.38.1
+  - @labre/affine-ext-loader@0.38.1
+  - @labre/affine-gfx-connector@0.38.1
+  - @labre/affine-gfx-ddd-shared@0.38.1
+  - @labre/affine-gfx-group@0.38.1
+  - @labre/affine-gfx-pointer@0.38.1
+  - @labre/affine-gfx-template@0.38.1
+  - @labre/affine-model@0.38.1
+  - @labre/affine-shared@0.38.1
+  - @labre/affine-widget-edgeless-toolbar@0.38.1
+  - @labre/global@0.38.1
+  - @labre/std@0.38.1
+  - @labre/store@0.38.1
+
 ## 0.38.0
 
 ### Patch Changes
