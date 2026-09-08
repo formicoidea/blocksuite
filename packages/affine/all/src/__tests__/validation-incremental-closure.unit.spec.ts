@@ -1,5 +1,6 @@
 import {
   dirtyClosure,
+  evaluateCheckup,
   evaluateRules,
   frameMembership,
   type ValidationProfile,
@@ -583,6 +584,213 @@ describe('an incremental pass answers exactly what a full pass would', () => {
       // What this refuses is a suite that never took the path it exists to
       // test.
       expect(narrowed * 5).toBeGreaterThan(steps);
+    });
+  }
+});
+
+/**
+ * PF12.4 — **a selection audit equals the full recomputation, where it is about
+ * the selection.**
+ *
+ * The other half of PF7.9's contract, and a different question from the one
+ * above: nothing MOVES here. The board is drawn once and the fuzz is over the
+ * SELECTIONS a user can make on it, because that is what a host now hands the
+ * engine ({@link evaluateCheckup}'s `seed`, `evaluateRules`' explicit dirty set).
+ *
+ * A seeded pass is a partial answer, so "identical" is the wrong contract for it.
+ * The right one has two halves, and both are asserted for every selection:
+ *
+ * - `seeded ⊆ full` — it never invents a verdict; and
+ * - `seeded ∩ touching(S) = full ∩ touching(S)` — it never misses one about `S`.
+ *
+ * Neither is enough on its own. An engine that answered nothing at all would
+ * satisfy the first; one that answered the whole board would satisfy both while
+ * making the seed meaningless. So a third assertion says the answer is ABOUT the
+ * selection: per rule, either every finding names something in the closure of
+ * `S` ({@link dirtyClosure}, the same one the engine builds), or that rule took a
+ * legitimate full pass — a frame in the selection, a level-bearer in it, a
+ * surface scope, the crossover — and its answer IS the full one, verbatim.
+ */
+const SELECTIONS = 100;
+
+/** A finding is ABOUT the selection when it names one of its ids, or its map. */
+const touching =
+  (selection: ReadonlySet<string>) =>
+  (violation: Violation): boolean =>
+    violation.elementIds.some(id => selection.has(id)) ||
+    (violation.backgroundId !== undefined &&
+      selection.has(violation.backgroundId));
+
+function contract(
+  seeded: readonly Violation[],
+  full: readonly Violation[],
+  selection: ReadonlySet<string>,
+  where: string
+): void {
+  const inFull = new Set(keys(full));
+  expect(
+    keys(seeded).filter(k => !inFull.has(k)),
+    `${where}: a seeded pass invented a verdict a full pass does not give`
+  ).toEqual([]);
+  expect(
+    keys(seeded.filter(touching(selection))),
+    `${where}: a seeded pass missed a verdict about its own selection`
+  ).toEqual(keys(full.filter(touching(selection))));
+}
+
+/**
+ * The third assertion, and how many rules actually NARROWED for this selection.
+ *
+ * The disjunction subsumes the "when the selection holds no frame" form: a frame
+ * in it takes every rule measured against that frame to `subjectsOf === null`,
+ * which is the second branch, so the aboutness is asked exactly where it can be
+ * asked and the full pass is checked to be a real one everywhere else.
+ */
+function aboutness(
+  pack: Pack,
+  elements: readonly GfxPrimitiveElementModel[],
+  selection: ReadonlySet<string>,
+  wasIn: ReadonlyMap<string, readonly string[]>,
+  seeded: readonly Violation[],
+  full: readonly Violation[],
+  where: string
+): number {
+  const closure = dirtyClosure(elements, selection, [], wasIn);
+  let narrowed = 0;
+  for (const rule of pack.rules) {
+    const mine = seeded.filter(violation => violation.ruleId === rule.id);
+    if (mine.length === 0) continue;
+    // `no-overlap` is declared `'surface'` and keeps its own dirty-set logic, so
+    // `subjectsOf` says "everything" about it and says it truthfully. Its
+    // closure is the selection ITSELF — a couple is re-tested when either half
+    // is in it — and that is the set its answer has to be about.
+    const subjects =
+      rule.family === 'no-overlap' ? selection : closure.subjectsOf(rule);
+    if (
+      subjects !== null &&
+      mine.every(violation => violation.elementIds.some(id => subjects.has(id)))
+    ) {
+      narrowed += 1;
+      continue;
+    }
+    // Not about the selection — so this rule judged the whole board, and its
+    // answer has to be the whole board's. A rule that narrowed to something
+    // OTHER than the closure of the selection fails here, which is precisely
+    // what `seeded ⊆ full` cannot see.
+    expect(
+      keys(mine),
+      `${where}: rule "${rule.id}" answered neither about the selection nor in full`
+    ).toEqual(keys(full.filter(violation => violation.ruleId === rule.id)));
+  }
+  return narrowed;
+}
+
+describe('a selection audit equals the full recomputation (PF12.4)', () => {
+  for (const pack of PACKS) {
+    it(`${pack.name} (${pack.rules.length} rules, ${SELECTIONS} selections)`, () => {
+      let seed = 0x5e1ec7;
+      for (const char of pack.name) seed = (seed * 31 + char.charCodeAt(0)) | 0;
+      const label = `seed 0x${(seed >>> 0).toString(16)}, ${pack.name}`;
+      const random = mulberry32(seed);
+
+      // ONE board, drawn once: an audit is a question about a board that is not
+      // moving, so the fuzz is over the selections and not over the mutations.
+      // Which also means the two full passes are computed once and the loop
+      // pays for the seeded ones alone.
+      //
+      // Redrawn until the pack has something to SAY about it: a conformant board
+      // makes every selection audit nothing, and the suite would prove that two
+      // empty lists are equal. `ddd-core-domain` needs the retry — its four
+      // rules are quiet ones.
+      let board = build(pack, random, 30 + Math.floor(random() * 60));
+      let fullRules = evaluateRules(pack.rules, board.elements, pack.profiles);
+      let fullCheckup = evaluateCheckup(
+        pack.rules,
+        board.elements,
+        pack.profiles
+      );
+      for (
+        let attempt = 0;
+        attempt < 8 && fullRules.length + fullCheckup.length === 0;
+        attempt++
+      ) {
+        board = build(pack, random, 60 + Math.floor(random() * 120));
+        fullRules = evaluateRules(pack.rules, board.elements, pack.profiles);
+        fullCheckup = evaluateCheckup(
+          pack.rules,
+          board.elements,
+          pack.profiles
+        );
+      }
+      const wasIn = frameMembership(pack.rules, board.elements);
+      expect(
+        fullRules.length + fullCheckup.length,
+        `${label}: the board breaks no rule at all, so every selection audits nothing`
+      ).toBeGreaterThan(0);
+
+      const ids = board.elements.map(element => element.id);
+      const most = Math.max(1, Math.floor(ids.length / 2));
+      let narrowed = 0;
+
+      for (let i = 0; i < SELECTIONS; i++) {
+        const selection = new Set<string>();
+        const size = 1 + Math.floor(random() * most);
+        while (selection.size < size) {
+          selection.add(ids[Math.floor(random() * ids.length)]);
+        }
+        // ...and sometimes a whole MAP, which is a thing a user selects and a
+        // thing PF7.9 says means "re-judge this board".
+        if (board.frames.length > 0 && random() < 0.15) {
+          selection.add(
+            board.frames[Math.floor(random() * board.frames.length)]
+          );
+        }
+
+        const where = `${label}, selection ${i} {${[...selection].join(', ')}}`;
+        const seededRules = evaluateRules(
+          pack.rules,
+          board.elements,
+          pack.profiles,
+          { dirty: selection, previous: [], wasIn }
+        );
+        const seededCheckup = evaluateCheckup(
+          pack.rules,
+          board.elements,
+          pack.profiles,
+          selection
+        );
+
+        contract(seededRules, fullRules, selection, `${where} / evaluateRules`);
+        contract(
+          seededCheckup,
+          fullCheckup,
+          selection,
+          `${where} / evaluateCheckup`
+        );
+        narrowed += aboutness(
+          pack,
+          board.elements,
+          selection,
+          wasIn,
+          [...seededRules, ...seededCheckup],
+          [...fullRules, ...fullCheckup],
+          where
+        );
+      }
+
+      console.info(
+        `[audit] ${pack.name}: ${narrowed} rule/selection pairs answered ` +
+          `strictly about the selection (the rest took a legitimate full pass)`
+      );
+      // A floor, not a target — but a suite where nothing ever narrowed would
+      // be asserting that a full pass equals a full pass. Low on purpose: a
+      // pack of four quiet rules (`ddd-core-domain`) legitimately spends most
+      // selections with nothing to say, and the packs that do talk clear this by
+      // an order of magnitude.
+      expect(
+        narrowed,
+        `${label}: no rule ever answered about the selection alone`
+      ).toBeGreaterThan(SELECTIONS / 10);
     });
   }
 });
