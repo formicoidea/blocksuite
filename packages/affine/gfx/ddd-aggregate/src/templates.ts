@@ -8,6 +8,15 @@ import {
 import { FontFamily, ShapeStyle, TextAlign } from '@labre/affine-model';
 
 const DARK = '#323d4f';
+/**
+ * The header band, and why it is not `DARK`.
+ *
+ * It was drawn dark on the dark ground, so the canvas's one title bar was
+ * invisible — the white heading floated on nothing and the nine numbered
+ * sections started straight under the top edge. Two steps lighter on the same
+ * hue reads as a band without turning it into a tenth section.
+ */
+const HEADER_BAND = '#41506a';
 const WHITE = '#ffffff';
 
 function box(x: number, y: number, w: number, h: number) {
@@ -56,7 +65,7 @@ function aggregateCanvas(): SurfaceElementsJSON {
       type: 'shape',
       shapeType: 'rect',
       filled: true,
-      fillColor: DARK,
+      fillColor: HEADER_BAND,
       strokeColor: '#00000000',
       strokeWidth: 0,
       shapeStyle: ShapeStyle.General,
@@ -87,7 +96,7 @@ function aggregateCanvas(): SurfaceElementsJSON {
   };
 }
 
-const PREVIEW = `<svg width="100%" height="100%" viewBox="0 0 135 80" xmlns="http://www.w3.org/2000/svg"><rect width="135" height="80" fill="#323d4f"/><rect x="3" y="3" width="129" height="6" fill="#323d4f"/><g fill="#fff"><rect x="3" y="11" width="42" height="6"/><rect x="3" y="19" width="42" height="22"/><rect x="47" y="11" width="85" height="28"/><rect x="3" y="43" width="42" height="16"/><rect x="3" y="61" width="42" height="16"/><rect x="47" y="43" width="42" height="16"/><rect x="47" y="61" width="42" height="16"/><rect x="91" y="43" width="41" height="16"/><rect x="91" y="61" width="41" height="16"/></g></svg>`;
+const PREVIEW = `<svg width="100%" height="100%" viewBox="0 0 135 80" xmlns="http://www.w3.org/2000/svg"><rect width="135" height="80" fill="#323d4f"/><rect x="3" y="3" width="129" height="6" fill="${HEADER_BAND}"/><g fill="#fff"><rect x="3" y="11" width="42" height="6"/><rect x="3" y="19" width="42" height="22"/><rect x="47" y="11" width="85" height="28"/><rect x="3" y="43" width="42" height="16"/><rect x="3" y="61" width="42" height="16"/><rect x="47" y="43" width="42" height="16"/><rect x="47" y="61" width="42" height="16"/><rect x="91" y="43" width="41" height="16"/><rect x="91" y="61" width="41" height="16"/></g></svg>`;
 
 /**
  * Standalone Aggregate Design Canvas section (gated by `ddd-templates`). Unlike

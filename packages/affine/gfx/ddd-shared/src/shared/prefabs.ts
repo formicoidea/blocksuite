@@ -341,28 +341,6 @@ export function addDot(
   return groupIds(std, [dot, lbl]);
 }
 
-/** A free-floating label. */
-export function addLabel(
-  surface: Surface,
-  cx: number,
-  cy: number,
-  label: string,
-  align: 'left' | 'center' = 'center',
-  color = LABEL_COLOR
-): string {
-  return addText(
-    surface,
-    cx,
-    cy,
-    200,
-    label,
-    color,
-    LABEL_FONT,
-    LABEL_FONT_SIZE,
-    align
-  );
-}
-
 /** A relationship connector (the single connector unit reused for all patterns). */
 export function addConnector(
   surface: Surface,
@@ -488,50 +466,6 @@ export function addCloud(
     LABEL_FONT_SIZE
   );
   return groupIds(std, [cloud, lbl]);
-}
-
-/**
- * A Context Map relationship in DDD Crew notation: the connector, the pattern
- * abbreviation in a small tag, and (for upstream/downstream patterns) the U / D
- * markers — grouped so the whole pattern reads as one unit.
- */
-export function addRelationship(
-  surface: Surface,
-  std: BlockStdScope,
-  cx: number,
-  cy: number,
-  preset: { abbrev: string; upDown: boolean; dashed: boolean }
-): string {
-  const conn = addConnector(surface, cx - 130, cy, cx + 130, cy, {
-    rearArrow: preset.upDown,
-    dashed: preset.dashed,
-  });
-  const tag = addShape(surface, cx - 26, cy - 42, 52, 24, {
-    fill: '#ffffff',
-    stroke: '#6d6e71',
-    strokeWidth: 1,
-    radius: 4,
-  });
-  const tagText = addText(
-    surface,
-    cx - 26,
-    cy - 36,
-    52,
-    preset.abbrev,
-    LABEL_COLOR,
-    LABEL_FONT,
-    13
-  );
-  const ids = [conn, tag, tagText];
-  if (preset.upDown) {
-    ids.push(
-      addText(surface, cx - 150, cy - 30, 24, 'U', LABEL_COLOR, LABEL_FONT, 13)
-    );
-    ids.push(
-      addText(surface, cx + 126, cy - 30, 24, 'D', LABEL_COLOR, LABEL_FONT, 13)
-    );
-  }
-  return groupIds(std, ids);
 }
 
 export interface LegendRow {
