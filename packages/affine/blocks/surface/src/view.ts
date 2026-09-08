@@ -27,6 +27,7 @@ import {
   violationDetailWidget,
 } from './extensions';
 import { ExportManagerExtension } from './extensions/export-manager/export-manager';
+import { BackgroundStackingExtension } from './framework-background/stacking';
 import { ElementHighlightOverlay } from './renderer/element-highlight-overlay';
 import { DefaultTool } from './tool/default-tool';
 
@@ -56,6 +57,10 @@ export class SurfaceViewExtension extends ViewExtensionProvider {
       // too — embedded read-only windows are the API's primary consumer — and
       // paints nothing until a host asks for a highlight.
       context.register(ElementHighlightOverlay);
+      // "A framework background is a floor, never a lid" — engine behaviour,
+      // so it is registered unconditionally, like the frame manager it mirrors
+      // (`docs/adr/0009`: a flag gates tooling, never what a board does).
+      context.register(BackgroundStackingExtension);
       // No-op until a framework registers a SpotlightHostExtension.
       context.register(SpotlightManager);
       // No-op until a framework registers a ValidationRuleExtension — which
