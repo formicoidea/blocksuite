@@ -1,8 +1,9 @@
-import type {
-  StackedElement,
-  SurfaceBlockModel,
+import type { SurfaceBlockModel } from '@labre/affine-block-surface';
+import {
+  indexOverBackgrounds,
+  Overlay,
+  stackedElementsOf,
 } from '@labre/affine-block-surface';
-import { indexOverBackgrounds, Overlay } from '@labre/affine-block-surface';
 import type { FrameBlockModel } from '@labre/affine-model';
 import { FrameworkBackgroundElementModel } from '@labre/affine-model';
 import { EditPropsStore } from '@labre/affine-shared/services';
@@ -254,29 +255,8 @@ export class EdgelessFrameManager extends GfxExtension {
    */
   frameIndexAt(bound: Bound) {
     return (
-      indexOverBackgrounds(this._stackedElements(), bound) ??
+      indexOverBackgrounds(stackedElementsOf(this.gfx), bound) ??
       this.gfx.layer.generateIndex(true)
-    );
-  }
-
-  /**
-   * The top-level elements of the canvas — blocks as well as canvas elements,
-   * since both are interleaved by index when the surface paints — minus the
-   * one being placed.
-   */
-  private _stackedElements(exclude?: GfxModel): StackedElement[] {
-    return this.gfx.layer.layers.reduce<StackedElement[]>(
-      (all, layer) =>
-        all.concat(
-          layer.elements
-            .filter(element => element.group === null && element !== exclude)
-            .map(element => ({
-              index: element.index,
-              xywh: element.xywh,
-              isBackground: element instanceof FrameworkBackgroundElementModel,
-            }))
-        ),
-      []
     );
   }
 
@@ -310,7 +290,7 @@ export class EdgelessFrameManager extends GfxExtension {
         // ancestor's index, so raising the child would change nothing.
         if (!frame || !isFrameBlock(frame) || frame.group !== null) return;
 
-        const siblings = this._stackedElements(frame);
+        const siblings = stackedElementsOf(this.gfx, frame);
         const box = frame.elementBound;
         const buried = siblings.some(
           element =>
