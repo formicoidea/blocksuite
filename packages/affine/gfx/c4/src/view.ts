@@ -10,6 +10,7 @@ import {
   type ViewExtensionContext,
   ViewExtensionProvider,
 } from '@labre/affine-ext-loader';
+import { extendTemplateCategory } from '@labre/affine-gfx-template';
 import {
   ToolbarModuleExtension,
   toolbarModuleKey,
@@ -34,6 +35,7 @@ import { C4_PROFILES } from './profiles';
 import { C4_READINGS } from './reading';
 import { C4_ROLES } from './roles';
 import { C4_RULES } from './rules';
+import { c4TemplateCategory } from './templates';
 import {
   c4BoardToolbarExtension,
   c4BoardToolingToolbarExtension,
@@ -95,8 +97,9 @@ export class C4RenderViewExtension extends ViewExtensionProvider {
 
 /**
  * C4 creation tooling — flag-gated (`c4`): the senior toolbar button, its
- * sub-menu, the thirteen commands behind them, the board's legend button, the
- * component's "Change type" dropdown, and the validation rules and profiles.
+ * sub-menu, the thirteen commands behind them, its templates category, the
+ * board's legend button, the component's "Change type" dropdown, and the
+ * validation rules and profiles.
  *
  * All of it is tooling in the sense `docs/adr/0009` means: a diagram drawn while
  * the flag was on keeps painting, stays selectable and keeps its contextual
@@ -112,6 +115,7 @@ export class C4ViewExtension extends ViewExtensionProvider {
     super.effect();
     // Defines the senior button and its menu — tooling-only custom elements.
     effects();
+    extendTemplateCategory(c4TemplateCategory);
   }
 
   override setup(context: ViewExtensionContext) {
