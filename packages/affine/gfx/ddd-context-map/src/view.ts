@@ -10,10 +10,12 @@ import {
   ViewExtensionProvider,
 } from '@labre/affine-ext-loader';
 import { ToolbarModuleExtension } from '@labre/affine-shared/services';
+import { extendTemplateCategory } from '@labre/affine-gfx-template';
 import { BlockFlavourIdentifier, CommandExtension } from '@labre/std';
 import { RoleVocabularyExtension } from '@labre/std/gfx';
 
 import { contextMapCommandIcons, contextMapCommands } from './commands';
+import { contextMapTemplateCategory } from './templates';
 import { contextMapEffects } from './effects';
 import { ContextMapRendererExtension } from './element-renderer';
 import { ContextMapInteraction, ContextMapView } from './element-view';
@@ -62,8 +64,7 @@ export class DddContextMapRenderViewExtension extends ViewExtensionProvider {
  * flag comes back.
  *
  * Note: its Templates-panel category is registered by the aggregate package's
- * {@link DddTemplatesViewExtension} (gated by `ddd-templates`), so templates
- * stay available even when this senior button is disabled.
+ * The Templates-panel category is registered here too (see `effect`).
  */
 export class DddContextMapViewExtension extends ViewExtensionProvider {
   override name = 'affine-ddd-context-map-gfx';
@@ -71,6 +72,10 @@ export class DddContextMapViewExtension extends ViewExtensionProvider {
   override effect(): void {
     super.effect();
     contextMapEffects();
+    // The Templates-panel category, gated by this framework's own flag like
+    // every other framework's: a template is tooling (`docs/adr/0009`), and it
+    // is DERIVED from this package's commands, so it registers where they do.
+    extendTemplateCategory(contextMapTemplateCategory);
   }
 
   override setup(context: ViewExtensionContext) {

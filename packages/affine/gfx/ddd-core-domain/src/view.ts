@@ -14,10 +14,12 @@ import {
   ToolbarModuleExtension,
   toolbarModuleKey,
 } from '@labre/affine-shared/services';
+import { extendTemplateCategory } from '@labre/affine-gfx-template';
 import { BlockFlavourIdentifier, CommandExtension } from '@labre/std';
 import { RoleVocabularyExtension } from '@labre/std/gfx';
 
 import { coreDomainCommandIcons, coreDomainCommands } from './commands';
+import { coreDomainTemplateCategory } from './templates';
 import { CoreDomainRendererExtension } from './core-domain/element-renderer';
 import {
   CoreDomainInteraction,
@@ -67,8 +69,7 @@ export class DddCoreDomainRenderViewExtension extends ViewExtensionProvider {
  * work-quality checklist.
  *
  * Note: its Templates-panel category is registered by the aggregate package's
- * {@link DddTemplatesViewExtension} (gated by `ddd-templates`), so templates
- * stay available even when this senior button is disabled.
+ * The Templates-panel category is registered here too (see `effect`).
  */
 export class DddCoreDomainViewExtension extends ViewExtensionProvider {
   override name = 'affine-ddd-core-domain-gfx';
@@ -76,6 +77,10 @@ export class DddCoreDomainViewExtension extends ViewExtensionProvider {
   override effect(): void {
     super.effect();
     coreDomainEffects();
+    // The Templates-panel category, gated by this framework's own flag like
+    // every other framework's: a template is tooling (`docs/adr/0009`), and it
+    // is DERIVED from this package's commands, so it registers where they do.
+    extendTemplateCategory(coreDomainTemplateCategory);
   }
 
   override setup(context: ViewExtensionContext) {

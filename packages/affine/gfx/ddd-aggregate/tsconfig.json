@@ -9,9 +9,6 @@
   "references": [
     { "path": "../../blocks/surface" },
     { "path": "../../ext-loader" },
-    { "path": "../ddd-context-map" },
-    { "path": "../ddd-core-domain" },
-    { "path": "../ddd-event-storming" },
     { "path": "../group" },
     { "path": "../pointer" },
     { "path": "../template" },

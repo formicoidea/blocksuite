@@ -14,10 +14,12 @@ import {
   ToolbarModuleExtension,
   toolbarModuleKey,
 } from '@labre/affine-shared/services';
+import { extendTemplateCategory } from '@labre/affine-gfx-template';
 import { BlockFlavourIdentifier, CommandExtension } from '@labre/std';
 import { RoleVocabularyExtension } from '@labre/std/gfx';
 
 import { eventStormingCommandIcons, eventStormingCommands } from './commands';
+import { eventStormingTemplateCategory } from './templates';
 import { eventStormingEffects } from './effects';
 import { EventStormingRendererExtension } from './element-renderer';
 import { EventStormingInteraction, EventStormingView } from './element-view';
@@ -67,8 +69,7 @@ export class DddEventStormingRenderViewExtension extends ViewExtensionProvider {
  * until the flag comes back.
  *
  * Note: its Templates-panel category is registered by the aggregate package's
- * {@link DddTemplatesViewExtension} (gated by `ddd-templates`), so templates
- * stay available even when this senior button is disabled.
+ * The Templates-panel category is registered here too (see `effect`).
  */
 export class DddEventStormingViewExtension extends ViewExtensionProvider {
   override name = 'affine-ddd-event-storming-gfx';
@@ -76,6 +77,10 @@ export class DddEventStormingViewExtension extends ViewExtensionProvider {
   override effect(): void {
     super.effect();
     eventStormingEffects();
+    // The Templates-panel category, gated by this framework's own flag like
+    // every other framework's: a template is tooling (`docs/adr/0009`), and it
+    // is DERIVED from this package's commands, so it registers where they do.
+    extendTemplateCategory(eventStormingTemplateCategory);
   }
 
   override setup(context: ViewExtensionContext) {
