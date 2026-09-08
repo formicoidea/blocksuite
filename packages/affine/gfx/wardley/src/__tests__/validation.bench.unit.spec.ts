@@ -742,43 +742,63 @@ describe('a drag on a dense map re-judges only what moved', () => {
  * a constant per element. Measured on this generator, with the four rules of
  * today and nothing else, EVALUATION ONLY — the map is built outside the timer,
  * or the linear generator dilutes the quadratic engine and every figure below
- * is a statement about the wrong thing. Best sample of three runs on one
- * developer machine, measured on both sides of the same change so the ratio is
- * the claim and the absolute numbers are only the setting:
+ * is a statement about the wrong thing. Best of interleaved samples, all three
+ * variants measured in ONE session on one quiet developer machine through a
+ * temporary switch, so the ratios are the claim and the absolute numbers are
+ * only the setting:
  *
  * ```
- *              every pair    sweep-and-prune on x
- *   500 :         2.4 ms            1.6 ms          (the reference map)
- *  1000 :         6.8 ms            3.8 ms
- *  2000 :        27.1 ms           11.4 ms          (was the wall; now inside)
- *  4000 :        95.2 ms           37.2 ms
+ *              every pair    prune on x    + inline y gate
+ *   500 :         1.2 ms        0.9 ms         0.8 ms      (the reference map)
+ *  1000 :         3.6 ms        2.2 ms         1.9 ms
+ *  2000 :        15.3 ms        8.3 ms         6.3 ms      (was the wall)
+ *  4000 :        47.1 ms       22.5 ms        19.0 ms
  * ```
  *
- * The pair-wise family alone, which is what actually changed: 1.7 → 0.9 ms at
- * 500, 5.8 → 2.3 at 1000, 26.3 → 8.4 at 2000, 84.2 → 30.5 at 4000. The prune
- * throws away 83 % of the couples on this generator (31 375 → 5 220 tests at
- * 500, 2 001 000 → 337 358 at 4000, a steady ×5.9 at every size); the wall
- * clock improves by less than that because the couples it throws away are the
- * cheap ones — a pair that fails on x fails on the first comparison of
- * `boundsOverlap`, while the ones that survive go on to penetration and path
- * geometry.
+ * The pair-wise family alone, which is what actually changed: 0.86 → 0.52 →
+ * 0.47 ms at 500, 3.34 → 1.53 → 1.32 at 1000, 10.66 → 4.64 → 3.80 at 2000,
+ * 42.62 → 16.50 → 13.97 at 4000.
+ *
+ * Couples actually handed to the collision test, counted at the call site:
+ *
+ * ```
+ *   500 :      31 375        4 593            550
+ *  1000 :     125 250       18 553          1 722
+ *  2000 :     500 500       74 536          6 734
+ *  4000 :   2 001 000      298 769         27 037
+ * ```
+ *
+ * The x prune throws away ~85 % of the couples at every size; of the ones it
+ * keeps, ~91 % share no y extent, and the two subtractions in the loop now say
+ * so before `declared` builds its closures over `couples`. Net of the linear
+ * term the family pays whatever it prunes (subject building — `elementBound`
+ * is a `JSON.parse`, a `text` role is measured ink — about 12 ms of the 4000
+ * figures, read off the naive/pruned pair), a couple inside the x band costs
+ * ~15 ns when it reaches `declared`, and single-digit nanoseconds when the y
+ * gate refuses it. The wall clock improves by much less than the couple count
+ * in both steps, for the same reason each time: what is thrown away is the
+ * cheapest work there was.
  *
  * ## What did NOT change: the shape
  *
  * It is still quadratic on THIS generator, and for a reason worth writing down:
  * the reference map is a fixed 1600 × 900 board, so doubling the elements
  * doubles the DENSITY, and the number of subjects sharing any x band grows with
- * the element count exactly as the naive count did. The prune divides the
- * constant by six; it does not change the exponent on a board that is asked to
- * hold twice as much in the same space. A real board that grows in AREA as it
- * grows in artefacts — which is what a user actually draws — sees a genuinely
- * near-linear pass.
+ * the element count exactly as the naive count did. The prune and the y gate
+ * divide the constant by three; they do not change the exponent on a board that
+ * is asked to hold twice as much in the same space. A real board that grows in
+ * AREA as it grows in artefacts — which is what a user actually draws — sees a
+ * genuinely near-linear pass.
  *
- * So the wall moved by a constant, not by a class: from roughly **2000 elements
- * to roughly 3400** on this generator (√6 of the old figure, and the `SCALE`
- * line below recomputes it on every run). It still moves DOWN as rules are
- * added: each extra pair-wise rule is another full sweep — a cheaper one now,
- * but a whole one.
+ * So the wall moved by a constant, not by a class: from roughly **2100 elements
+ * to roughly 3600** on this generator and this machine, extrapolated from the
+ * measured 2000 and 4000 points on both sides of the change with the linear
+ * term separated out. Read it as an order of magnitude and not as a number: the
+ * `SCALE` line below recomputes a cruder version of it from the 500 → 1000 pair
+ * on every run, and read 1875 and 2433 on two runs of the same quiet machine
+ * minutes apart, which is exactly why it is logged and never asserted. It still
+ * moves DOWN as rules are added: each extra pair-wise rule is another full
+ * sweep — a cheaper one now, but a whole one.
  *
  * W4 (`docs/adr/0010`) joined the pack without moving that wall, and the suite
  * above says why: it is priced by the RELATIONS somebody drew, so it adds a
@@ -793,10 +813,13 @@ describe('a drag on a dense map re-judges only what moved', () => {
  * defeats it is not hypothetical: a framework whose artefacts SPAN the map —
  * swimlanes, phase bands, a Wardley evolution zone drawn as a full-width
  * rectangle — puts every subject in every other subject's x band and degenerates
- * to the old cost exactly. The upgrade path, when a board does that or a second
- * pair-wise family lands, is the second axis (sort on y as well and intersect
- * the two candidate sets) or a uniform grid keyed on the bound; both cost
- * memory per pass, which is why neither is here yet. The `ponytail:` note in
+ * to a walk over every couple. What it does NOT degenerate to any more is the
+ * old cost: those couples now die on two subtractions rather than on `declared`
+ * plus `boundsOverlap`, which is the difference between the last two columns
+ * above. The upgrade path, when a board does that or a second pair-wise family
+ * lands, is to make y an INDEX rather than a filter (sort on y as well and
+ * intersect the two candidate sets) or a uniform grid keyed on the bound; both
+ * cost memory per pass, which is why neither is here yet. The `ponytail:` note in
  * `evaluateNoOverlap` says the same thing beside the code.
  *
  * The case below is asserted so that whoever crosses it meets a failing test,
@@ -854,12 +877,13 @@ describe('the budget horizon, recorded for the next slice', () => {
    *
    * 2000 is where the pre-prune curve met the frame exactly and the figure the
    * last slice handed on as "the wall". On a quiet developer machine it now
-   * comes in around 11 ms best, inside the budget; on the same machine running
-   * three other heavy sessions it reads 31–38 ms. An absolute budget at 2000
-   * would therefore be a coin toss, and there is no CI job to average the mood
-   * out — so the figure is printed for whoever is reading the horizon note and
-   * the budget stays asserted where it has eight times the headroom (the
-   * 500-element reference map, above). 4000 is three frames out and always was.
+   * comes in around 6 ms best, comfortably inside the budget; on the same
+   * machine running three other heavy sessions it reads 31–38 ms. An absolute
+   * budget at 2000 would therefore be a coin toss, and there is no CI job to
+   * average the mood out — so the figure is printed for whoever is reading the
+   * horizon note and the budget stays asserted where it has eight times the
+   * headroom (the 500-element reference map, above). 4000 is still out of the
+   * frame, at around 20 ms best where it used to be three frames out.
    *
    * The claim about the ENGINE — that the curve is not worse than quadratic —
    * is asserted next door on an interleaved ratio, which is the only kind of

@@ -2823,12 +2823,21 @@ function evaluateNoOverlap(
    * `subjectsCollide`, which is the half that owns the touching-versus-
    * overlapping question.
    *
-   * ponytail: one axis only. The remaining super-linear term is the DENSITY of
-   * subjects sharing an x band — a board where every subject spans the full
-   * width degenerates to the old p²/2, and nothing here notices. The upgrade
-   * path when a real board does that is a second axis (sort on y as well and
-   * intersect the two candidate sets) or a uniform grid keyed on the bound;
-   * both cost memory per pass, which is why neither is here yet.
+   * Inside the band, the y gate is the same two comparisons `boundsOverlap`
+   * would make, on the same `Bound` fields, with the same epsilon and the same
+   * strict `>` — written out so the ~91 % of surviving couples that miss on y
+   * die before `declared` builds its closures. A pair it skips is a pair
+   * `subjectsCollide` returns `false` for on its first line.
+   *
+   * ponytail: one SORTED axis only — y is a filter inside the band, not an
+   * index. The remaining super-linear term is the DENSITY of subjects sharing
+   * an x band: a board where every subject spans the full width still walks
+   * p²/2 couples, and nothing here notices. It walks them at two subtractions
+   * each now rather than at a `declared` closure, which is a constant and not a
+   * class. The upgrade path when a real board does that is to make y an index
+   * too (sort on it as well and intersect the two candidate sets) or a uniform
+   * grid keyed on the bound; both cost memory per pass, which is why neither is
+   * here yet.
    */
   const sweep = () => {
     const order = subjects.map((_, index) => index);
@@ -2836,9 +2845,18 @@ function evaluateNoOverlap(
     for (let i = 0; i < order.length; i++) {
       const a = subjects[order[i]];
       const reach = a.bound.maxX;
+      const aMinY = a.bound.y;
+      const aMaxY = a.bound.y + a.bound.h;
       for (let j = i + 1; j < order.length; j++) {
         const b = subjects[order[j]];
         if (b.bound.x > reach) break;
+        // the cheap axis first; `declared` allocates and runs after
+        const bMinY = b.bound.y;
+        if (
+          bMinY + b.bound.h - aMinY <= OVERLAP_EPSILON ||
+          aMaxY - bMinY <= OVERLAP_EPSILON
+        )
+          continue;
         test(a, b);
       }
     }
