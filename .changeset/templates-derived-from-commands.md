@@ -2,6 +2,7 @@
 '@labre/affine-gfx-template': minor
 '@labre/affine-gfx-wardley': patch
 '@labre/affine-block-surface': patch
+'@labre/affine-gfx-group': patch
 ---
 
 feat(edgeless): Wardley palette templates are derived from the creation commands

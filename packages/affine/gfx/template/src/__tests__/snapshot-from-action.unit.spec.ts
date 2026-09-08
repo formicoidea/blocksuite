@@ -9,7 +9,7 @@ import { Subject } from 'rxjs';
 import { describe, expect, it } from 'vitest';
 import * as Y from 'yjs';
 
-import { makeTemplateSnapshot } from '../make-snapshot.js';
+import { makeTemplateSnapshot, surfaceText } from '../make-snapshot.js';
 import { createRegenerateIndexMiddleware } from '../services/template-middlewares.js';
 import type { TemplateJob } from '../services/template.js';
 import {
@@ -373,5 +373,30 @@ describe('templateFromCommand', () => {
         elementsOf(template.content as ReturnType<typeof makeTemplateSnapshot>)
       )
     ).toEqual(['el-0']);
+  });
+});
+
+describe('a group in a snapshot always carries a title', () => {
+  // Recette of 09/09/2026: a group written without a title (a map's node +
+  // label pair, a C4 component) landed with no `title` key, and the group
+  // renderer's `group.title.toString()` threw on every frame — the inserted
+  // map showed its background and nothing else.
+  it('gives a hand-written group the empty title the model would have', () => {
+    const elements = elementsOf(
+      makeTemplateSnapshot({
+        a: { type: 'shape' },
+        g: { type: 'group', children: { a: true } },
+      })
+    );
+    expect(elements['g']!['title']).toEqual(surfaceText(''));
+  });
+
+  it('gives a derived group written without one the same', () => {
+    const snapshot = snapshotFromAction(std => {
+      const surface = surfaceOf(std);
+      const a = surface.addElement({ type: 'shape', xywh: '[0,0,10,10]' });
+      surface.addElement({ type: 'group', children: { [a]: true } });
+    }, 'untitled group');
+    expect(elementsOf(snapshot)['el-1']!['title']).toEqual(surfaceText(''));
   });
 });

@@ -56,6 +56,14 @@ export function makeTemplateSnapshot(
     // not by the map key: a hand-written element without one would collect
     // every other element's key under `undefined` and land at one shared depth.
     if (copy['id'] === undefined) copy['id'] = id;
+    // A group's title is a Y.Text the model initialises at creation and reads
+    // back unguarded when it paints (`group.title.toString()`): a group written
+    // without one lands with no key at all, and the renderer threw on every
+    // frame — the inserted map showed its background and nothing else
+    // (recette of 09/09/2026).
+    if (copy['type'] === 'group' && copy['title'] === undefined) {
+      copy['title'] = surfaceText('');
+    }
     if (copy['index'] === undefined) {
       last = generateKeyBetween(last, null);
       copy['index'] = last;
