@@ -1,65 +1,62 @@
-# Building and Testing BlockSuite
+# Building and testing
 
-## Using Playground
+Short version. The full contributor guide is in
+[docs/contribute/](docs/contribute/01-setup.md).
 
-To run BlockSuite from source, please ensure you have installed [Node.js](https://nodejs.org/en/download) and [yarn](https://yarnpkg.com/).
+## Requirements
 
-```sh
-yarn install
+Node `>=18.19 <23` and Yarn 4 (pinned by `packageManager`; Corepack picks
+it up).
+
+## Install and run
+
+```bash
+yarn install --immutable
 yarn dev
 ```
 
-Be sure to use the correct version of yarn specified in package.json.
+The playground opens on `http://localhost:5173`:
 
-Then there would be multiple entries to choose from:
+- `/starter/?init` a fresh document in page mode
+- `/starter/?init&mode=edgeless` the whiteboard
+- `/starter/?init&room=hello` and, in a second tab, `/starter/?room=hello`:
+  two editors syncing through a broadcast channel
 
-- The [localhost:5173/starter/?init](http://localhost:5173/starter/?init) entry is recommended for local debugging.
-- The [localhost:5173/starter/](http://localhost:5173/starter/) entry lists all of the starter presets.
-- The [localhost:5173](http://localhost:5173) entry is a comprehensive example with local-first (IndexedDB-based) data persistence and real-time collaboration support.
+The playground imports the packages from source, so edits reload live.
 
-All these entries are published to [try-blocksuite.vercel.app](https://try-blocksuite.vercel.app).
+## Build
 
-And this would build the BlockSuite packages:
-
-```sh
-yarn build
+```bash
+yarn build            # tsc -b on the whole workspace, tests included
+yarn build:bundles    # generate and compile the @formicoidea/* bundles into dist-bundles/
 ```
 
-## Testing
+## Test
 
-### Test Locally
-
-Adding test cases is strongly encouraged when you contribute new features and bug fixes. We use [Playwright](https://playwright.dev/) for E2E test, and [vitest](https://vitest.dev/) for unit test.
-
-To test locally, please make sure browser binaries are already installed via `npx playwright install`. Then there are multi commands to choose from:
-
-```sh
-# run tests in headless mode in another terminal window
-yarn test
-
-# or run tests in headed mode for debugging
-yarn test -- --debug
+```bash
+yarn test:unit                                  # every unit suite
+yarn test:integration                           # browser suite (chromium, serial)
+cd packages/affine/gfx/wardley && yarn vitest run roles   # one package, one filter
 ```
 
-In headed mode, `await page.pause()` can be used in test cases to suspend the test runner. Note that the usage of the [Playwright VSCode extension](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright) is also highly recommended.
+Run a package's tests from its own directory. Run `yarn test:unit` on its
+own: a concurrent `tsc -b` starves the browser-mode projects. The first
+integration run needs `npx playwright install`.
 
-To test browser compatibility, the `BROWSER` environment variable can be used:
+## Format
 
-```sh
-# supports `firefox|webkit|chromium`
-BROWSER=firefox yarn test
-
-# passing playwright params with the -- syntax
-BROWSER=webkit yarn test -- --debug
+```bash
+yarn lint:format      # prettier --check
+yarn format           # prettier --write
 ```
 
-To investigate flaky tests, we can mark a test case as `test.only`, then perform `npx playwright test --repeat-each=10` to reproduce the problem by repeated execution. It's also very helpful to run `yarn test -- --debug` with `await page.pause()` added before certain asserters.
+Prettier is the only formatter. The pre-commit hook runs it on staged files.
 
-### Test Collaboration
+## Commit and release
 
-To test the real-time collaboration feature of BlockSuite locally, please follow these two simple steps:
-
-1. Open [localhost:5173/starter/?init&room=hello](http://localhost:5173/starter/?init&room=hello) in the first browser tab.
-2. Open [localhost:5173/starter/?room=hello](http://localhost:5173/starter/?room=hello) in a second tab.
-
-See the [documentation](https://blocksuite.io/guide/data-synchronization.html#document-streaming) about what's happening under the hood.
+Conventional commits with a closed scope list (`page`, `edgeless`,
+`database`, `blocks`, `store`, `sync`, `std`, `presets`, `playground`,
+`inline`, `lit`, `examples`); one changeset per user-facing change
+(`yarn changeset`). Releases are manual: `yarn ci:version`, commit,
+`yarn ci:publish`. See [docs/contribute/02-workflow.md](docs/contribute/02-workflow.md)
+and [docs/contribute/05-release.md](docs/contribute/05-release.md).

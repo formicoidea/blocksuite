@@ -1,0 +1,89 @@
+# Workflow
+
+**Branch from `blocksuite-labre-main`, one issue per pull request, a
+conventional commit, a changeset, a squash merge.**
+
+## Branches
+
+- `blocksuite-labre-main` is the integration and release branch. Every
+  feature branch starts from it and every pull request targets it.
+- `main` is dead: it is the old mirror of upstream. A PR against it shows
+  thousands of files. If that happens, `gh pr edit N --base blocksuite-labre-main`.
+- `trimed-lib` is historical, dormant since June 2026. Do not branch from it.
+
+```bash
+git fetch origin
+git switch -c feat/my-change origin/blocksuite-labre-main
+git log -1     # confirm you are on the current tip, not a stale base
+```
+
+Sync a long-lived branch with `git merge origin/blocksuite-labre-main`. Merge
+commits are fine: the squash flattens them. Avoid stacking branches on other
+feature branches; a squash-merged base makes the stack conflict.
+
+## Commits
+
+Conventional commits, checked by a hook on the message and by CI on the PR
+title.
+
+```
+type(scope): subject
+```
+
+- **type**: `feat`, `fix`, `chore`, `refactor`, `test`, `docs`, `perf`.
+- **scope**, from a closed list: `page`, `edgeless`, `database`, `blocks`,
+  `store`, `sync`, `std`, `presets`, `playground`, `inline`, `lit`,
+  `examples`. There is no `wardley`, `bpmn` or `ddd` scope: canvas
+  frameworks use `edgeless`; use `blocks` when unsure.
+- **subject**: sentence-case or fully lowercase. A lowercase subject with a
+  capital inside (`URL`, a class name) is rejected. Keep identifiers in the
+  body.
+
+Validate before pushing:
+
+```bash
+printf 'feat(edgeless): add the C4 board legend\n' | ./node_modules/.bin/commitlint
+```
+
+Commits made with an AI assistant end with the `Co-Authored-By` trailer the
+assistant adds.
+
+## Changesets
+
+Every user-facing change ships with one changeset:
+
+```bash
+yarn changeset
+```
+
+Pick the packages touched, the bump (`patch` for a fix, `minor` for a
+feature), and write one or two sentences a host developer will read in the
+changelog. Internal refactors and test-only changes need none.
+
+## Pull requests
+
+- One issue, one PR. Title obeys the commit rules.
+- Body: what changed, why, how it was verified (commands and results). Link
+  the ADR if one applies.
+- CI runs format, typecheck, unit and integration. All green before review.
+- Squash merge. The PR title becomes the commit subject.
+- `Closes #N` does not auto-close on a non-default branch: close the issue by
+  hand after the merge.
+
+## Review
+
+A human reviews every PR. A change in a red zone (see [03-rules.md](03-rules.md))
+needs a maintainer's explicit approval and usually an ADR.
+
+## Local full-CI run
+
+When CI quota is short, run locally, in this order, each alone:
+
+```bash
+yarn lint:format
+yarn build
+yarn test:unit
+yarn test:integration
+```
+
+Next: [03-rules.md](03-rules.md).

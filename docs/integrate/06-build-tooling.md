@@ -1,0 +1,111 @@
+# Build tooling
+
+**Vite plus vanilla-extract, no server rendering, one hot-reload line, one
+Vitest setting.**
+
+## Vite and vanilla-extract
+
+The library ships its styles as vanilla-extract `.css.ts` files. Register the
+plugin:
+
+```ts
+// vite.config.ts
+import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
+export default defineConfig({ plugins: [vanillaExtractPlugin()] });
+```
+
+In dev, Vite's dependency pre-bundler (esbuild) does not run the plugin, so
+`.css.ts` files inside `node_modules` execute with no file scope and styles
+break with "Styles were unable to be assigned to a file". Excluding the
+packages from optimization strands their CommonJS dependencies. The fix that
+works is to keep every `.css.ts` file external to the pre-bundle:
+
+```ts
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+import type { Plugin as EsbuildPlugin } from 'esbuild';
+
+const externalizeVanillaExtract = (): EsbuildPlugin => ({
+  name: 'externalize-vanilla-extract',
+  setup(build) {
+    build.onResolve({ filter: /\.css(\.[jt]s)?$/ }, args => {
+      if (args.kind === 'entry-point' || !args.path.startsWith('.'))
+        return null;
+      const base = resolve(args.resolveDir, args.path);
+      const veFile = /\.css\.[jt]s$/.test(base)
+        ? base
+        : [`${base}.ts`, `${base}.js`].find(existsSync);
+      if (!veFile || !existsSync(veFile)) return null;
+      return { path: veFile, external: true };
+    });
+  },
+});
+
+export default defineConfig({
+  plugins: [vanillaExtractPlugin()],
+  optimizeDeps: { esbuildOptions: { plugins: [externalizeVanillaExtract()] } },
+});
+```
+
+Production builds (Rollup) are unaffected.
+
+## Hot module replacement
+
+A custom element class cannot be redefined. When Vite re-evaluates the module
+that defines your container, `new MyContainer()` throws "illegal
+constructor". `import.meta.hot.decline()` is a no-op since Vite 5. Reload
+instead:
+
+```ts
+if (import.meta.hot) import.meta.hot.accept(() => window.location.reload());
+```
+
+Define the element once, guarded:
+
+```ts
+if (!customElements.get('my-editor-container')) {
+  customElements.define('my-editor-container', MyEditorContainer);
+}
+```
+
+## No server rendering
+
+The editor touches `document`, `customElements` and `canvas` at import time
+of `@labre/affine/effects`. Load the editor module lazily, client-side only:
+
+```tsx
+const Editor = React.lazy(() => import('./editor'));
+```
+
+The Labre marketing site pre-renders every page and mounts the demo editor
+only when the demo window opens.
+
+## Vitest
+
+Vitest externalizes `node_modules` and loads them with Node's resolver. The
+bundles are Node-resolvable since 0.30.2, but keep the scope inlined so the
+vanilla-extract transform and any future edge case go through Vite:
+
+```ts
+test: {
+  server: {
+    deps: {
+      inline: [/@formicoidea[\\/]/];
+    }
+  }
+}
+```
+
+## TypeScript
+
+The bundles ship `.d.ts` compiled for ES2022 and rely on `skipLibCheck: true`
+in consumers (some type references point at internal paths). Set it.
+
+## Bundle size
+
+A framework bundle's `.` entry (roles, rules, parsers) is data-only and safe
+to import in a settings page. Import `./view` only where the editor mounts.
+`./commands-manifest` is a few hundred bytes: use it to list commands and
+chords in a shortcuts pane without pulling the action graph.
+
+Next: [07-upgrade.md](07-upgrade.md).
