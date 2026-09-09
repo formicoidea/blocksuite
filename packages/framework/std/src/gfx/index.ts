@@ -128,6 +128,7 @@ export {
   tagsPropToY,
 } from './model/surface/tags.js';
 export {
+  type ElementUpdatedData,
   SURFACE_TEXT_UNIQ_IDENTIFIER,
   SURFACE_YMAP_UNIQ_IDENTIFIER,
   SurfaceBlockModel,
