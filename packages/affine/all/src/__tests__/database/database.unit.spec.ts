@@ -2,6 +2,7 @@ import {
   addProperty,
   copyCellsByProperty,
   databaseBlockProperties,
+  DatabaseBlockDataSource,
   deleteColumn,
   getCell,
   getProperty,
@@ -17,6 +18,10 @@ import {
   RootBlockSchemaExtension,
 } from '@labre/affine-model';
 import { propertyModelPresets } from '@labre/data-view/property-pure-presets';
+import type {
+  TableSingleView,
+  TableViewData,
+} from '@labre/data-view/view-presets';
 import type { BlockModel, Store } from '@labre/store';
 import { Text } from '@labre/store';
 import {
@@ -233,4 +238,108 @@ describe('DatabaseManager', () => {
       value: [selection[1]],
     });
   });
+});
+
+/**
+ * Regression guard for #249 ("a new date property never shows up in the table
+ * view"). The reported symptom was not reproducible, so this pins the whole
+ * chain instead: `SingleViewBase.propertyAdd` → `DatabaseBlockDataSource`
+ * → `addProperty` on the model → `TableSingleView.propertiesRaw$` →
+ * `TableProperty.move()` writing the column into the view data. Both entry
+ * points are covered: the typed add (property menu), and the untyped add the
+ * classic "+" button does — a multi-select whose type the header menu changes
+ * afterwards.
+ */
+describe('a property added from the table view shows up in it', () => {
+  const addablePropertyTypes = [
+    'date',
+    'number',
+    'checkbox',
+    'progress',
+    'select',
+    'multi-select',
+    'link',
+    'rich-text',
+    'created-time',
+  ] as const;
+
+  function createTableView() {
+    const doc = createTestDoc('doc-property-add');
+    const rootId = doc.addBlock('affine:page', {
+      title: new Text('property add'),
+    });
+    const noteBlockId = doc.addBlock('affine:note', {}, rootId);
+    const databaseBlockId = doc.addBlock(
+      'affine:database',
+      { columns: [], titleColumn: 'Title' },
+      noteBlockId
+    );
+    const model = doc.getModelById(databaseBlockId) as DatabaseBlockModel;
+    const dataSource = new DatabaseBlockDataSource(model);
+    dataSource.rowAdd('end');
+    const viewId = dataSource.viewManager.viewAdd('table');
+    const view = dataSource.viewManager.viewGet(viewId) as
+      | TableSingleView
+      | undefined;
+    if (!view) {
+      throw new Error('the table view was not created');
+    }
+    return { dataSource, view };
+  }
+
+  function expectVisibleInTable(
+    dataSource: DatabaseBlockDataSource,
+    view: TableSingleView,
+    propertyId: string,
+    type: string
+  ) {
+    // the data source knows the property, with the expected type
+    expect(dataSource.properties$.value).toContain(propertyId);
+    expect(dataSource.propertyTypeGet(propertyId)).toBe(type);
+    expect(view.propertyMetas$.value.map(meta => meta.type)).toContain(type);
+
+    // the view lists it, raw and visible
+    expect(view.propertiesRaw$.value.map(property => property.id)).toContain(
+      propertyId
+    );
+    expect(view.propertyIds$.value).toContain(propertyId);
+
+    // and it is persisted in the view data as a shown column with a width
+    const property = view.propertyGetOrCreate(propertyId);
+    expect(property.hide$.value).toBe(false);
+    expect(property.width$.value).toBeGreaterThan(0);
+
+    const columns = (view.data$.value as TableViewData | undefined)?.columns;
+    expect(columns?.map(column => column.id)).toContain(propertyId);
+    expect(columns?.find(column => column.id === propertyId)?.hide).toBe(false);
+  }
+
+  test.each(addablePropertyTypes)(
+    'adds a %s property with its type picked up front',
+    type => {
+      const { dataSource, view } = createTableView();
+
+      const propertyId = view.propertyAdd('end', { type, name: 'New Column' });
+
+      expect(propertyId).toBeTruthy();
+      expectVisibleInTable(dataSource, view, propertyId!, type);
+    }
+  );
+
+  test.each(addablePropertyTypes)(
+    'adds an untyped property then switches it to %s',
+    type => {
+      const { dataSource, view } = createTableView();
+
+      // what the classic table "+" button does: a multi-select column…
+      const propertyId = view.propertyAdd('end');
+      expect(propertyId).toBeTruthy();
+      expect(dataSource.propertyTypeGet(propertyId!)).toBe('multi-select');
+
+      // …whose type the header menu changes afterwards
+      view.propertyGetOrCreate(propertyId!).typeSet?.(type);
+
+      expectVisibleInTable(dataSource, view, propertyId!, type);
+    }
+  );
 });
