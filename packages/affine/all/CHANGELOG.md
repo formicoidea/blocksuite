@@ -1,5 +1,92 @@
 # @labre/affine
 
+## 0.39.1
+
+### Patch Changes
+
+- Updated dependencies [186cd6d]
+- Updated dependencies [82c0d48]
+- Updated dependencies [00eab3d]
+  - @labre/affine-block-database@0.39.1
+  - @labre/affine-widget-keyboard-toolbar@0.39.1
+  - @labre/affine-widget-linked-doc@0.39.1
+  - @labre/affine-gfx-connector@0.39.1
+  - @labre/affine-block-frame@0.39.1
+  - @labre/affine-model@0.39.1
+  - @labre/affine-gfx-mindmap@0.39.1
+  - @labre/affine-block-data-view@0.39.1
+  - @labre/affine-block-root@0.39.1
+  - @labre/affine-widget-toolbar@0.39.1
+  - @labre/affine-gfx-bpmn@0.39.1
+  - @labre/affine-gfx-c4@0.39.1
+  - @labre/affine-gfx-ddd-context-map@0.39.1
+  - @labre/affine-gfx-ddd-core-domain@0.39.1
+  - @labre/affine-gfx-ddd-event-storming@0.39.1
+  - @labre/affine-gfx-edgy@0.39.1
+  - @labre/affine-gfx-shape@0.39.1
+  - @labre/affine-gfx-wardley@0.39.1
+  - @labre/affine-widget-edgeless-selected-rect@0.39.1
+  - @labre/affine-block-surface-ref@0.39.1
+  - @labre/affine-fragment-doc-title@0.39.1
+  - @labre/affine-fragment-frame-panel@0.39.1
+  - @labre/affine-block-attachment@0.39.1
+  - @labre/affine-block-bookmark@0.39.1
+  - @labre/affine-block-callout@0.39.1
+  - @labre/affine-block-code@0.39.1
+  - @labre/affine-block-divider@0.39.1
+  - @labre/affine-block-edgeless-text@0.39.1
+  - @labre/affine-block-embed@0.39.1
+  - @labre/affine-block-embed-doc@0.39.1
+  - @labre/affine-block-image@0.39.1
+  - @labre/affine-block-latex@0.39.1
+  - @labre/affine-block-list@0.39.1
+  - @labre/affine-block-note@0.39.1
+  - @labre/affine-block-paragraph@0.39.1
+  - @labre/affine-block-surface@0.39.1
+  - @labre/affine-block-table@0.39.1
+  - @labre/affine-components@0.39.1
+  - @labre/affine-fragment-adapter-panel@0.39.1
+  - @labre/affine-fragment-outline@0.39.1
+  - @labre/affine-gfx-brush@0.39.1
+  - @labre/affine-gfx-cynefin-estuarine@0.39.1
+  - @labre/affine-gfx-ddd-aggregate@0.39.1
+  - @labre/affine-gfx-ddd-shared@0.39.1
+  - @labre/affine-gfx-group@0.39.1
+  - @labre/affine-gfx-link@0.39.1
+  - @labre/affine-gfx-note@0.39.1
+  - @labre/affine-gfx-pointer@0.39.1
+  - @labre/affine-gfx-template@0.39.1
+  - @labre/affine-gfx-text@0.39.1
+  - @labre/affine-inline-comment@0.39.1
+  - @labre/affine-inline-footnote@0.39.1
+  - @labre/affine-inline-latex@0.39.1
+  - @labre/affine-inline-link@0.39.1
+  - @labre/affine-inline-mention@0.39.1
+  - @labre/affine-inline-preset@0.39.1
+  - @labre/affine-inline-reference@0.39.1
+  - @labre/affine-rich-text@0.39.1
+  - @labre/affine-shared@0.39.1
+  - @labre/affine-widget-drag-handle@0.39.1
+  - @labre/affine-widget-edgeless-auto-connect@0.39.1
+  - @labre/affine-widget-edgeless-dragging-area@0.39.1
+  - @labre/affine-widget-edgeless-toolbar@0.39.1
+  - @labre/affine-widget-edgeless-zoom-toolbar@0.39.1
+  - @labre/affine-widget-frame-title@0.39.1
+  - @labre/affine-widget-note-slicer@0.39.1
+  - @labre/affine-widget-page-dragging-area@0.39.1
+  - @labre/affine-widget-remote-selection@0.39.1
+  - @labre/affine-widget-scroll-anchoring@0.39.1
+  - @labre/affine-widget-viewport-overlay@0.39.1
+  - @labre/data-view@0.39.1
+  - @labre/affine-foundation@0.39.1
+  - @labre/affine-widget-slash-menu@0.39.1
+  - @labre/affine-ext-loader@0.39.1
+  - @labre/affine-gfx-turbo-renderer@0.39.1
+  - @labre/global@0.39.1
+  - @labre/std@0.39.1
+  - @labre/store@0.39.1
+  - @labre/sync@0.39.1
+
 ## 0.39.0
 
 ### Patch Changes

@@ -1,5 +1,30 @@
 # @labre/affine-block-database
 
+## 0.39.1
+
+### Patch Changes
+
+- 186cd6d: Pasting into a database text cell whose inline range cannot be resolved no
+  longer swallows the clipboard silently: the cell now lets the default paste
+  path act instead of cancelling the event with nothing inserted. The cell's
+  clipboard listeners are also removed with the capture flag they were added
+  with, so they no longer leak on disconnect. A regression test pins that a
+  property of any type added from the Table view shows up in it immediately.
+- Updated dependencies [00eab3d]
+  - @labre/affine-model@0.39.1
+  - @labre/affine-components@0.39.1
+  - @labre/affine-inline-preset@0.39.1
+  - @labre/affine-inline-reference@0.39.1
+  - @labre/affine-rich-text@0.39.1
+  - @labre/affine-shared@0.39.1
+  - @labre/affine-widget-drag-handle@0.39.1
+  - @labre/data-view@0.39.1
+  - @labre/affine-widget-slash-menu@0.39.1
+  - @labre/affine-ext-loader@0.39.1
+  - @labre/global@0.39.1
+  - @labre/std@0.39.1
+  - @labre/store@0.39.1
+
 ## 0.39.0
 
 ### Patch Changes

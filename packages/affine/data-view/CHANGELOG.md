@@ -1,5 +1,15 @@
 # @labre/data-view
 
+## 0.39.1
+
+### Patch Changes
+
+- @labre/affine-components@0.39.1
+- @labre/affine-shared@0.39.1
+- @labre/global@0.39.1
+- @labre/std@0.39.1
+- @labre/store@0.39.1
+
 ## 0.39.0
 
 ### Patch Changes

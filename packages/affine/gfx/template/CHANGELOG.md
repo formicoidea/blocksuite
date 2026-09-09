@@ -1,5 +1,22 @@
 # @labre/affine-gfx-template
 
+## 0.39.1
+
+### Patch Changes
+
+- Updated dependencies [00eab3d]
+  - @labre/affine-model@0.39.1
+  - @labre/affine-block-surface@0.39.1
+  - @labre/affine-components@0.39.1
+  - @labre/affine-gfx-text@0.39.1
+  - @labre/affine-rich-text@0.39.1
+  - @labre/affine-shared@0.39.1
+  - @labre/affine-widget-edgeless-toolbar@0.39.1
+  - @labre/affine-ext-loader@0.39.1
+  - @labre/global@0.39.1
+  - @labre/std@0.39.1
+  - @labre/store@0.39.1
+
 ## 0.39.0
 
 ### Minor Changes

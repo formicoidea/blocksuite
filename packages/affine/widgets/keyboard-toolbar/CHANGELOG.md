@@ -1,5 +1,43 @@
 # @labre/affine-widget-keyboard-toolbar
 
+## 0.39.1
+
+### Patch Changes
+
+- 82c0d48: Opening a page-mode document in a mobile browser no longer throws when the host
+  registers no `VirtualKeyboardProvider`. That provider is host-supplied, and the
+  keyboard toolbar and the mobile linked-doc menu were both demanding it outright:
+  on a plain web host the document open died with
+  `Service [VirtualKeyboardProvider] not found in container`. Both now treat it as
+  optional — the keyboard toolbar falls back to its built-in behaviour, and the
+  linked-doc menu sits at a zero keyboard offset.
+- Updated dependencies [186cd6d]
+- Updated dependencies [00eab3d]
+  - @labre/affine-block-database@0.39.1
+  - @labre/affine-model@0.39.1
+  - @labre/affine-block-surface-ref@0.39.1
+  - @labre/affine-fragment-doc-title@0.39.1
+  - @labre/affine-block-attachment@0.39.1
+  - @labre/affine-block-embed@0.39.1
+  - @labre/affine-block-image@0.39.1
+  - @labre/affine-block-latex@0.39.1
+  - @labre/affine-block-list@0.39.1
+  - @labre/affine-block-note@0.39.1
+  - @labre/affine-block-paragraph@0.39.1
+  - @labre/affine-block-surface@0.39.1
+  - @labre/affine-components@0.39.1
+  - @labre/affine-inline-latex@0.39.1
+  - @labre/affine-inline-link@0.39.1
+  - @labre/affine-inline-preset@0.39.1
+  - @labre/affine-inline-reference@0.39.1
+  - @labre/affine-rich-text@0.39.1
+  - @labre/affine-shared@0.39.1
+  - @labre/data-view@0.39.1
+  - @labre/affine-ext-loader@0.39.1
+  - @labre/global@0.39.1
+  - @labre/std@0.39.1
+  - @labre/store@0.39.1
+
 ## 0.39.0
 
 ### Patch Changes

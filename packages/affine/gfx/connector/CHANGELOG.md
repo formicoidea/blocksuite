@@ -1,5 +1,27 @@
 # @labre/affine-gfx-connector
 
+## 0.39.1
+
+### Patch Changes
+
+- 00eab3d: A remote edit never triggers a local persisted write in the connector watcher,
+  the frame manager or a mindmap's children observer. Readonly viewers no longer
+  write — or throw — on remote polygon moves, connector mode changes, block adds
+  above a frame, or mindmap children rewrites. Connector label and mindmap node
+  view lookups are null-safe.
+- Updated dependencies [00eab3d]
+  - @labre/affine-model@0.39.1
+  - @labre/affine-block-surface@0.39.1
+  - @labre/affine-components@0.39.1
+  - @labre/affine-gfx-text@0.39.1
+  - @labre/affine-rich-text@0.39.1
+  - @labre/affine-shared@0.39.1
+  - @labre/affine-widget-edgeless-toolbar@0.39.1
+  - @labre/affine-ext-loader@0.39.1
+  - @labre/global@0.39.1
+  - @labre/std@0.39.1
+  - @labre/store@0.39.1
+
 ## 0.39.0
 
 ### Patch Changes
