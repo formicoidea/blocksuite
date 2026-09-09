@@ -147,8 +147,14 @@ export class AffineMobileLinkedDocMenu extends SignalWatcher(
     );
   }
 
-  get keyboard() {
-    return this.context.std.get(VirtualKeyboardProvider);
+  /**
+   * The virtual keyboard provider is host-supplied — a native mobile shell
+   * reports the on-screen keyboard. Labre ships no such shell, so a plain web
+   * host registers nothing and this lookup must stay optional; a hard `get`
+   * throws and takes the whole document open down with it (issue #247).
+   */
+  get keyboard(): VirtualKeyboardProvider | null {
+    return this.context.std.getOptional(VirtualKeyboardProvider) ?? null;
   }
 
   override connectedCallback() {
@@ -204,7 +210,7 @@ export class AffineMobileLinkedDocMenu extends SignalWatcher(
       return nothing;
     }
 
-    this.style.bottom = `${this.keyboard.height$.value}px`;
+    this.style.bottom = `${this.keyboard?.height$.value ?? 0}px`;
 
     return html`
       ${join(groups.map(this._renderGroup), html`<div class="divider"></div>`)}
