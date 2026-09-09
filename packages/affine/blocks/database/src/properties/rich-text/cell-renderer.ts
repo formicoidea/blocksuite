@@ -236,13 +236,16 @@ export class RichTextCell extends BaseCellRenderer<Text, string> {
   };
 
   private readonly _onPaste = (e: ClipboardEvent) => {
+    const inlineEditor = this.inlineEditor$.value;
+    const inlineRange = inlineEditor?.getInlineRange();
+    // Bail out before cancelling the event: with no resolvable inline range
+    // there is nothing to insert into, and swallowing the paste here would
+    // drop the clipboard silently instead of letting the default path act.
+    if (!inlineEditor || !inlineRange) return;
+    // The cell owns the paste: stop it before the document clipboard sees it,
+    // whichever branch below ends up handling the payload.
     e.preventDefault();
     e.stopPropagation();
-    const inlineEditor = this.inlineEditor$.value;
-    if (!inlineEditor) return;
-
-    const inlineRange = inlineEditor.getInlineRange();
-    if (!inlineRange) return;
 
     if (e.clipboardData) {
       try {
@@ -341,9 +344,11 @@ export class RichTextCell extends BaseCellRenderer<Text, string> {
           richText.addEventListener('cut', this._onCut, true);
           richText.addEventListener('paste', this._onPaste, true);
           return () => {
-            richText.removeEventListener('copy', this._onCopy);
-            richText.removeEventListener('cut', this._onCut);
-            richText.removeEventListener('paste', this._onPaste);
+            // the capture flag is part of the listener identity: without it
+            // these three would never be removed.
+            richText.removeEventListener('copy', this._onCopy, true);
+            richText.removeEventListener('cut', this._onCut, true);
+            richText.removeEventListener('paste', this._onPaste, true);
           };
         }
         return;
