@@ -1449,7 +1449,20 @@ export class ConnectorPathGenerator extends PathGenerator {
   static updatePath(
     connector: ConnectorElementModel | LocalConnectorElementModel,
     path: PointLocation[] | null,
-    elementGetter?: (id: string) => GfxModel | null
+    elementGetter?: (id: string) => GfxModel | null,
+    options?: {
+      /**
+       * Whether this peer may persist the derived label box. `labelXYWH` is a
+       * `@field()`: unlike `path` / `xywh`, which are `@local()` and must be
+       * recomputed everywhere to repaint, writing it makes the CRDT grow on
+       * every peer that merely WATCHES a connector move — and throws on a
+       * readonly viewer. The authoring peer's value arrives with the sync, so
+       * a peer reacting to a remote change passes `false`. Defaults to `true`
+       * for the direct callers (paste, mindmap layout, shape resize), which
+       * are local gestures by construction.
+       */
+      persistLabelXYWH?: boolean;
+    }
   ) {
     const instance = new ConnectorPathGenerator({
       getElementById: elementGetter ?? (() => null),
@@ -1482,14 +1495,19 @@ export class ConnectorPathGenerator extends PathGenerator {
     connector.xywh = bound.serialize();
     connector.path = relativePoints;
 
-    // Updates Connector's Label position.
+    // Updates Connector's Label position — a PERSISTED write, unlike
+    // everything above it.
     if (isConnectorWithLabel(connector)) {
       const model = connector as ConnectorElementModel;
-      const [cx, cy] = model.getPointByOffsetDistance(
-        model.labelOffset.distance
-      );
-      const [, , w, h] = model.labelXYWH!;
-      model.labelXYWH = [cx - w / 2, cy - h / 2, w, h];
+      const mayPersist =
+        (options?.persistLabelXYWH ?? true) && !model.surface?.store?.readonly;
+      if (mayPersist) {
+        const [cx, cy] = model.getPointByOffsetDistance(
+          model.labelOffset.distance
+        );
+        const [, , w, h] = model.labelXYWH!;
+        model.labelXYWH = [cx - w / 2, cy - h / 2, w, h];
+      }
     }
 
     connector.updatingPath = false;

@@ -364,6 +364,15 @@ export class EdgelessFrameManager extends GfxExtension {
 
     this._disposable.add(
       doc.slots.blockUpdated.subscribe(payload => {
+        // Local adds only, exactly like the canvas-element half above. A block
+        // added by a remote peer was already adopted THERE: the frame's
+        // `childElementIds` arrives with the same sync. Adopting it again here
+        // is a duplicate write on every receiving peer — and a readonly viewer
+        // cannot write at all, which is how this surfaced (#251). See #242 for
+        // the rule: a cascade reacts to local transactions, the receiving peer
+        // trusts the sync.
+        if (!payload.isLocal) return;
+
         if (
           payload.type === 'add' &&
           payload.model instanceof GfxBlockElementModel &&
@@ -387,14 +396,7 @@ export class EdgelessFrameManager extends GfxExtension {
           if (this._enclosesFrame(payload.model, frame)) {
             return;
           }
-          if (payload.isLocal) {
-            this._adoptNewlyCreatedElement(frame, payload.model);
-          } else {
-            // Remote adds: adopt only. The originating client reassigns the
-            // index and syncs it — reindexing here too would produce
-            // competing concurrent writes for the same element.
-            this.addElementsToFrame(frame, [payload.model]);
-          }
+          this._adoptNewlyCreatedElement(frame, payload.model);
         }
       })
     );

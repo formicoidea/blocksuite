@@ -99,11 +99,20 @@ function observeChildren(
   transaction: Y.Transaction | null
 ) {
   if (instance.children.doc) {
+    // `?? false`, like every other group-like element (see `group.ts`): a
+    // missing transaction is NOT a local gesture. `startObserve` re-runs this
+    // observer with `transaction === null` whenever the `children` key itself
+    // is rewritten — by a remote peer, a snapshot import or an undo — and
+    // reporting that as local makes the group watchers treat a received change
+    // as one this peer just made: they delete an emptied mindmap locally,
+    // which a readonly viewer cannot do (#251, rule from #242).
     instance.setChildIds(
       Array.from(instance.children.keys()),
-      transaction?.local ?? true
+      transaction?.local ?? false
     );
 
+    // Pure local recompute, no CRDT write: unconditional on purpose, every
+    // peer must rebuild its tree to repaint.
     instance.buildTree();
     instance.connectors.clear();
   }
