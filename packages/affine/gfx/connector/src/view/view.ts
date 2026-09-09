@@ -68,7 +68,11 @@ export class ConnectorElementView extends GfxElementModelView<ConnectorElementMo
       };
     };
     const watchEvent = (labelModel: LocalShapeElementModel) => {
-      const view = this.gfx.view.get(labelModel) as GfxElementModelView;
+      // `ViewManager.get` returns null for an element that has no view yet —
+      // the local label element is registered a beat before its view exists.
+      const view = this.gfx.view.get(labelModel) as GfxElementModelView | null;
+      if (!view) return;
+
       const connectorModel = this.model;
 
       let labelBound: Bound | null = null;

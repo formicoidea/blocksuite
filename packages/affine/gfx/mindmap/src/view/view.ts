@@ -262,7 +262,15 @@ export class MindMapView extends GfxElementModelView<MindmapElementModel> {
         button: false,
         node: false,
       };
-      const buttonView = this.gfx.view.get(id) as GfxElementModelView;
+      this._hoveredState = this._hoveredState.set(node.id, hoveredState);
+
+      // `ViewManager.get` returns null for an element whose view is not
+      // mounted yet — the button model exists a beat before its view does.
+      // The button is created and tracked either way; only the hover wiring
+      // is skipped.
+      const buttonView = this.gfx.view.get(id) as GfxElementModelView | null;
+      if (!buttonView) return collapseButton;
+
       const isOnElementBound = (evt: PointerEventState) => {
         const [x, y] = this.gfx.viewport.toModelCoord(evt.x, evt.y);
 
@@ -273,8 +281,6 @@ export class MindMapView extends GfxElementModelView<MindmapElementModel> {
           this.gfx.std.host
         );
       };
-
-      this._hoveredState = this._hoveredState.set(node.id, hoveredState);
 
       buttonView.on('pointerenter', () => {
         hoveredState.button = true;
@@ -317,7 +323,8 @@ export class MindMapView extends GfxElementModelView<MindmapElementModel> {
         }
       });
 
-      const nodeView = this.gfx.view.get(node.id) as GfxElementModelView;
+      const nodeView = this.gfx.view.get(node.id) as GfxElementModelView | null;
+      if (!nodeView) return collapseButton;
 
       nodeView.on('pointerenter', () => {
         hoveredState.node = true;

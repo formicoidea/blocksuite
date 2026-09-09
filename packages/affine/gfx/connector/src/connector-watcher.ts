@@ -92,25 +92,43 @@ export const connectorWatcher: SurfaceMiddleware = (
     surface.hasElementById(id) || surface.store.hasBlock(id);
   const elementGetter = (id: string) =>
     surface.getElementById(id) ?? (surface.store.getModelById(id) as GfxModel);
-  const updateConnectorPath = (connector: ConnectorElementModel) => {
+  const updateConnectorPath = (
+    connector: ConnectorElementModel,
+    local: boolean
+  ) => {
     if (
       ((connector.source?.id && hasElementById(connector.source.id)) ||
         (!connector.source?.id && connector.source?.position)) &&
       ((connector.target?.id && hasElementById(connector.target.id)) ||
         (!connector.target?.id && connector.target?.position))
     ) {
-      ConnectorPathGenerator.updatePath(connector, null, elementGetter);
+      // The path itself is `@local()` — every peer recomputes it to repaint.
+      // The label box is not: only the peer that authored the change persists
+      // it, the others read the value that arrives with the sync.
+      ConnectorPathGenerator.updatePath(connector, null, elementGetter, {
+        persistLabelXYWH: local,
+      });
     }
   };
-  const pendingList = new Set<ConnectorElementModel>();
+  /**
+   * Connectors whose path must be recomputed in the next microtask, mapped to
+   * whether ANY of the changes that queued them was local — a single local
+   * gesture is enough to let the peer persist the derived label box.
+   */
+  const pendingList = new Map<ConnectorElementModel, boolean>();
   let pendingFlag = false;
-  const addToUpdateList = (connector: ConnectorElementModel) => {
-    pendingList.add(connector);
+  const addToUpdateList = (
+    connector: ConnectorElementModel,
+    local: boolean
+  ) => {
+    pendingList.set(connector, (pendingList.get(connector) ?? false) || local);
 
     if (!pendingFlag) {
       pendingFlag = true;
       queueMicrotask(() => {
-        pendingList.forEach(updateConnectorPath);
+        pendingList.forEach((isLocal, connector) =>
+          updateConnectorPath(connector, isLocal)
+        );
         pendingList.clear();
         pendingFlag = false;
       });
@@ -118,29 +136,44 @@ export const connectorWatcher: SurfaceMiddleware = (
   };
 
   const disposables = [
-    surface.elementAdded.subscribe(({ id }) => {
+    surface.elementAdded.subscribe(({ id, local }) => {
       const element = elementGetter(id);
 
       if (!element) return;
 
       if ('type' in element && element.type === 'connector') {
-        addToUpdateList(element as ConnectorElementModel);
+        addToUpdateList(element as ConnectorElementModel, local);
       } else {
-        surface.getConnectors(id).forEach(addToUpdateList);
+        surface
+          .getConnectors(id)
+          .forEach(connector => addToUpdateList(connector, local));
       }
     }),
-    surface.elementUpdated.subscribe(({ id, props }) => {
+    surface.elementUpdated.subscribe(({ id, props, local }) => {
       const element = elementGetter(id);
 
-      if (props['vertices']) {
+      // The element may already be gone by the time the update is delivered
+      // (a remote peer that moved and then deleted it, an undo…).
+      if (!element) return;
+
+      if (local && props['vertices']) {
         // When polygon vertices change, re-anchor connected connectors to the
         // nearest valid boundary point BEFORE scheduling the path update, so
         // the path generator uses the corrected anchor positions.
+        //
+        // LOCAL ONLY: re-anchoring writes `source`/`target`, both persisted
+        // `@field()`s. The peer that edited the vertices re-anchors and syncs
+        // the result, so doing it again on a receiving peer is a duplicate
+        // write — and an illegal one on a readonly viewer (see #242).
         reanchorConnectorsForPolygon(surface, id, elementGetter);
       }
 
       if (props['xywh'] || props['rotate'] || props['vertices']) {
-        surface.getConnectors(id).forEach(addToUpdateList);
+        // Not gated on `local`: `path`, `absolutePath` and the connector's own
+        // `xywh` are `@local()`, so every peer must recompute them to repaint.
+        surface
+          .getConnectors(id)
+          .forEach(connector => addToUpdateList(connector, local));
       }
 
       if (
@@ -153,14 +186,16 @@ export const connectorWatcher: SurfaceMiddleware = (
       ) {
         const connector = element as ConnectorElementModel;
 
-        // Clear custom handle data when connector mode changes
-        if (props['mode'] !== undefined) {
+        // Clear custom handle data when connector mode changes. `local` only:
+        // `curveControlPoint` is persisted, and the peer that changed the mode
+        // cleared it in the same gesture.
+        if (local && props['mode'] !== undefined) {
           if (connector.curveControlPoint !== null) {
             connector.curveControlPoint = null;
           }
         }
 
-        addToUpdateList(connector);
+        addToUpdateList(connector, local);
       }
     }),
     surface.store.slots.blockUpdated.subscribe(payload => {
@@ -168,15 +203,19 @@ export const connectorWatcher: SurfaceMiddleware = (
         payload.type === 'add' ||
         (payload.type === 'update' && payload.props.key === 'xywh')
       ) {
-        surface.getConnectors(payload.id).forEach(addToUpdateList);
+        surface
+          .getConnectors(payload.id)
+          .forEach(connector => addToUpdateList(connector, payload.isLocal));
       }
     }),
   ];
 
+  // Mount-time recompute of the `@local()` geometry. Not a local gesture:
+  // merely OPENING a document must not rewrite every connector's label box.
   surface
     .getElementsByType('connector')
     .forEach(connector =>
-      updateConnectorPath(connector as ConnectorElementModel)
+      updateConnectorPath(connector as ConnectorElementModel, false)
     );
 
   return () => {
