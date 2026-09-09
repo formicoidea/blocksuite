@@ -19,6 +19,14 @@ import {
 
 export const AFFINE_KEYBOARD_TOOLBAR_WIDGET = 'affine-keyboard-toolbar-widget';
 
+/**
+ * Signals backing the fallback keyboard, at module level on purpose: the
+ * `keyboard` getter is read from `render()`, so a fresh `signal()` per call
+ * would hand `PositionController`'s effect a brand new object every frame.
+ */
+const fallbackKeyboardVisible$ = signal(false);
+const fallbackKeyboardHeight$ = signal(0);
+
 export class AffineKeyboardToolbarWidget extends WidgetComponent<RootBlockModel> {
   private readonly _close = (blur: boolean) => {
     if (blur) {
@@ -37,12 +45,21 @@ export class AffineKeyboardToolbarWidget extends WidgetComponent<RootBlockModel>
   private _initialInputMode: string = '';
 
   get keyboard(): VirtualKeyboardProviderWithAction & { fallback?: boolean } {
-    const provider = this.std.get(VirtualKeyboardProvider);
-    if (isVirtualKeyboardProviderWithAction(provider)) return provider;
+    // The provider is host-supplied — a native mobile shell reports the
+    // on-screen keyboard. Labre ships no such shell, so a plain web host
+    // registers nothing and this lookup must stay optional; a hard `get` throws
+    // and takes the whole document open down with it (issue #247).
+    const provider = this.std.getOptional(VirtualKeyboardProvider);
+    if (provider && isVirtualKeyboardProviderWithAction(provider))
+      return provider;
 
     return {
-      // fallback keyboard actions
+      // Fallback keyboard, complete WITHOUT a provider: the signals come first
+      // so that a provider without actions still wins on them through the
+      // spread below, while its `show`/`hide` stay ours.
       fallback: true,
+      visible$: fallbackKeyboardVisible$,
+      height$: fallbackKeyboardHeight$,
       show: () => {
         const rootComponent = this.block?.rootComponent;
         if (rootComponent && rootComponent === document.activeElement) {
