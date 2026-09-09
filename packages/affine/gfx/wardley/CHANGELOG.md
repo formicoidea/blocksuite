@@ -1,5 +1,39 @@
 # @labre/affine-gfx-wardley
 
+## 0.39.0
+
+### Patch Changes
+
+- 8f7a4f2: fix(edgeless): the Templates panel lists exactly the categories of the frameworks registered on its editor, without a reload (#244)
+
+  A framework's category was appended to a module-level registry from
+  `effect()` and never removed, so a host that re-mounted the editor with a
+  framework switched off kept seeing its category until a full page reload.
+  Categories are now registered in the editor's DI container
+  (`TemplateCategoryExtension`, from the flag-gated view extension's `setup()`)
+  and the panel reads them from the `std` of the edgeless it opens on. The
+  remembered category tab falls back to the first one when it no longer exists.
+
+  API: `extendTemplateCategory` is removed; register
+  `TemplateCategoryExtension(category)` from `setup()` instead.
+  `EdgelessTemplatePanel.templates.extend(manager)` (the global host hook) is
+  unchanged, and `templateManagerFor(std)` exposes the per-editor catalogue.
+
+- Updated dependencies [8f7a4f2]
+  - @labre/affine-gfx-template@0.39.0
+  - @labre/affine-block-surface@0.39.0
+  - @labre/affine-ext-loader@0.39.0
+  - @labre/affine-gfx-connector@0.39.0
+  - @labre/affine-gfx-group@0.39.0
+  - @labre/affine-gfx-pointer@0.39.0
+  - @labre/affine-gfx-shape@0.39.0
+  - @labre/affine-model@0.39.0
+  - @labre/affine-shared@0.39.0
+  - @labre/affine-widget-edgeless-toolbar@0.39.0
+  - @labre/global@0.39.0
+  - @labre/std@0.39.0
+  - @labre/store@0.39.0
+
 ## 0.38.2
 
 ### Patch Changes
