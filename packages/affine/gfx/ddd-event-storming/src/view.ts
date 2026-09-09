@@ -14,7 +14,7 @@ import {
   ToolbarModuleExtension,
   toolbarModuleKey,
 } from '@labre/affine-shared/services';
-import { extendTemplateCategory } from '@labre/affine-gfx-template';
+import { TemplateCategoryExtension } from '@labre/affine-gfx-template';
 import { BlockFlavourIdentifier, CommandExtension } from '@labre/std';
 import { RoleVocabularyExtension } from '@labre/std/gfx';
 
@@ -68,8 +68,7 @@ export class DddEventStormingRenderViewExtension extends ViewExtensionProvider {
  * stops being checked — and the profile it was put on stays written, unread,
  * until the flag comes back.
  *
- * Note: its Templates-panel category is registered by the aggregate package's
- * The Templates-panel category is registered here too (see `effect`).
+ * Its Templates-panel category is registered here as well (see `setup`).
  */
 export class DddEventStormingViewExtension extends ViewExtensionProvider {
   override name = 'affine-ddd-event-storming-gfx';
@@ -77,10 +76,6 @@ export class DddEventStormingViewExtension extends ViewExtensionProvider {
   override effect(): void {
     super.effect();
     eventStormingEffects();
-    // The Templates-panel category, gated by this framework's own flag like
-    // every other framework's: a template is tooling (`docs/adr/0009`), and it
-    // is DERIVED from this package's commands, so it registers where they do.
-    extendTemplateCategory(eventStormingTemplateCategory);
   }
 
   override setup(context: ViewExtensionContext) {
@@ -109,6 +104,12 @@ export class DddEventStormingViewExtension extends ViewExtensionProvider {
       // profile, so it goes with the flag without either side naming the other.
       context.register(ReadingProfileExtension(EVENT_STORMING_READING));
       context.register(eventStormingSeniorTool);
+      // The Templates-panel category, gated by this framework's own flag like
+      // every other framework's: a template is tooling (`docs/adr/0009`), and it
+      // is DERIVED from this package's commands, so it registers where they do.
+      context.register(
+        TemplateCategoryExtension(eventStormingTemplateCategory)
+      );
       context.register(
         CommandExtension(eventStormingCommands, eventStormingCommandIcons)
       );

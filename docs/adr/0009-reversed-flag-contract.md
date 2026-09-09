@@ -120,16 +120,19 @@ fail to compile and migrate to `extensions`. That is the intended outcome.
   the `flags.ts` documentation has been rewritten accordingly.
 - `OPTIONAL_BLOCKS` had `edgeless-text` listed twice; the duplicate is removed
   (no behaviour change — the derived union type was already deduplicated).
-- **The tooling gate is a cold-assembly gate, not a runtime toggle.** Two global
-  side effects make a mid-session flag flip leaky:
-  `extendTemplateCategory` appends to a module-level registry that is never
-  cleaned up, and `ViewExtensionProvider.effect()` is guarded by a static
-  `effectRan` so it runs at most once per class per process. A framework's
-  Templates-panel category and its custom-element definitions therefore survive
-  a later "off", and re-enabling after a disabled cold start is what actually
-  registers them. Flags must be resolved before the editor is assembled — which
-  is how the host uses them today. Making the tooling gate live would mean
-  making that registry disposable; out of scope here.
+- **The tooling gate is read per editor, never per process.** A framework's
+  Templates-panel category is registered in the editor's DI container
+  (`TemplateCategoryExtension`, from the gated extension's `setup()`, beside its
+  senior tool) and the panel reads `std.provider.getAll(TemplateCategoryIdentifier)`
+  on the edgeless it opens on — the same mechanism as rules, profiles and tag
+  packs, and the reason no un-registration exists: the container dies with the
+  editor. Until 0.38.2 the category went through a module-level registry
+  appended from `effect()`, so a framework switched off in the host kept its
+  category until a full reload (#244, amended September 2026). The one
+  process-level effect left is `ViewExtensionProvider.effect()`'s static
+  `effectRan` guard: a gated framework's custom-element _definitions_ survive a
+  later "off", which is harmless — a defined element nobody renders is not a
+  button.
 - `effects()` for the five split frameworks lives on the **gated** extension,
   not the render one, matching `DddCoreDomainViewExtension`. Verified
   case by case: all five define only senior-button and menu custom elements

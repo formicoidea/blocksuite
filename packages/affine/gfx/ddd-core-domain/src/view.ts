@@ -14,7 +14,7 @@ import {
   ToolbarModuleExtension,
   toolbarModuleKey,
 } from '@labre/affine-shared/services';
-import { extendTemplateCategory } from '@labre/affine-gfx-template';
+import { TemplateCategoryExtension } from '@labre/affine-gfx-template';
 import { BlockFlavourIdentifier, CommandExtension } from '@labre/std';
 import { RoleVocabularyExtension } from '@labre/std/gfx';
 
@@ -68,8 +68,7 @@ export class DddCoreDomainRenderViewExtension extends ViewExtensionProvider {
  * — and, beside it, the validation tooling: the rules, the profiles and the
  * work-quality checklist.
  *
- * Note: its Templates-panel category is registered by the aggregate package's
- * The Templates-panel category is registered here too (see `effect`).
+ * Its Templates-panel category is registered here as well (see `setup`).
  */
 export class DddCoreDomainViewExtension extends ViewExtensionProvider {
   override name = 'affine-ddd-core-domain-gfx';
@@ -77,10 +76,6 @@ export class DddCoreDomainViewExtension extends ViewExtensionProvider {
   override effect(): void {
     super.effect();
     coreDomainEffects();
-    // The Templates-panel category, gated by this framework's own flag like
-    // every other framework's: a template is tooling (`docs/adr/0009`), and it
-    // is DERIVED from this package's commands, so it registers where they do.
-    extendTemplateCategory(coreDomainTemplateCategory);
   }
 
   override setup(context: ViewExtensionContext) {
@@ -111,6 +106,10 @@ export class DddCoreDomainViewExtension extends ViewExtensionProvider {
         context.register(ReadingProfileExtension(reading));
       }
       context.register(coreDomainSeniorTool);
+      // The Templates-panel category, gated by this framework's own flag like
+      // every other framework's: a template is tooling (`docs/adr/0009`), and it
+      // is DERIVED from this package's commands, so it registers where they do.
+      context.register(TemplateCategoryExtension(coreDomainTemplateCategory));
       context.register(
         CommandExtension(coreDomainCommands, coreDomainCommandIcons)
       );

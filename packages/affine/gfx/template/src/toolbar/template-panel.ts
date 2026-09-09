@@ -20,6 +20,7 @@ import { repeat } from 'lit/directives/repeat.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js';
 
+import { templateManagerFor } from '../contribute.js';
 import { createTemplateJob } from '../services/template.js';
 import { builtInTemplates } from './builtin-templates.js';
 import { defaultPreview, Triangle } from './cards.js';
@@ -193,7 +194,17 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
     }
   `;
 
+  /**
+   * The GLOBAL half of the catalogue — `Other` and a host's `extend(...)`.
+   * Framework categories are not here: they live in the editor's DI container
+   * (`TemplateCategoryExtension`) and are read through {@link catalogue}.
+   */
   static templates = builtInTemplates;
+
+  /** What THIS edgeless offers: the global half plus its std's categories. */
+  get catalogue() {
+    return templateManagerFor(this.edgeless.std);
+  }
 
   private _fetchJob: null | { cancel: () => void } = null;
 
@@ -236,9 +247,14 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
 
   private async _initCategory() {
     try {
-      this._categories = await EdgelessTemplatePanel.templates.categories();
+      this._categories = await this.catalogue.categories();
+      // The remembered tab may belong to a framework this editor no longer
+      // registers (switched off since): fall back rather than show an empty list.
+      const remembered = this._getLocalSelectedCategory();
       this._currentCategory =
-        this._getLocalSelectedCategory() ?? this._categories[0];
+        remembered && this._categories.includes(remembered)
+          ? remembered
+          : this._categories[0];
       this._updateTemplates();
     } catch (e) {
       console.error('Failed to load categories', e);
@@ -331,8 +347,8 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
     this._fetch(async state => {
       try {
         const templates = this._searchKeyword
-          ? await EdgelessTemplatePanel.templates.search(this._searchKeyword)
-          : await EdgelessTemplatePanel.templates.list(this._currentCategory);
+          ? await this.catalogue.search(this._searchKeyword)
+          : await this.catalogue.list(this._currentCategory);
 
         if (state.canceled) return;
 

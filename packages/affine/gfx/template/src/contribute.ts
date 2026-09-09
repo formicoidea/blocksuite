@@ -1,9 +1,50 @@
-import { EdgelessTemplatePanel } from './toolbar/template-panel.js';
+import { createIdentifier } from '@labre/global/di';
+import type { BlockStdScope } from '@labre/std';
+import type { ExtensionType } from '@labre/store';
+
+import { builtInTemplates } from './toolbar/builtin-templates.js';
 import type {
   Template,
   TemplateCategory,
   TemplateManager,
 } from './toolbar/template-type.js';
+
+/**
+ * A framework registers its Templates-panel categories here; the panel reads
+ * them back from the std of the edgeless it opens on. One identifier per
+ * category NAME, so two extensions claiming the same category collide at
+ * setup (`DuplicateServiceDefinitionError`, caught by `di-mount.unit.spec.ts`)
+ * rather than listing it twice.
+ */
+export const TemplateCategoryIdentifier =
+  createIdentifier<TemplateCategory>('TemplateCategory');
+
+/**
+ * Register a framework's template categories. Call it from `setup()` of the
+ * FLAG-GATED view extension, beside the senior tool — a category is creation
+ * tooling, so a disabled framework must contribute none (`docs/adr/0009`):
+ *
+ * ```ts
+ * context.register(TemplateCategoryExtension(wardleyTemplateCategory));
+ * ```
+ *
+ * Replaces the module-level registry of 0.38.0–0.38.2 (`extendTemplateCategory`)
+ * that appended from `effect()` and never removed: a category outlived the
+ * editor whose flags had admitted it, so a framework switched off in the host
+ * kept its category until a full reload (#244). The DI container is per editor;
+ * nothing has to be un-registered.
+ */
+export function TemplateCategoryExtension(
+  ...categories: TemplateCategory[]
+): ExtensionType {
+  return {
+    setup: di => {
+      for (const category of categories) {
+        di.addImpl(TemplateCategoryIdentifier(category.name), () => category);
+      }
+    },
+  };
+}
 
 function loadCategory(category: TemplateCategory): Promise<Template[]> {
   return Array.isArray(category.templates)
@@ -11,31 +52,41 @@ function loadCategory(category: TemplateCategory): Promise<Template[]> {
     : category.templates();
 }
 
-/** Wrap a single {@link TemplateCategory} as a {@link TemplateManager}. */
-function categoryManager(category: TemplateCategory): TemplateManager {
+/**
+ * The catalogue ONE editor sees: the built-in categories (`Other`, plus
+ * whatever a host appended through `EdgelessTemplatePanel.templates.extend`)
+ * followed by the categories the view extensions mounted on this `std`
+ * registered — i.e. exactly the frameworks whose tooling is on.
+ */
+export function templateManagerFor(std: BlockStdScope): TemplateManager {
+  const contributed = [
+    ...std.provider.getAll(TemplateCategoryIdentifier).values(),
+  ];
+  const byName = (name: string) => contributed.find(c => c.name === name);
+
   return {
-    categories: () => [category.name],
-    list: async cate =>
-      cate === category.name ? await loadCategory(category) : [],
-    search: async keyword => {
-      const all = await loadCategory(category);
+    categories: async () => [
+      ...new Set([
+        ...(await builtInTemplates.categories()),
+        ...contributed.map(c => c.name),
+      ]),
+    ],
+    // Both halves, so a host's `extend(...)` can still append to a framework's
+    // own category (the global half answers `[]` for a name it does not know).
+    list: async name => {
+      const category = byName(name);
+      return [
+        ...(category ? await loadCategory(category) : []),
+        ...(await builtInTemplates.list(name)),
+      ];
+    },
+    search: async (keyword, name) => {
       const k = keyword.trim().toLocaleLowerCase();
-      return all.filter(t => t.name?.toLocaleLowerCase().includes(k));
+      const pool = name ? [byName(name)].filter(c => !!c) : contributed;
+      const own = (await Promise.all(pool.map(loadCategory)))
+        .flat()
+        .filter(t => t.name?.toLocaleLowerCase().includes(k));
+      return [...(await builtInTemplates.search(keyword, name)), ...own];
     },
   };
-}
-
-const registered = new Set<string>();
-
-/**
- * Contribute a template category to the edgeless template panel. Idempotent per
- * category name (a framework's ViewExtension `effect()` may run more than once).
- * Lets each framework package own its template definitions while the panel
- * aggregates every contributed category. The future favorites feature reads the
- * same registry to decide which framework toolbars to show.
- */
-export function extendTemplateCategory(category: TemplateCategory) {
-  if (registered.has(category.name)) return;
-  registered.add(category.name);
-  EdgelessTemplatePanel.templates.extend(categoryManager(category));
 }
