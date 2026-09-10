@@ -25,7 +25,7 @@ import {
 } from '@labre/std/inline';
 import { computed, effect, signal } from '@preact/signals-core';
 import { html, nothing, type TemplateResult } from 'lit';
-import { query, state } from 'lit/decorators.js';
+import { query } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
@@ -48,6 +48,14 @@ export class ParagraphBlockComponent extends CaptionedBlockComponent<ParagraphBl
 
   private readonly _displayPlaceholder = signal(false);
 
+  /**
+   * The collapse state a READER holds locally. A readonly document must never
+   * be written, so the chevron cannot touch `model.props.collapsed`; this
+   * signal carries the reader's own expansion instead. It is a signal rather
+   * than a Lit `@state()` so BlockSuite effects can depend on it as well.
+   */
+  private readonly _readonlyCollapsed = signal(false);
+
   private _inlineRangeProvider: InlineRangeProvider | null = null;
 
   private readonly _isInDatabase = () => {
@@ -65,6 +73,11 @@ export class ParagraphBlockComponent extends CaptionedBlockComponent<ParagraphBl
     return this.std
       .get(ParagraphBlockConfigExtension.identifier)
       ?.getPlaceholder(this.model);
+  }
+
+  private _setReadonlyCollapsed(collapsed: boolean) {
+    this._readonlyCollapsed.value = collapsed;
+    this.requestUpdate();
   }
 
   get citationService() {
@@ -183,10 +196,23 @@ export class ParagraphBlockComponent extends CaptionedBlockComponent<ParagraphBl
       })
     );
 
+    // Entering readonly mode (and any later change of the persisted value)
+    // seeds the reader's local state. Deliberately NOT re-run on every
+    // selection change: this effect must not depend on the selection, or the
+    // reader's own expansion would be overwritten mid-drag.
     this.disposables.add(
       effect(() => {
-        const collapsed = this.model.props.collapsed$.value;
-        this._readonlyCollapsed = collapsed;
+        if (this.store.readonly$.value) {
+          this._setReadonlyCollapsed(this.model.props.collapsed$.value);
+        }
+      })
+    );
+
+    this.disposables.add(
+      effect(() => {
+        const collapsed = this.store.readonly
+          ? this._readonlyCollapsed.value
+          : this.model.props.collapsed$.value;
 
         // reset text selection when selected block is collapsed
         if (this.model.props.type$.value.startsWith('h') && collapsed) {
@@ -238,7 +264,7 @@ export class ParagraphBlockComponent extends CaptionedBlockComponent<ParagraphBl
   override renderBlock(): TemplateResult<1> {
     const { type$ } = this.model.props;
     const collapsed = this.store.readonly
-      ? this._readonlyCollapsed
+      ? this._readonlyCollapsed.value
       : this.model.props.collapsed;
     const collapsedSiblings = this.collapsedSiblings;
 
@@ -304,7 +330,7 @@ export class ParagraphBlockComponent extends CaptionedBlockComponent<ParagraphBl
                   .collapsed=${collapsed}
                   .updateCollapsed=${(value: boolean) => {
                     if (this.store.readonly) {
-                      this._readonlyCollapsed = value;
+                      this._setReadonlyCollapsed(value);
                     } else {
                       this.store.captureSync();
                       this.store.updateBlock(this.model, {
@@ -356,9 +382,6 @@ export class ParagraphBlockComponent extends CaptionedBlockComponent<ParagraphBl
       </div>
     `;
   }
-
-  @state()
-  private accessor _readonlyCollapsed = false;
 
   @query('rich-text')
   private accessor _richTextElement: RichText | null = null;
