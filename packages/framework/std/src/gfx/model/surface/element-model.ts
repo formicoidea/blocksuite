@@ -543,7 +543,7 @@ export abstract class GfxPrimitiveElementModel<
    * This is a direct write path into the element's Y.Map, on the class that
    * carries the document format, exported by `@labre/std` and therefore
    * callable by a host. `_assignElementProp` learned the same lesson in the
-   * unknown-props change (see `docs/spikes/us-1-8-unknown-props-preservation.md`,
+   * unknown-props change (see the unknown-props spike (PR #73),
    * whose deny-list is explicitly security rather than hygiene); an unguarded
    * delete re-opens the door from the other side. So:
    *
@@ -837,7 +837,7 @@ export abstract class GfxPrimitiveElementModel<
    * An element re-created from props (paste, duplicate, alt-drag clone,
    * template insertion) only reaches the Y.Map through keys that have a
    * declared accessor, so a payload declared per subclass would be silently
-   * dropped on copy — the exact loss `docs/spikes/us-1-8-unknown-props-preservation.md`
+   * dropped on copy — the exact loss the unknown-props spike (PR #73)
    * exists to prevent. Declaring it, rather than leaning on that spike's
    * verbatim fallback for undeclared keys, is what makes it a contract: a field
    * nothing declares is a field nothing can test, strip or find.

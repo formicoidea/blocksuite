@@ -14,7 +14,7 @@
  * declared-accessor branch the day that field ships, and the coverage would
  * disappear without a single test turning red.
  *
- * See `docs/spikes/us-1-8-unknown-props-preservation.md`.
+ * See the unknown-props spike (PR #73).
  */
 import type { EdgelessRootBlockComponent } from '@labre/affine/blocks/root';
 import { type ShapeElementModel, ShapeType } from '@labre/affine/model';

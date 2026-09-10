@@ -432,7 +432,7 @@ export class SurfaceBlockModel extends BlockModel<SurfaceBlockProps> {
    * The value is already Y-converted at this point: both call sites run the
    * whole props object through {@link _propsToY} first, which is key-agnostic.
    *
-   * See `docs/spikes/us-1-8-unknown-props-preservation.md`.
+   * See the unknown-props spike (PR #73).
    */
   private _assignElementProp(
     element: GfxPrimitiveElementModel,

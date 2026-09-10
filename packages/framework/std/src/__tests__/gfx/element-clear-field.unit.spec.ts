@@ -10,7 +10,7 @@
  * That makes it a direct write path into the element's Y.Map, on the class that
  * carries the document format, exported by `@labre/std` and callable by a host —
  * the same shape of exposure `_assignElementProp` was given a deny-list for in
- * `docs/spikes/us-1-8-unknown-props-preservation.md`, where the list is called
+ * the unknown-props spike (PR #73), where the list is called
  * out as load-bearing for security rather than hygiene. This spec is that
  * deny-list's counterpart on the delete side.
  */

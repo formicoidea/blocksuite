@@ -1,0 +1,60 @@
+# Host seams
+
+**Every place the library asks the host for something, and what disappears
+when the host provides nothing.**
+
+The library never talks to a backend, an analytics service or a search
+index. It exposes a service identifier; the host registers an implementation
+as an extension in the editor specs. Most seams are optional: the code reads
+them with `std.getOptional(...)` and degrades. The table below says how.
+
+All identifiers are exported from `@labre/affine/shared/services` unless
+noted. Register with `di.override(Provider, () => impl)` or the ready-made
+`XExtension(impl)` helper.
+
+## The table
+
+| Seam                                                | Register with                                                                    | When absent                                                                                                                                  |
+| --------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Telemetry                                           | `TelemetryExtension({ track })` or `NoopTelemetryExtension`                      | events are dropped. Register one of the two: the noop keeps the intent explicit.                                                             |
+| Notifications (toasts, confirm dialogs)             | `NotificationExtension(service)`                                                 | **the import/export report is silently dropped**, confirmations resolve as cancelled                                                         |
+| Document mode (page/edgeless per document)          | `DocModeExtension(service)` / `DocModeProvider`                                  | mode switching from inside the editor does nothing; the host must own it                                                                     |
+| Quick search (link a document by name)              | `QuickSearchExtension(service)`                                                  | the "link a document" command is hidden; the `@` menu has no document results                                                                |
+| Parse and generate document URLs                    | `ParseDocUrlExtension`, `GenerateDocUrlExtension`                                | pasted links are never recognised as internal documents; copy-link produces nothing                                                          |
+| Linked document content (previews, embeds)          | `LinkedDocContentResolverExtension`                                              | reference cards show a title only; embedded documents stay empty                                                                             |
+| Linked document creation                            | `LinkedDocCreationExtension`                                                     | "Create a new document" from a link menu does nothing persistent                                                                             |
+| Peek view (open a document in a side panel)         | `PeekViewExtension` (`@labre/affine/components/peek`)                            | peek buttons are hidden                                                                                                                      |
+| Link preview                                        | override `LinkPreviewServiceIdentifier`                                          | previews are fetched from the default public endpoint. **Set your own**: the default sends URLs to a third party and carries no auth header. |
+| File size limit                                     | `FileSizeLimitProvider`                                                          | the library default applies                                                                                                                  |
+| Fonts on the canvas                                 | `FontConfigExtension(fonts)`                                                     | no custom fonts; use `CommunityCanvasTextFonts` for a sane default                                                                           |
+| Editor settings (grid, snap, defaults)              | `EditorSettingExtension({ setting$ })`                                           | library defaults from `GeneralSettingSchema`                                                                                                 |
+| Theme                                               | `ThemeExtensionIdentifier`                                                       | light theme, or whatever `data-theme` your container sets                                                                                    |
+| Translations                                        | `TranslationExtension({ t, language })`                                          | English fallbacks baked into the declarations; keys with no fallback render their key                                                        |
+| Shortcut overrides                                  | `KeymapOverrideExtension`, `ShortcutConflictReporterExtension`                   | library chords; conflicts logged to the console                                                                                              |
+| Pivot records (link an element to a host record)    | `PivotRecordPickerExtension(picker)` (`@labre/affine/blocks/surface`)            | **the "link to a record" action never exists**, for any framework                                                                            |
+| Pivot properties (show record fields on the canvas) | `PivotPropertiesExtension(service)`                                              | elements show no record data                                                                                                                 |
+| Universe tag definitions (level-3 natures)          | `UniverseTagDefsExtension(defs)`                                                 | roles have no natures to pick from                                                                                                           |
+| Artefact catalogue panel                            | `ArtefactCatalogueExtension({ open, close })`                                    | the library draws its own in-canvas side panel. **Pass your own; never `null`**, which removes the button too.                               |
+| AI audit                                            | `AuditExtension(provider)` and flag `ai-audit`                                   | flag off: the command does not exist. Provider missing: the command exists and refuses cleanly.                                              |
+| Users and writer info (comments, mentions)          | `UserServiceExtension`, `UserListServiceExtension`, `WriterInfoServiceExtension` | comments and mentions are disabled                                                                                                           |
+| Comments                                            | `CommentProviderExtension`                                                       | the comment widgets are hidden                                                                                                               |
+| Sidebar                                             | `SidebarExtension`                                                               | fragments cannot ask the host to open a panel                                                                                                |
+| Open a document (navigation)                        | `OpenDocExtension`, `DefaultOpenDocExtension`                                    | clicking a document link does nothing                                                                                                        |
+| Native clipboard                                    | `NativeClipboardExtension`                                                       | falls back to the browser clipboard API                                                                                                      |
+| Virtual keyboard (mobile)                           | `VirtualKeyboardProvider`                                                        | desktop behaviour                                                                                                                            |
+
+## How to read this table when something is missing
+
+If a button "never existed", check the seam before filing a bug. The Labre
+application documents each of its registrations in
+`apps/web/src/modules/editor/extensions.ts` with the reason; copy that habit.
+
+## How to add a seam (library side)
+
+1. Define the identifier and the extension helper next to the service.
+2. Read it with `std.getOptional(...)` and decide the degraded behaviour
+   explicitly (hide the button, log once, fall back).
+3. Add a row to this table.
+4. Give it a test that mounts without the provider.
+
+Next: [05-persistence-and-sync.md](05-persistence-and-sync.md).

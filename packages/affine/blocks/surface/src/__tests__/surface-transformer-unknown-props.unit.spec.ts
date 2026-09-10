@@ -7,7 +7,7 @@
  * of the edgeless clipboard path proven in
  * `packages/framework/std/src/__tests__/gfx/element-unknown-props.unit.spec.ts`.
  *
- * See `docs/spikes/us-1-8-role-field-compat.md`.
+ * See the US-1.8 spike (PR #67).
  *
  * Note: a `Y.Map` that is not integrated into a `Y.Doc` keeps its entries in
  * `_prelimContent`, where `get`/`forEach` cannot see them — every map below is

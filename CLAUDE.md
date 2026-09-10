@@ -6,6 +6,14 @@ divergent** from upstream (see `docs/adr/0001`). This repo is the open-source
 library ONLY; the SaaS lives in the private `labreapp` repo, which consumes
 this library as npm packages (`@blocksuite/*` scope, publication pending).
 
+## Documentation
+
+`docs/README.md` is the entry point: four guides (understand, integrate,
+contribute, add a framework), `docs/principles.md`, `docs/lessons.md`, and
+the ADR index in `docs/adr/README.md`. A change to a rule, a seam or a flag
+updates the matching page in the same PR. Framework rules with their
+enforcing tests: `docs/add-a-framework/02-framework-rules.md`.
+
 ## Commands
 
 ```sh
