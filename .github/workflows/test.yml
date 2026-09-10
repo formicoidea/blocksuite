@@ -76,8 +76,13 @@ jobs:
       - uses: ./.github/actions/setup
 
       # framework/std runs its unit tests in browser mode (chromium).
+      # `--with-deps` runs a full `apt-get update`, which fails whenever
+      # packages.microsoft.com answers 403 to the runner (intermittent, e.g.
+      # run 34474533410). Nothing here needs that source: drop it first.
       - name: Install playwright chromium
-        run: yarn exec playwright install chromium --with-deps
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod*
+          yarn exec playwright install chromium --with-deps
 
       - name: Run unit tests
         run: yarn test:unit --retry=2
@@ -93,8 +98,13 @@ jobs:
 
       - uses: ./.github/actions/setup
 
+      # `--with-deps` runs a full `apt-get update`, which fails whenever
+      # packages.microsoft.com answers 403 to the runner (intermittent, e.g.
+      # run 34474533410). Nothing here needs that source: drop it first.
       - name: Install playwright chromium
-        run: yarn exec playwright install chromium --with-deps
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod*
+          yarn exec playwright install chromium --with-deps
 
       - name: Run integration tests
         run: yarn test:integration
