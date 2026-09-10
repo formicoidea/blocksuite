@@ -2,6 +2,7 @@ import type { Store, Workspace } from '@labre/affine/store';
 import {
   defaultImageProxyMiddleware,
   docLinkBaseURLMiddlewareBuilder,
+  ImageProxyService,
   embedSyncedDocMiddleware,
   titleMiddleware,
 } from '@labre/affine-shared/adapters';
@@ -86,6 +87,13 @@ export async function createTestApp(doc: Store, collection: Workspace) {
   Object.defineProperty(globalThis, 'std', {
     get() {
       return document.querySelector('editor-host')?.std;
+    },
+  });
+  // Host seam for remote images — `imageProxy.setImageProxyURL('')` in the
+  // console to check that nothing reaches the default third-party worker.
+  Object.defineProperty(globalThis, 'imageProxy', {
+    get() {
+      return doc.get(ImageProxyService);
     },
   });
 

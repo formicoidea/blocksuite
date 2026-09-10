@@ -12,6 +12,10 @@ const fetchImage = async (url: string, init?: RequestInit, proxy?: string) => {
     if (url.startsWith(window.location.origin)) {
       return await fetch(url, init);
     }
+    // Already proxied (a link card renders `buildUrl(...)`): do not wrap twice.
+    if (url.startsWith(proxy)) {
+      return await fetch(url, init);
+    }
     return await fetch(proxy + '?url=' + encodeURIComponent(url), init)
       .then(res => {
         if (!res.ok) {

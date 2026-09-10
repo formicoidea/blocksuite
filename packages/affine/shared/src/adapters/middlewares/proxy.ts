@@ -11,23 +11,30 @@ export const customImageProxyMiddleware = (
   };
 };
 
-const imageProxyMiddlewareBuilder = () => {
-  let middleware = customImageProxyMiddleware(DEFAULT_IMAGE_PROXY_ENDPOINT);
-  return {
-    get: () => middleware,
-    set: (url: string) => {
-      middleware = customImageProxyMiddleware(url);
-    },
-  };
+// Module-wide so that transformer jobs built outside a store (playground
+// panels, host-side importers) follow `setImageProxyURL` too.
+let imageProxyMiddlewareURL = DEFAULT_IMAGE_PROXY_ENDPOINT;
+
+export const setImageProxyMiddlewareURL = (url: string) => {
+  imageProxyMiddlewareURL = url;
 };
 
-const defaultImageProxyMiddlewarBuilder = imageProxyMiddlewareBuilder();
+/**
+ * Reads the URL at run time: a `setImageProxyURL` made after module load
+ * reaches every job using this middleware.
+ */
+export const defaultImageProxyMiddleware: TransformerMiddleware = ({
+  adapterConfigs,
+}) => {
+  adapterConfigs.set('imageProxy', imageProxyMiddlewareURL);
+};
 
-export const setImageProxyMiddlewareURL = defaultImageProxyMiddlewarBuilder.set;
-
-export const defaultImageProxyMiddleware =
-  defaultImageProxyMiddlewarBuilder.get();
-
+/**
+ * The ONE seam governing every remote-image fetch the library performs on the
+ * host's behalf: link-card favicons and og:images, image import, canvas
+ * PNG/PDF export, copy-as-image. An empty URL means « fetch direct ».
+ * See `docs/integrate/04-host-seams.md`.
+ */
 // TODO(@mirone): this should be configured when setup instead of runtime
 export class ImageProxyService extends StoreExtension {
   static override key = 'image-proxy';
@@ -40,7 +47,7 @@ export class ImageProxyService extends StoreExtension {
   }
 
   buildUrl(imageUrl: string) {
-    if (imageUrl.startsWith(this.imageProxyURL)) {
+    if (!this.imageProxyURL || imageUrl.startsWith(this.imageProxyURL)) {
       return imageUrl;
     }
 
