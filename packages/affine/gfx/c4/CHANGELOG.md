@@ -1,5 +1,24 @@
 # @labre/affine-gfx-c4
 
+## 0.39.2
+
+### Patch Changes
+
+- Updated dependencies [07b47b8]
+  - @labre/affine-shared@0.39.2
+  - @labre/affine-block-surface@0.39.2
+  - @labre/affine-gfx-connector@0.39.2
+  - @labre/affine-gfx-ddd-shared@0.39.2
+  - @labre/affine-gfx-pointer@0.39.2
+  - @labre/affine-gfx-shape@0.39.2
+  - @labre/affine-gfx-template@0.39.2
+  - @labre/affine-gfx-text@0.39.2
+  - @labre/affine-widget-edgeless-toolbar@0.39.2
+  - @labre/affine-ext-loader@0.39.2
+  - @labre/affine-model@0.39.2
+  - @labre/global@0.39.2
+  - @labre/std@0.39.2
+
 ## 0.39.1
 
 ### Patch Changes

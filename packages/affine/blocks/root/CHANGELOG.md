@@ -1,5 +1,42 @@
 # @labre/affine-block-root
 
+## 0.39.2
+
+### Patch Changes
+
+- 07b47b8: fix(blocks): `ImageProxyService` now governs every remote-image fetch — the canvas PNG/PDF export and copy-as-image resolve the proxy through it instead of a hard-coded AFFiNE worker endpoint, an empty proxy means « fetch direct » (`buildUrl` hands the URL back untouched), and the default transformer middleware reads the URL set by `setImageProxyURL` at run time instead of the value captured at module load
+- Updated dependencies [07b47b8]
+  - @labre/affine-shared@0.39.2
+  - @labre/affine-block-surface@0.39.2
+  - @labre/affine-block-attachment@0.39.2
+  - @labre/affine-block-bookmark@0.39.2
+  - @labre/affine-block-database@0.39.2
+  - @labre/affine-block-edgeless-text@0.39.2
+  - @labre/affine-block-embed@0.39.2
+  - @labre/affine-block-frame@0.39.2
+  - @labre/affine-block-image@0.39.2
+  - @labre/affine-block-note@0.39.2
+  - @labre/affine-block-paragraph@0.39.2
+  - @labre/affine-components@0.39.2
+  - @labre/data-view@0.39.2
+  - @labre/affine-gfx-brush@0.39.2
+  - @labre/affine-gfx-connector@0.39.2
+  - @labre/affine-gfx-group@0.39.2
+  - @labre/affine-gfx-mindmap@0.39.2
+  - @labre/affine-gfx-note@0.39.2
+  - @labre/affine-gfx-pointer@0.39.2
+  - @labre/affine-gfx-shape@0.39.2
+  - @labre/affine-gfx-text@0.39.2
+  - @labre/affine-inline-preset@0.39.2
+  - @labre/affine-rich-text@0.39.2
+  - @labre/affine-widget-edgeless-selected-rect@0.39.2
+  - @labre/affine-widget-edgeless-toolbar@0.39.2
+  - @labre/affine-ext-loader@0.39.2
+  - @labre/affine-model@0.39.2
+  - @labre/global@0.39.2
+  - @labre/std@0.39.2
+  - @labre/store@0.39.2
+
 ## 0.39.1
 
 ### Patch Changes
