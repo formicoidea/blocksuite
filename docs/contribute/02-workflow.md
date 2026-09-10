@@ -56,9 +56,21 @@ Every user-facing change ships with one changeset:
 yarn changeset
 ```
 
-Pick the packages touched, the bump (`patch` for a fix, `minor` for a
-feature), and write one or two sentences a host developer will read in the
-changelog. Internal refactors and test-only changes need none.
+Pick the packages touched, the bump, and write one or two sentences a host
+developer will read in the changelog. Internal refactors and test-only
+changes need none.
+
+The bump follows Semantic Versioning and is the only place it is decided
+(`yarn ci:version` applies the highest pending bump):
+
+| Bump    | When                                          | Ask yourself                                                                                        |
+| ------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `patch` | a fix; nothing a host wrote changes behaviour | "Can a host upgrade without reading the changelog?"                                                 |
+| `minor` | something new; everything old still works     | "Does every existing host integration compile and behave the same?"                                 |
+| `major` | a host must change its code or migrate data   | "Did I change a descriptor shape, a seam signature, a flag key, a stored format, an exported name?" |
+
+We apply this strictly even while the version is `0.x`: a `0.x` minor never
+breaks a host. If in doubt between `minor` and `major`, it is `major`.
 
 ## Pull requests
 

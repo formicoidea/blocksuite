@@ -15,9 +15,15 @@ yarn ci:version
 ```
 
 This consumes every file in `.changeset/`, bumps **all** `@labre/*` packages
-together (they are a fixed group), writes the `CHANGELOG.md` files and
-re-runs `yarn install`. It does not commit and does not publish. Review the
-diff; a new package's untracked `CHANGELOG.md` must be added.
+together (they are a fixed group) by the **highest bump the pending
+changesets declare** (SemVer: `patch` < `minor` < `major`), writes the
+`CHANGELOG.md` files and re-runs `yarn install`. It does not commit and does
+not publish. Review the diff; a new package's untracked `CHANGELOG.md` must
+be added.
+
+Do not hand-edit the version. If the number looks wrong, the changeset is
+wrong: fix the changeset (see the bump table in
+[02-workflow.md](02-workflow.md)), then run `ci:version` again.
 
 ```bash
 git commit -am "chore: version packages (x.y.z)"

@@ -4,6 +4,25 @@
 
 ## Versioning
 
+The library follows [Semantic Versioning](https://semver.org): `major.minor.patch`.
+What each number promises to a host:
+
+| Bump                                     | Promise                                                                                 | Examples                                                                                                              |
+| ---------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **patch** (`0.39.1` → `0.39.2`)          | Nothing you wrote changes behaviour. Upgrade blind.                                     | a bug fix, a rendering fix, a dependency bump                                                                         |
+| **minor** (`0.39.x` → `0.40.0`)          | Something new; everything old still works. Read the changelog for what you may now use. | a new framework, a new seam, a new flag key, a new command                                                            |
+| **major** (`0.x` → `1.0`, `1.x` → `2.0`) | Something you wrote must change. The changelog says what and how.                       | a descriptor shape change, a seam signature change, a removed flag key, a stored-format change that needs a migration |
+
+Until `1.0`, SemVer allows minors to break. **This library does not use that
+allowance**: a `0.x` minor is treated as non-breaking, and a breaking change
+bumps the major even in `0.x`. Earlier releases did not follow this strictly
+(0.33 changed the descriptor shape in a minor); from 0.40 on they do.
+
+The bump is decided by the changeset a contributor writes, not by the
+release script: `yarn ci:version` reads the pending changesets and applies
+the highest bump they declare. See
+[../contribute/02-workflow.md](../contribute/02-workflow.md).
+
 Every `@labre/*` package versions in lockstep (a fixed group in
 `.changeset/config.json`), and every bundle carries the umbrella's version.
 A framework bundle pins the exact core version it was built with. Bump every
@@ -11,6 +30,15 @@ A framework bundle pins the exact core version it was built with. Bump every
 
 Changelogs are per package in the repo (`packages/**/CHANGELOG.md`); the core
 bundle's changelog aggregates them.
+
+## Which range to declare
+
+- `~0.39.0` (patch-only) if you upgrade by hand and want no surprise. The
+  safe default while the library is `0.x`.
+- `^0.39.0` once you trust the "minor never breaks" rule above and run the
+  checklist below on every install.
+- Never a bare `*` or `latest`: two bundles at different versions is the
+  "two copies" incident in [01-install.md](01-install.md).
 
 ## What breaks between versions
 
