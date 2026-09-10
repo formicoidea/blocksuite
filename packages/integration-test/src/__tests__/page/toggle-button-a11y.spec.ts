@@ -1,5 +1,6 @@
 import { TextSelection } from '@labre/std';
 import { Text } from '@labre/store';
+import { userEvent } from '@vitest/browser/context';
 import { beforeEach, describe, expect, test } from 'vitest';
 
 import { wait } from '../utils/common.js';
@@ -146,5 +147,33 @@ describe('the collapse toggle is an accessible button', () => {
 
     expect(std.event.active).toBe(true);
     expect(tabKeydown(richText).defaultPrevented).toBe(true);
+  });
+
+  // Real keystrokes through the Playwright keyboard: the button must be
+  // activated natively, without any handler of the editor getting in the way.
+  test('Enter and Space on the focused toggle collapse and expand it', async () => {
+    const button = toggleOf(headingId);
+    button.focus();
+    expect(document.activeElement).toBe(button);
+
+    await userEvent.keyboard('{Enter}');
+    await wait();
+    expect(toggleOf(headingId).getAttribute('aria-expanded')).toBe('false');
+    expect(blockOf(headingChildId).checkVisibility()).toBe(false);
+
+    await userEvent.keyboard(' ');
+    await wait();
+    expect(toggleOf(headingId).getAttribute('aria-expanded')).toBe('true');
+    expect(blockOf(headingChildId).checkVisibility()).toBe(true);
+  });
+
+  test('a real Tab moves the focus from one toggle to the next', async () => {
+    toggleOf(headingId).focus();
+
+    await userEvent.keyboard('{Tab}');
+    expect(document.activeElement).toBe(toggleOf(listId));
+
+    await userEvent.keyboard('{Shift>}{Tab}{/Shift}');
+    expect(document.activeElement).toBe(toggleOf(headingId));
   });
 });
