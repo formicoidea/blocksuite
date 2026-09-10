@@ -1,5 +1,17 @@
 # @labre/affine-components
 
+## 0.39.3
+
+### Patch Changes
+
+- 070e1ec: feat(blocks): the collapse chevron of headings and lists is a real button (aria-expanded / aria-controls / visible focus), reachable and operable by keyboard; Tab is no longer swallowed by the editor when the focus sits on a native control outside the text
+  - @labre/affine-model@0.39.3
+  - @labre/affine-shared@0.39.3
+  - @labre/global@0.39.3
+  - @labre/std@0.39.3
+  - @labre/store@0.39.3
+  - @labre/sync@0.39.3
+
 ## 0.39.2
 
 ### Patch Changes

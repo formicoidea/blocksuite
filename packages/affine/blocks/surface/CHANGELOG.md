@@ -1,5 +1,20 @@
 # @labre/affine-block-surface
 
+## 0.39.3
+
+### Patch Changes
+
+- 4ab8a5b: fix(edgeless): A\* connector routing dequeues its frontier in the right order again, so orthogonal connectors take the shortest, least-bent path
+- Updated dependencies [070e1ec]
+  - @labre/affine-components@0.39.3
+  - @labre/affine-rich-text@0.39.3
+  - @labre/affine-ext-loader@0.39.3
+  - @labre/affine-model@0.39.3
+  - @labre/affine-shared@0.39.3
+  - @labre/global@0.39.3
+  - @labre/std@0.39.3
+  - @labre/store@0.39.3
+
 ## 0.39.2
 
 ### Patch Changes

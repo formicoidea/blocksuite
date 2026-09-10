@@ -1,5 +1,23 @@
 # @labre/affine-block-list
 
+## 0.39.3
+
+### Patch Changes
+
+- 0a07883: fix(blocks): a heading expanded in readonly mode stays expanded while the reader selects and copies its content; the persisted collapse state is only re-applied when entering readonly mode (lists aligned on the same rule)
+- 070e1ec: feat(blocks): the collapse chevron of headings and lists is a real button (aria-expanded / aria-controls / visible focus), reachable and operable by keyboard; Tab is no longer swallowed by the editor when the focus sits on a native control outside the text
+- Updated dependencies [070e1ec]
+  - @labre/affine-components@0.39.3
+  - @labre/affine-inline-preset@0.39.3
+  - @labre/affine-rich-text@0.39.3
+  - @labre/affine-ext-loader@0.39.3
+  - @labre/affine-gfx-turbo-renderer@0.39.3
+  - @labre/affine-model@0.39.3
+  - @labre/affine-shared@0.39.3
+  - @labre/global@0.39.3
+  - @labre/std@0.39.3
+  - @labre/store@0.39.3
+
 ## 0.39.2
 
 ### Patch Changes
