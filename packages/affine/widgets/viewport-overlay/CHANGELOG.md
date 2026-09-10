@@ -1,5 +1,17 @@
 # @labre/affine-widget-viewport-overlay
 
+## 0.39.2
+
+### Patch Changes
+
+- Updated dependencies [07b47b8]
+  - @labre/affine-shared@0.39.2
+  - @labre/affine-components@0.39.2
+  - @labre/affine-ext-loader@0.39.2
+  - @labre/affine-model@0.39.2
+  - @labre/global@0.39.2
+  - @labre/std@0.39.2
+
 ## 0.39.1
 
 ### Patch Changes

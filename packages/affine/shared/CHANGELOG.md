@@ -1,5 +1,15 @@
 # @labre/affine-shared
 
+## 0.39.2
+
+### Patch Changes
+
+- 07b47b8: fix(blocks): `ImageProxyService` now governs every remote-image fetch — the canvas PNG/PDF export and copy-as-image resolve the proxy through it instead of a hard-coded AFFiNE worker endpoint, an empty proxy means « fetch direct » (`buildUrl` hands the URL back untouched), and the default transformer middleware reads the URL set by `setImageProxyURL` at run time instead of the value captured at module load
+  - @labre/affine-model@0.39.2
+  - @labre/global@0.39.2
+  - @labre/std@0.39.2
+  - @labre/store@0.39.2
+
 ## 0.39.1
 
 ### Patch Changes
