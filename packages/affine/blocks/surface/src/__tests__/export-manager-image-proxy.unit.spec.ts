@@ -31,10 +31,10 @@ const pngResponse = () =>
     }
   );
 
-const withRemoteImage = () => {
+const withRemoteImage = (src = REMOTE) => {
   const element = document.createElement('div');
   const img = document.createElement('img');
-  img.setAttribute('src', REMOTE);
+  img.setAttribute('src', src);
   element.append(img);
   return element;
 };
@@ -74,5 +74,18 @@ describe('ExportManager resolves the image proxy through ImageProxyService', () 
     expect(fetchedUrls(fetchSpy)).toEqual([
       `https://proxy.test/image?url=${encodeURIComponent(REMOTE)}`,
     ]);
+  });
+
+  it('does not wrap an already-proxied image a second time', async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(async () => pngResponse());
+    const proxied = `https://proxy.test/image?url=${encodeURIComponent(REMOTE)}`;
+
+    await new ExportManager(
+      stdWith('https://proxy.test/image')
+    ).replaceImgSrcWithSvg(withRemoteImage(proxied));
+
+    expect(fetchedUrls(fetchSpy)).toEqual([proxied]);
   });
 });
