@@ -19,9 +19,9 @@ import {
   type InlineRangeProvider,
 } from '@labre/std/inline';
 import type { BaseSelection } from '@labre/store';
-import { effect } from '@preact/signals-core';
+import { effect, signal } from '@preact/signals-core';
 import { html, nothing, type TemplateResult } from 'lit';
-import { query, state } from 'lit/decorators.js';
+import { query } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
@@ -34,13 +34,26 @@ export class ListBlockComponent extends CaptionedBlockComponent<ListBlockModel> 
 
   private _inlineRangeProvider: InlineRangeProvider | null = null;
 
+  /**
+   * The collapse state a READER holds locally. Same contract as
+   * `affine-paragraph`: a readonly document is never written, so the toggle
+   * carries the reader's own expansion here instead of in the model. A signal
+   * rather than a Lit `@state()`, so BlockSuite effects can depend on it.
+   */
+  private readonly _readonlyCollapsed = signal(false);
+
+  private _setReadonlyCollapsed(collapsed: boolean) {
+    this._readonlyCollapsed.value = collapsed;
+    this.requestUpdate();
+  }
+
   private readonly _onClickIcon = (e: MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
 
     if (this.model.props.type === 'toggle') {
       if (this.store.readonly) {
-        this._readonlyCollapsed = !this._readonlyCollapsed;
+        this._setReadonlyCollapsed(!this._readonlyCollapsed.value);
       } else {
         this.store.captureSync();
         this.store.updateBlock(this.model, {
@@ -107,10 +120,15 @@ export class ListBlockComponent extends CaptionedBlockComponent<ListBlockModel> 
 
     this._inlineRangeProvider = getInlineRangeProvider(this);
 
+    // Only ENTERING readonly mode (or a later change of the persisted value)
+    // seeds the reader's local state; while readonly holds, the reader's own
+    // expansion is never overwritten. Aligned on `affine-paragraph`, where the
+    // unguarded version was a real defect (#262).
     this.disposables.add(
       effect(() => {
-        const collapsed = this.model.props.collapsed$.value;
-        this._readonlyCollapsed = collapsed;
+        if (this.store.readonly$.value) {
+          this._setReadonlyCollapsed(this.model.props.collapsed$.value);
+        }
       })
     );
 
@@ -139,7 +157,7 @@ export class ListBlockComponent extends CaptionedBlockComponent<ListBlockModel> 
   override renderBlock(): TemplateResult<1> {
     const { model, _onClickIcon } = this;
     const collapsed = this.store.readonly
-      ? this._readonlyCollapsed
+      ? this._readonlyCollapsed.value
       : model.props.collapsed;
 
     const listIcon = getListIcon(model, !collapsed, _onClickIcon);
@@ -170,7 +188,7 @@ export class ListBlockComponent extends CaptionedBlockComponent<ListBlockModel> 
                   .collapsed=${collapsed}
                   .updateCollapsed=${(value: boolean) => {
                     if (this.store.readonly) {
-                      this._readonlyCollapsed = value;
+                      this._setReadonlyCollapsed(value);
                     } else {
                       this.store.captureSync();
                       this.store.updateBlock(this.model, {
@@ -203,9 +221,6 @@ export class ListBlockComponent extends CaptionedBlockComponent<ListBlockModel> 
       </div>
     `;
   }
-
-  @state()
-  private accessor _readonlyCollapsed = false;
 
   @query('rich-text')
   private accessor _richTextElement: RichText | null = null;
