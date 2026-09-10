@@ -20,6 +20,7 @@ import {
 import {
   ClipboardAdapter,
   decodeClipboardBlobs,
+  ImageProxyService,
 } from '@labre/affine-shared/adapters';
 import {
   CANVAS_EXPORT_IGNORE_TAGS,
@@ -459,7 +460,7 @@ export class EdgelessClipboardController extends PageClipboard {
 
     const replaceImgSrcWithSvg = this._exportManager?.replaceImgSrcWithSvg;
 
-    const imageProxy = host.std.clipboard.configs.get('imageProxy');
+    const imageProxy = host.std.get(ImageProxyService).imageProxyURL;
     const html2canvasOption = {
       ignoreElements: function (element: Element) {
         if (
@@ -491,7 +492,7 @@ export class EdgelessClipboardController extends PageClipboard {
         await replaceImgSrcWithSvg?.(element);
       },
       backgroundColor: 'transparent',
-      useCORS: imageProxy ? false : true,
+      useCORS: !imageProxy,
       proxy: imageProxy,
     };
 

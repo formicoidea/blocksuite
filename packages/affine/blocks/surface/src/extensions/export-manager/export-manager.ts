@@ -1,9 +1,6 @@
 import { ImageBlockModel, type RootBlockModel } from '@labre/affine-model';
-import { FetchUtils } from '@labre/affine-shared/adapters';
-import {
-  CANVAS_EXPORT_IGNORE_TAGS,
-  DEFAULT_IMAGE_PROXY_ENDPOINT,
-} from '@labre/affine-shared/consts';
+import { FetchUtils, ImageProxyService } from '@labre/affine-shared/adapters';
+import { CANVAS_EXPORT_IGNORE_TAGS } from '@labre/affine-shared/consts';
 import type { Viewport } from '@labre/affine-shared/types';
 import { isInsidePageEditor, matchModels } from '@labre/affine-shared/utils';
 import { BlockSuiteError, ErrorCode } from '@labre/global/exceptions';
@@ -33,24 +30,21 @@ import { FileExporter } from './file-exporter.js';
 // oxlint-disable-next-line typescript/consistent-type-imports
 type Html2CanvasFunction = typeof import('html2canvas').default;
 
-export type ExportOptions = {
-  imageProxyEndpoint: string;
-};
-
 export class ExportManager {
-  private readonly _exportOptions: ExportOptions = {
-    imageProxyEndpoint: DEFAULT_IMAGE_PROXY_ENDPOINT,
-  };
+  /**
+   * The image proxy every remote-image fetch of the export goes through —
+   * resolved from {@link ImageProxyService}, the one host seam for it, never
+   * from a local constant. Empty means « fetch direct » (issue #258).
+   */
+  private get _imageProxyURL(): string {
+    return this.std.get(ImageProxyService).imageProxyURL;
+  }
 
   replaceImgSrcWithSvg = async (element: HTMLElement) => {
     const imgList = Array.from(element.querySelectorAll('img'));
     // Create an array of promises
     const promises = imgList.map(img => {
-      return FetchUtils.fetchImage(
-        img.src,
-        undefined,
-        this._exportOptions.imageProxyEndpoint
-      )
+      return FetchUtils.fetchImage(img.src, undefined, this._imageProxyURL)
         .then(response => response && response.blob())
         .then(async blob => {
           if (!blob) return;
@@ -222,8 +216,8 @@ export class ExportManager {
       x: pageLeft - viewport.left,
       width: pageWidth,
       height: viewportHeight,
-      useCORS: this._exportOptions.imageProxyEndpoint ? false : true,
-      proxy: this._exportOptions.imageProxyEndpoint,
+      useCORS: !this._imageProxyURL,
+      proxy: this._imageProxyURL,
     };
 
     let data: HTMLCanvasElement;
@@ -319,8 +313,8 @@ export class ExportManager {
 
         await this.replaceImgSrcWithSvg(element);
       },
-      useCORS: this._exportOptions.imageProxyEndpoint ? false : true,
-      proxy: this._exportOptions.imageProxyEndpoint,
+      useCORS: !this._imageProxyURL,
+      proxy: this._imageProxyURL,
     };
 
     let data: HTMLCanvasElement;
