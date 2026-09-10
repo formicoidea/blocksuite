@@ -1,5 +1,44 @@
 # @labre/affine-block-root
 
+## 0.39.3
+
+### Patch Changes
+
+- 070e1ec: feat(blocks): the collapse chevron of headings and lists is a real button (aria-expanded / aria-controls / visible focus), reachable and operable by keyboard; Tab is no longer swallowed by the editor when the focus sits on a native control outside the text
+- Updated dependencies [4ab8a5b]
+- Updated dependencies [0a07883]
+- Updated dependencies [070e1ec]
+  - @labre/affine-block-surface@0.39.3
+  - @labre/affine-block-paragraph@0.39.3
+  - @labre/affine-components@0.39.3
+  - @labre/affine-block-attachment@0.39.3
+  - @labre/affine-block-bookmark@0.39.3
+  - @labre/affine-block-edgeless-text@0.39.3
+  - @labre/affine-block-embed@0.39.3
+  - @labre/affine-block-frame@0.39.3
+  - @labre/affine-block-image@0.39.3
+  - @labre/affine-block-note@0.39.3
+  - @labre/affine-gfx-brush@0.39.3
+  - @labre/affine-gfx-connector@0.39.3
+  - @labre/affine-gfx-group@0.39.3
+  - @labre/affine-gfx-mindmap@0.39.3
+  - @labre/affine-gfx-note@0.39.3
+  - @labre/affine-gfx-pointer@0.39.3
+  - @labre/affine-gfx-shape@0.39.3
+  - @labre/affine-gfx-text@0.39.3
+  - @labre/affine-widget-edgeless-selected-rect@0.39.3
+  - @labre/affine-widget-edgeless-toolbar@0.39.3
+  - @labre/affine-block-database@0.39.3
+  - @labre/data-view@0.39.3
+  - @labre/affine-inline-preset@0.39.3
+  - @labre/affine-rich-text@0.39.3
+  - @labre/affine-ext-loader@0.39.3
+  - @labre/affine-model@0.39.3
+  - @labre/affine-shared@0.39.3
+  - @labre/global@0.39.3
+  - @labre/std@0.39.3
+  - @labre/store@0.39.3
+
 ## 0.39.2
 
 ### Patch Changes
