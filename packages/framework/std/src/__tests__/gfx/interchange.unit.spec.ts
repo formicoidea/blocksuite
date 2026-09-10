@@ -13,7 +13,7 @@
  *    already argue it.
  * 2. It survives the serialize / re-create round trip, which is what paste,
  *    duplicate, alt-drag clone and template insertion all are. That is the loss
- *    site `docs/spikes/us-1-8-unknown-props-preservation.md` named, and the
+ *    site the unknown-props spike (PR #73) named, and the
  *    reason D2 chose a per-element field over a document-level side table.
  * 3. It is clearable through `clearField`, silently — it is declared and
  *    optional, so the #78 guard must let it through.

@@ -18,7 +18,7 @@
   proves the contract, and the `interchange` field was already keyed by format
   for exactly this. Nothing decided in the first draft is withdrawn.
 - Precedent this ADR extends: **PR #73** — _preserve unknown props when copying
-  surface elements_ (`docs/spikes/us-1-8-unknown-props-preservation.md`). That
+  surface elements_ (the unknown-props spike (PR #73)). That
   PR settled the principle — _"preserve what we do not understand"_ — and the
   mechanism, decorator-table routing at the two loss sites. This ADR applies the
   same principle to a second frontier: not a field a newer Labre wrote, but a

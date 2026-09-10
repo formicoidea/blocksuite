@@ -25,4 +25,3 @@ Related documents that are not ADRs:
 
 - [../element-link-integration.md](../element-link-integration.md): the
   host integration contract for element links.
-- [../spikes/](../spikes/): investigations that preceded a decision.

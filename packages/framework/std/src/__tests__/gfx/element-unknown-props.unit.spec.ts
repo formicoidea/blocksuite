@@ -9,9 +9,9 @@
  * that field ships, and the unknown-key coverage would evaporate in silence —
  * exactly what happened when `@field() role` landed on the base element model.
  *
- * The US-1.8 spike (`docs/spikes/us-1-8-role-field-compat.md`) found two bulk
+ * The US-1.8 spike (the US-1.8 spike (PR #67)) found two bulk
  * assignment sites that dropped such keys; they now forward them straight into
- * the element's Y.Map (`docs/spikes/us-1-8-unknown-props-preservation.md`).
+ * the element's Y.Map (the unknown-props spike (PR #73)).
  * Every path below must therefore PRESERVE the unknown key. If one of these
  * tests fails, an unknown prop is being lost again somewhere.
  */
