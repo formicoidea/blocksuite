@@ -11,6 +11,7 @@ export default defineConfig({
     include: [
       'src/__tests__/icon-picker*.unit.spec.ts',
       'src/__tests__/context-menu*.unit.spec.ts',
+      'src/__tests__/toggle-button*.unit.spec.ts',
     ],
     testTimeout: 10000,
     environment: 'happy-dom',

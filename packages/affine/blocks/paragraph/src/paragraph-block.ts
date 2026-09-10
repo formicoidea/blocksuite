@@ -257,7 +257,9 @@ export class ParagraphBlockComponent extends CaptionedBlockComponent<ParagraphBl
       `;
     }
 
+    const childrenId = `heading-children-${this.model.id}`;
     const children = html`<div
+      id=${childrenId}
       class="affine-block-children-container"
       style=${styleMap({
         paddingLeft: `${BLOCK_CHILDREN_CONTAINER_PADDING_LEFT}px`,
@@ -302,6 +304,7 @@ export class ParagraphBlockComponent extends CaptionedBlockComponent<ParagraphBl
             ? html`
                 <blocksuite-toggle-button
                   .collapsed=${collapsed}
+                  .controls=${childrenId}
                   .updateCollapsed=${(value: boolean) => {
                     if (this.store.readonly) {
                       this._readonlyCollapsed = value;
