@@ -1,12 +1,19 @@
 import { svg } from 'lit';
 
+import {
+  NEUTRAL_STROKE,
+  NODE_FILL,
+  POOL_CARD_FILL,
+  POOL_FRAME_COLOR,
+} from '../consts';
+
 /** Colored BPMN glyph for the main toolbar button: a pool (green name band) with
  * a single activity inside. */
 export const bpmnToolbarIcon = svg`<svg width="100%" height="100%" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="4" y="13" width="48" height="30" rx="3" fill="#ffffff" stroke="#262626" stroke-width="2.2"/>
+  <rect x="4" y="13" width="48" height="30" rx="3" fill="${POOL_CARD_FILL}" stroke="${POOL_FRAME_COLOR}" stroke-width="2.2"/>
   <path d="M6 14 h5 v28 h-5 z" fill="#43a06b"/>
-  <line x1="11" y1="13" x2="11" y2="43" stroke="#262626" stroke-width="1.8"/>
-  <rect x="20" y="20" width="24" height="16" rx="3.5" fill="#ffffff" stroke="#262626" stroke-width="2.2"/>
+  <line x1="11" y1="13" x2="11" y2="43" stroke="${POOL_FRAME_COLOR}" stroke-width="1.8"/>
+  <rect x="20" y="20" width="24" height="16" rx="3.5" fill="${NODE_FILL}" stroke="${NEUTRAL_STROKE}" stroke-width="2.2"/>
 </svg>`;
 
 /** Export BPMN XML — a document with an arrow leaving it. */

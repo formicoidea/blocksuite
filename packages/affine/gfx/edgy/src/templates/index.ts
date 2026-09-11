@@ -16,10 +16,11 @@ import {
   StrokeStyle,
   TextAlign,
 } from '@labre/affine-model';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import type { CommandDescriptor } from '@labre/std';
 
 import { edgyCommands } from '../commands';
-import { NODE_STROKE, NODE_STROKE_WIDTH } from '../node/consts';
+import { NODE_FILL, NODE_STROKE, NODE_STROKE_WIDTH } from '../node/consts';
 import { edgyNodeProps, edgyNodeTextProps } from '../presets';
 import { edgyDynamicTemplate } from './dynamic';
 
@@ -86,7 +87,7 @@ function rect(
     type: 'shape',
     shapeType: 'rect',
     filled: true,
-    fillColor: opts.fill ?? '#ffffff',
+    fillColor: opts.fill ?? NODE_FILL,
     strokeColor: opts.stroke ?? NODE_STROKE,
     strokeWidth: opts.sw ?? NODE_STROKE_WIDTH,
     shapeStyle: ShapeStyle.General,
@@ -308,7 +309,7 @@ function journey(): SurfaceElementsJSON {
       fontSize: 16,
     });
   return {
-    cust: enode('people', 40, 120, 64, 64, { fill: '#ffffff' }),
+    cust: enode('people', 40, 120, 64, 64, { fill: NODE_FILL }),
     custL: label(20, 192, 104, 24, 'Customer', { fontSize: 14 }),
     // The person and its name travel together, as `createEdgyPeople` writes
     // them. A group is placed AFTER its members: the id middleware remaps
@@ -352,19 +353,28 @@ function journey(): SurfaceElementsJSON {
     t3: tk(786, 'C'),
     trav1: label(258, 350, 184, 20, 'traverses', {
       fontSize: 13,
-      color: '#5f6368',
+      color: NOTATION_NEUTRALS.label,
     }),
     trav2: label(518, 350, 184, 20, 'traverses', {
       fontSize: 13,
-      color: '#5f6368',
+      color: NOTATION_NEUTRALS.label,
     }),
     trav3: label(778, 350, 184, 20, 'traverses', {
       fontSize: 13,
-      color: '#5f6368',
+      color: NOTATION_NEUTRALS.label,
     }),
-    use1: label(258, 504, 184, 20, 'uses', { fontSize: 13, color: '#5f6368' }),
-    use2: label(518, 504, 184, 20, 'uses', { fontSize: 13, color: '#5f6368' }),
-    use3: label(778, 504, 184, 20, 'uses', { fontSize: 13, color: '#5f6368' }),
+    use1: label(258, 504, 184, 20, 'uses', {
+      fontSize: 13,
+      color: NOTATION_NEUTRALS.label,
+    }),
+    use2: label(518, 504, 184, 20, 'uses', {
+      fontSize: 13,
+      color: NOTATION_NEUTRALS.label,
+    }),
+    use3: label(778, 504, 184, 20, 'uses', {
+      fontSize: 13,
+      color: NOTATION_NEUTRALS.label,
+    }),
     l1: attach('s1', 'c1'),
     l2: attach('s2', 'c2'),
     l3: attach('s3', 'c3'),
@@ -513,7 +523,7 @@ export const edgyTemplateCategory: TemplateCategory = {
     ),
     tpl(
       'Organisation chart',
-      `<svg ${ATTRS} fill="none"><rect x="52" y="12" width="32" height="14" rx="2" fill="#4fd0ea"/><rect x="14" y="38" width="32" height="14" rx="2" fill="#4fd0ea"/><rect x="52" y="38" width="32" height="14" rx="2" fill="#4fd0ea"/><rect x="90" y="38" width="32" height="14" rx="2" fill="#4fd0ea"/><path d="M68 26 V32 M30 32 H106 M30 32 V38 M68 32 V38 M106 32 V38" stroke="#262626"/></svg>`,
+      `<svg ${ATTRS} fill="none"><rect x="52" y="12" width="32" height="14" rx="2" fill="#4fd0ea"/><rect x="14" y="38" width="32" height="14" rx="2" fill="#4fd0ea"/><rect x="52" y="38" width="32" height="14" rx="2" fill="#4fd0ea"/><rect x="90" y="38" width="32" height="14" rx="2" fill="#4fd0ea"/><path d="M68 26 V32 M30 32 H106 M30 32 V38 M68 32 V38 M106 32 V38" stroke="${NODE_STROKE}"/></svg>`,
       orgChart()
     ),
     templateFromCommand(
@@ -526,24 +536,24 @@ export const edgyTemplateCategory: TemplateCategory = {
     // the coverage test is what said so.
     templateFromCommand(
       byId('edgy.addBoard'),
-      `<svg ${ATTRS} fill="none"><rect x="8" y="9" width="119" height="62" rx="8" fill="#ffffff" stroke="#e0e0e0" stroke-width="2"/><path d="M52 30 H84 M53 31 L66 58 M83 31 L70 58" stroke="#262626" stroke-width="1.4"/><rect x="48" y="26" width="9" height="9" fill="#00ea4e"/><circle cx="84" cy="30" r="4.5" fill="#034cee"/><path d="M61 54 h8 l4 4 -4 4 h-8 z" fill="#ff0056"/></svg>`,
+      `<svg ${ATTRS} fill="none"><rect x="8" y="9" width="119" height="62" rx="8" fill="${NOTATION_NEUTRALS.cardFill}" stroke="${NOTATION_NEUTRALS.cardBorder}" stroke-width="2"/><path d="M52 30 H84 M53 31 L66 58 M83 31 L70 58" stroke="${NODE_STROKE}" stroke-width="1.4"/><rect x="48" y="26" width="9" height="9" fill="#00ea4e"/><circle cx="84" cy="30" r="4.5" fill="#034cee"/><path d="M61 54 h8 l4 4 -4 4 h-8 z" fill="#ff0056"/></svg>`,
       'EDGY board'
     ),
     templateFromCommand(
       byId('edgy.addPeople'),
-      `<svg ${ATTRS} fill="#262626"><circle cx="67" cy="32" r="9" fill="none" stroke="#262626" stroke-width="2.4"/><path d="M50 60 a17 17 0 0 1 34 0" fill="none" stroke="#262626" stroke-width="2.4"/></svg>`
+      `<svg ${ATTRS} fill="${NODE_STROKE}"><circle cx="67" cy="32" r="9" fill="none" stroke="${NODE_STROKE}" stroke-width="2.4"/><path d="M50 60 a17 17 0 0 1 34 0" fill="none" stroke="${NODE_STROKE}" stroke-width="2.4"/></svg>`
     ),
     templateFromCommand(
       byId('edgy.addOutcome'),
-      `<svg ${ATTRS} fill="none"><rect x="20" y="24" width="95" height="34" rx="6" stroke="#262626" stroke-width="2"/></svg>`
+      `<svg ${ATTRS} fill="none"><rect x="20" y="24" width="95" height="34" rx="6" stroke="${NODE_STROKE}" stroke-width="2"/></svg>`
     ),
     templateFromCommand(
       byId('edgy.addObject'),
-      `<svg ${ATTRS} fill="none"><rect x="20" y="24" width="95" height="34" stroke="#262626" stroke-width="2"/></svg>`
+      `<svg ${ATTRS} fill="none"><rect x="20" y="24" width="95" height="34" stroke="${NODE_STROKE}" stroke-width="2"/></svg>`
     ),
     templateFromCommand(
       byId('edgy.addActivity'),
-      `<svg ${ATTRS} fill="none"><path d="M20 24 H98 L116 41 H116 L98 58 H20 Z" stroke="#262626" stroke-width="2" stroke-linejoin="round"/></svg>`
+      `<svg ${ATTRS} fill="none"><path d="M20 24 H98 L116 41 H116 L98 58 H20 Z" stroke="${NODE_STROKE}" stroke-width="2" stroke-linejoin="round"/></svg>`
     ),
   ],
 };

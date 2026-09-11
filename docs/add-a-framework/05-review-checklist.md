@@ -26,6 +26,10 @@ change to one. Paste it in the PR and tick.**
       declare a direction.
 - [ ] Presets are the only source of sizes and fonts. Labels are free text
       grouped with the shape.
+- [ ] R33: neutrals come from `NOTATION_NEUTRALS`; no neutral hex in the
+      module (previews, glyphs and templates included) outside a stencil
+      exception; identity colours (a colour code recognises a stored element
+      by) stay literal.
 - [ ] Rules name a `backgroundRole`; the default profile is the most
       permissive; no rule uses `blocking-overridable`.
 - [ ] Every user-visible string is a `com.labre.*` key in `translations.ts`.

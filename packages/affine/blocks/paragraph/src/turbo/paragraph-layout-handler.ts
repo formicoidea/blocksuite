@@ -5,6 +5,7 @@ import {
   getSentenceRects,
   segmentSentences,
 } from '@labre/affine-gfx-turbo-renderer';
+import type { ParagraphBlockModel } from '@labre/affine-model';
 import type { Container } from '@labre/global/di';
 import type { EditorHost, GfxBlockComponent } from '@labre/std';
 import { clientToModelCoord, type ViewportRecord } from '@labre/std/gfx';
@@ -39,6 +40,7 @@ export class ParagraphLayoutHandlerExtension extends BlockLayoutHandlerExtension
     const { zoom, viewScale } = viewportRecord;
     const paragraph: ParagraphLayout = {
       type: 'affine:paragraph',
+      paragraphType: (model as ParagraphBlockModel).props.type,
       sentences: [],
       blockId: model.id,
       rect: { x: 0, y: 0, w: 0, h: 0 },

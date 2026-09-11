@@ -8,6 +8,7 @@ import {
   StrokeStyle,
   TextFitMode,
 } from '@labre/affine-model';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import { Bound } from '@labre/global/gfx';
 import type { BlockStdScope } from '@labre/std';
 import { type GfxController, GfxControllerIdentifier } from '@labre/std/gfx';
@@ -277,8 +278,8 @@ export function addBubble(
   });
 }
 
-/** The ink every Core Domain artefact is outlined with. */
-const ARTEFACT_STROKE = '#1f2328';
+/** The ink every Core Domain artefact is outlined with: the shared scale's. */
+const ARTEFACT_STROKE = NOTATION_NEUTRALS.ink;
 
 /**
  * What a Core Domain DOT is, as shape options — read by the creation site below
@@ -409,7 +410,7 @@ export function addMarker(
     cy - 9,
     s,
     letter,
-    '#1f2328',
+    NOTATION_NEUTRALS.ink,
     LABEL_FONT,
     15
   );
@@ -461,7 +462,7 @@ export function addCloud(
     cy - LABEL_FONT_SIZE / 2,
     w - 24,
     label,
-    '#3d3d3d',
+    NOTATION_NEUTRALS.ink,
     LABEL_FONT,
     LABEL_FONT_SIZE
   );
@@ -543,8 +544,8 @@ export function addLegend(
 
   const ids: string[] = [
     addShape(surface, x, y, W, H, {
-      fill: '#ffffff',
-      stroke: '#6d6e71',
+      fill: NOTATION_NEUTRALS.cardFill,
+      stroke: NOTATION_NEUTRALS.legendBorder,
       strokeWidth: 1.5,
       radius: 8,
     }),
@@ -591,7 +592,7 @@ export function addLegend(
           addShape(surface, sx, midY - SW / 2, SW, SW, {
             shapeType: 'ellipse',
             fill: row.color,
-            stroke: '#1f2328',
+            stroke: NOTATION_NEUTRALS.ink,
             strokeWidth: 1,
           })
         );
@@ -599,7 +600,7 @@ export function addLegend(
         ids.push(
           addShape(surface, sx, midY - SW / 2, SW, SW, {
             fill: row.color,
-            stroke: '#1f2328',
+            stroke: NOTATION_NEUTRALS.ink,
             strokeWidth: 1,
             radius: 3,
           })
@@ -612,7 +613,7 @@ export function addLegend(
               midY - 8,
               SW,
               row.letter,
-              '#1f2328',
+              NOTATION_NEUTRALS.ink,
               LABEL_FONT,
               11
             )

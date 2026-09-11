@@ -239,8 +239,11 @@ describe('a BPMN pool written before the primitive', () => {
     // The participant name, rotated up the middle of the band, at weight 600.
     expect(rec.texts).toEqual([['Customer', 14, 100]]);
     expect(rec.fonts).toEqual(['600 15px Inter, sans-serif']);
-    // Frame and divider, both in the pool's ink.
-    expect(rec.strokes).toEqual(['#262626', '#262626']);
+    // Frame and divider, both in the pool's ink. The second deliberate visual
+    // change: that ink is now the shared notation scale's `frameInk`
+    // (`#3b3d42`, was `#262626`). A render-time colour, so a legacy pool
+    // repaints in it while its stored props stay exactly the four it had.
+    expect(rec.strokes).toEqual(['#3b3d42', '#3b3d42']);
   });
 });
 

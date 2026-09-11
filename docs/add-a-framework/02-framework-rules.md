@@ -178,4 +178,24 @@ bundle build script reads it.
 providers) and `./commands-manifest` (a few hundred bytes for a settings
 pane).** `private: true`, `sideEffects: false`.
 
+## Colour
+
+**R33. Neutrals come from one scale; hues stay per framework.** Inks, greys,
+borders and the card fill (board strips included: no tinted bands) are read from
+`NOTATION_NEUTRALS` (`@labre/affine-shared/consts`), whose values are
+Wardley's. A framework's `consts.ts` names them (`NODE_STROKE =
+NOTATION_NEUTRALS.ink`) rather than restating a hex, and previews, toolbar
+glyphs and templates interpolate those names too. Exceptions are neutrals
+borrowed from an official source (stencil exceptions: the C4 stencil's
+`#444444`, the EDGY stencil ink `#262626` of its base-shape pictograms, the
+Cynefin and Estuarine SVGs, the EDGY facet picto) and greys that carry a
+meaning. A creation default is copied into the element, so changing the scale
+repaints render-time chrome only: code that recognises an element by its stored
+colour must keep accepting the value older documents carry. **A colour used to
+recognise a stored element stays a literal and is never derived from the
+scale** (Wardley's `INERTIA_COLOR`, `LINK_GREY`, `WARDLEY_RED`): a change of
+ink would otherwise orphan every element already drawn with it. Pinned by
+`notation.unit.spec.ts` (affine-shared) and an assertion in every module that
+reads the scale (its background, consts, legend or template spec).
+
 Next: [03-anatomy.md](03-anatomy.md).

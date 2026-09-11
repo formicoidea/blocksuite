@@ -7,6 +7,7 @@ import {
   backgroundTexts,
   hitTestBackgroundLabel,
 } from '@labre/affine-block-surface';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import { describe, expect, it } from 'vitest';
 
 import { C4_BOARD_BACKGROUND, C4_BOUNDARY_BACKGROUND } from '../background';
@@ -145,10 +146,14 @@ describe('the C4 board', () => {
       'stroke',
       'fillText',
     ]);
-    expect(rec.fills).toEqual(['#ffffff']);
+    expect(rec.fills).toEqual([NOTATION_NEUTRALS.cardFill]);
     // Two strokes now: the band's divider, then the card's border. Both the
-    // card's own line, so the strip reads as the frame continued.
-    expect(rec.strokes).toEqual(['#d5d9e0', '#d5d9e0']);
+    // card's own line, so the strip reads as the frame continued — and that
+    // line is the shared notation scale's card border, not a C4 grey.
+    expect(rec.strokes).toEqual([
+      NOTATION_NEUTRALS.cardBorder,
+      NOTATION_NEUTRALS.cardBorder,
+    ]);
     // Solid: a board is not a boundary.
     expect(rec.dashes).toHaveLength(0);
 
@@ -158,6 +163,7 @@ describe('the C4 board', () => {
     expect(rec.rects).toEqual([
       { x: 0, y: 0, w: W, h: BAND, fill: BOARD_BAND_FILL },
     ]);
+    expect(BOARD_BAND_FILL).toBe(NOTATION_NEUTRALS.cardFill);
     // …and the rule under it runs the whole width, at the band's foot.
     expect(rec.segments).toEqual([{ x1: 0, y1: BAND, x2: W, y2: BAND }]);
 

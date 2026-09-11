@@ -1,4 +1,5 @@
 import { autoLegendSections } from '@labre/affine-gfx-ddd-shared';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import { describe, expect, it } from 'vitest';
 
 import { EDGY_AUTO_LEGEND } from '../legend';
@@ -182,5 +183,19 @@ describe('what an EDGY board puts in its legend', () => {
     expect(labels([])).toEqual([]);
     // A neutral drawing and another framework's artefacts are not EDGY.
     expect(labels(['wardley:component'])).toEqual([]);
+  });
+});
+
+describe('the EDGY base-element neutrals', () => {
+  it('fill with the shared notation scale card', () => {
+    expect(NODE_FILL).toBe(NOTATION_NEUTRALS.cardFill);
+  });
+
+  it('draw in the official EDGY stencil ink, not the scale ink', () => {
+    // `stroke:#262626` is what every base-shape pictogram of the EDGY stencil
+    // draws with (`pictograms/Shape-*.svg`, `Icon-People.svg`): content of the
+    // notation, pinned as a literal so a change of the shared ink cannot move it.
+    expect(NODE_STROKE).toBe('#262626');
+    expect(NODE_STROKE).not.toBe(NOTATION_NEUTRALS.ink);
   });
 });

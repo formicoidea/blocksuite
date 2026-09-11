@@ -7,6 +7,7 @@ import {
   StrokeStyle,
   TextAlign,
 } from '@labre/affine-model';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 
 import {
   makeTemplateSnapshot,
@@ -21,8 +22,13 @@ import type { Template, TemplateCategory } from '../toolbar/template-type.js';
  * they belong to no framework, so they ship from the template package itself.
  */
 
-const DARK = '#262626';
-const MUTED = '#9aa0a6';
+/**
+ * Their neutrals are the shared notation scale's, like every framework's:
+ * the ink, the divider grey, the label grey and the card white. Only
+ * the hues (kanban cards, gantt bars) are the diagrams' own.
+ */
+const DARK = NOTATION_NEUTRALS.ink;
+const MUTED = NOTATION_NEUTRALS.divider;
 
 type RectOpts = {
   fill?: string;
@@ -42,7 +48,7 @@ function rect(x: number, y: number, w: number, h: number, opts: RectOpts = {}) {
     type: 'shape',
     shapeType: opts.shapeType ?? 'rect',
     filled: true,
-    fillColor: opts.fill ?? '#ffffff',
+    fillColor: opts.fill ?? NOTATION_NEUTRALS.cardFill,
     strokeColor: opts.stroke ?? DARK,
     strokeWidth: opts.sw ?? 2,
     strokeStyle: opts.dash ? StrokeStyle.Dash : StrokeStyle.Solid,
@@ -80,7 +86,7 @@ function label(
   return {
     type: 'text',
     text: surfaceText(str),
-    color: opts.color ?? '#1a1a1a',
+    color: opts.color ?? DARK,
     fontFamily: FontFamily.Inter,
     fontSize: opts.fontSize ?? 16,
     fontWeight: opts.weight ?? FontWeight.Regular,
@@ -133,7 +139,12 @@ function swot(): SurfaceElementsJSON {
 
 // ── Kanban (To do / Doing / Done) ─────────────────────────────────────
 function kanban(): SurfaceElementsJSON {
-  const colOpts = { fill: '#f4f4f5', stroke: MUTED, sw: 1.5, radius: 10 };
+  const colOpts = {
+    fill: NOTATION_NEUTRALS.cardFill,
+    stroke: MUTED,
+    sw: 1.5,
+    radius: 10,
+  };
   const head = {
     fontSize: 18,
     weight: FontWeight.Medium,
@@ -173,7 +184,10 @@ function bmc(): SurfaceElementsJSON {
     });
   const hdr = (x: number, s: string) => ({
     box: rect(x, 8, 128, 34, { stroke: MUTED, sw: 1 }),
-    txt: label(x + 8, 16, 120, 18, s, { fontSize: 11, color: '#5f6368' }),
+    txt: label(x + 8, 16, 120, 18, s, {
+      fontSize: 11,
+      color: NOTATION_NEUTRALS.label,
+    }),
   });
   const h1 = hdr(470, 'Designed for');
   const h2 = hdr(602, 'Designed by');
@@ -223,7 +237,7 @@ function fishbone(): SurfaceElementsJSON {
       sw: 1.4,
       dash: true,
       text: n,
-      textColor: '#5f6368',
+      textColor: NOTATION_NEUTRALS.label,
       fontSize: 13,
     });
   const out: SurfaceElementsJSON = {
@@ -258,10 +272,13 @@ function gantt(): SurfaceElementsJSON {
   // week gridlines + labels
   for (let i = 0; i < 6; i++) {
     const x = 220 + i * 130;
-    out[`g${i}`] = line(x, 40, x, 268, { stroke: '#e0e0e0', sw: 1 });
+    out[`g${i}`] = line(x, 40, x, 268, {
+      stroke: NOTATION_NEUTRALS.cardBorder,
+      sw: 1,
+    });
     out[`w${i}`] = label(x - 16, 12, 40, 20, `W${i + 1}`, {
       fontSize: 12,
-      color: '#5f6368',
+      color: NOTATION_NEUTRALS.label,
       align: TextAlign.Center,
     });
   }
@@ -282,11 +299,11 @@ function gantt(): SurfaceElementsJSON {
 const ATTRS =
   'width="100%" height="100%" viewBox="0 0 135 80" xmlns="http://www.w3.org/2000/svg"';
 const previews = {
-  swot: `<svg ${ATTRS} fill="none"><rect x="20" y="12" width="95" height="56" stroke="#262626" stroke-width="2"/><path d="M67.5 12 V68 M20 40 H115" stroke="#262626" stroke-width="1.6"/></svg>`,
-  kanban: `<svg ${ATTRS} fill="none"><rect x="10" y="12" width="35" height="56" rx="4" stroke="#9aa0a6"/><rect x="50" y="12" width="35" height="56" rx="4" stroke="#9aa0a6"/><rect x="90" y="12" width="35" height="56" rx="4" stroke="#9aa0a6"/><rect x="15" y="22" width="25" height="11" rx="2" fill="#fde6c8"/><rect x="55" y="22" width="25" height="11" rx="2" fill="#d6e4fb"/><rect x="95" y="22" width="25" height="11" rx="2" fill="#d5efd9"/></svg>`,
-  bmc: `<svg ${ATTRS} fill="none"><g stroke="#262626" stroke-width="1.2"><rect x="8" y="14" width="22" height="40"/><rect x="32" y="14" width="22" height="20"/><rect x="32" y="35" width="22" height="19"/><rect x="56" y="14" width="22" height="40"/><rect x="80" y="14" width="22" height="20"/><rect x="80" y="35" width="22" height="19"/><rect x="104" y="14" width="22" height="40"/><rect x="8" y="56" width="57" height="14"/><rect x="68" y="56" width="58" height="14"/></g></svg>`,
-  fishbone: `<svg ${ATTRS} fill="none"><path d="M14 40 H112" stroke="#262626" stroke-width="3"/><rect x="112" y="33" width="20" height="14" stroke="#262626" stroke-width="1.4"/><path d="M40 18 L52 40 M40 62 L52 40 M84 18 L96 40 M84 62 L96 40" stroke="#262626" stroke-width="1.4"/></svg>`,
-  gantt: `<svg ${ATTRS} fill="none"><path d="M40 14 V70 M62 14 V70 M84 14 V70 M106 14 V70" stroke="#e0e0e0"/><rect x="40" y="22" width="34" height="8" rx="2" fill="#4574c4"/><rect x="52" y="36" width="44" height="8" rx="2" fill="#2f9e95"/><rect x="62" y="50" width="50" height="8" rx="2" fill="#d99a2b"/><rect x="84" y="64" width="28" height="8" rx="2" fill="#43a06b"/></svg>`,
+  swot: `<svg ${ATTRS} fill="none"><rect x="20" y="12" width="95" height="56" stroke="${DARK}" stroke-width="2"/><path d="M67.5 12 V68 M20 40 H115" stroke="${DARK}" stroke-width="1.6"/></svg>`,
+  kanban: `<svg ${ATTRS} fill="none"><rect x="10" y="12" width="35" height="56" rx="4" stroke="${MUTED}"/><rect x="50" y="12" width="35" height="56" rx="4" stroke="${MUTED}"/><rect x="90" y="12" width="35" height="56" rx="4" stroke="${MUTED}"/><rect x="15" y="22" width="25" height="11" rx="2" fill="#fde6c8"/><rect x="55" y="22" width="25" height="11" rx="2" fill="#d6e4fb"/><rect x="95" y="22" width="25" height="11" rx="2" fill="#d5efd9"/></svg>`,
+  bmc: `<svg ${ATTRS} fill="none"><g stroke="${DARK}" stroke-width="1.2"><rect x="8" y="14" width="22" height="40"/><rect x="32" y="14" width="22" height="20"/><rect x="32" y="35" width="22" height="19"/><rect x="56" y="14" width="22" height="40"/><rect x="80" y="14" width="22" height="20"/><rect x="80" y="35" width="22" height="19"/><rect x="104" y="14" width="22" height="40"/><rect x="8" y="56" width="57" height="14"/><rect x="68" y="56" width="58" height="14"/></g></svg>`,
+  fishbone: `<svg ${ATTRS} fill="none"><path d="M14 40 H112" stroke="${DARK}" stroke-width="3"/><rect x="112" y="33" width="20" height="14" stroke="${DARK}" stroke-width="1.4"/><path d="M40 18 L52 40 M40 62 L52 40 M84 18 L96 40 M84 62 L96 40" stroke="${DARK}" stroke-width="1.4"/></svg>`,
+  gantt: `<svg ${ATTRS} fill="none"><path d="M40 14 V70 M62 14 V70 M84 14 V70 M106 14 V70" stroke="${NOTATION_NEUTRALS.cardBorder}"/><rect x="40" y="22" width="34" height="8" rx="2" fill="#4574c4"/><rect x="52" y="36" width="44" height="8" rx="2" fill="#2f9e95"/><rect x="62" y="50" width="50" height="8" rx="2" fill="#d99a2b"/><rect x="84" y="64" width="28" height="8" rx="2" fill="#43a06b"/></svg>`,
 };
 
 function t(

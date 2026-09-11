@@ -1,3 +1,4 @@
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { FrameworkBackgroundDef } from '../framework-background/index.js';
@@ -172,6 +173,8 @@ describe('a declaration that says nothing but its size', () => {
     const rec = paint(BARE);
 
     expect(rec.fills).toEqual(['#ffffff']);
+    // …which is the shared notation scale's card, not a white of its own.
+    expect(rec.fills).toEqual([NOTATION_NEUTRALS.cardFill]);
     // Nothing else is drawn: no border, no line, no tint, no wash, no word.
     expect(rec.strokes).toEqual([]);
     expect(rec.segments).toEqual([]);

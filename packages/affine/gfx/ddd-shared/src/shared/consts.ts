@@ -1,3 +1,5 @@
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
+
 /**
  * Shared DDD palette and sizes. Every tool composes the same irreducible units
  * (sticky, dot, bubble, connector, label) from these presets — no duplicated
@@ -173,7 +175,17 @@ function buildCloud(): number[][] {
   return pts;
 }
 export const CLOUD_VERTICES: number[][] = buildCloud();
-export const CLOUD = { w: 180, h: 120, fill: '#f0eef6', stroke: '#6d6e71' };
+/**
+ * The cloud (Big Ball of Mud). Its lilac fill is the notation's own; its
+ * outline is the shared scale's secondary grey. A cloud created before the scale
+ * was adopted keeps the `#6d6e71` outline it was written with.
+ */
+export const CLOUD = {
+  w: 180,
+  h: 120,
+  fill: '#f0eef6',
+  stroke: NOTATION_NEUTRALS.label,
+};
 
 /** Team Topologies interaction modes (placeable markers + Notation legend). */
 export const TEAM_TOPOLOGIES = [
@@ -199,6 +211,7 @@ export const CD_SUBDOMAINS = [
 
 export const DOT_SIZE = 26;
 export const MOVEMENT_COLOR = '#ff3333';
-export const LABEL_COLOR = '#1f2328';
+/** Label and legend text: the shared notation scale's artefact ink. */
+export const LABEL_COLOR = NOTATION_NEUTRALS.ink;
 export const LABEL_FONT = 'blocksuite:surface:Inter';
 export const LABEL_FONT_SIZE = 14;

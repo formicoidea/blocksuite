@@ -16,9 +16,15 @@ import type { CommandDescriptor } from '@labre/std';
 
 import { bpmnCommands } from '../commands';
 import {
+  EVENT_END,
+  EVENT_START,
+  GROUP_STROKE,
   MESSAGE_STROKE,
   MESSAGE_WIDTH,
+  NEUTRAL_STROKE,
   NODE_SIZE,
+  POOL_BAND_FILL,
+  POOL_FRAME_COLOR,
   SEQUENCE_STROKE,
   SEQUENCE_WIDTH,
 } from '../consts';
@@ -171,38 +177,35 @@ const eventPreview = (stroke: string, width: number, glyph = '') =>
 
 /** An activity: one rounded rectangle, and a marker tells the kinds apart. */
 const taskPreview = (glyph = '', width = 2.4) =>
-  `<svg ${A} fill="none"><rect x="34" y="24" width="66" height="32" rx="6" stroke="#262626" stroke-width="${width}"/>${glyph}</svg>`;
+  `<svg ${A} fill="none"><rect x="34" y="24" width="66" height="32" rx="6" stroke="${NEUTRAL_STROKE}" stroke-width="${width}"/>${glyph}</svg>`;
 
 /** A gateway: one diamond, one marker each. */
 const gatewayPreview = (marker: string) =>
-  `<svg ${A} fill="none"><path d="M67 16 L92 40 L67 64 L42 40 Z" stroke="#262626" stroke-width="2.4" stroke-linejoin="round"/><path d="${marker}" stroke="#262626" stroke-width="2.2" stroke-linecap="round"/></svg>`;
+  `<svg ${A} fill="none"><path d="M67 16 L92 40 L67 64 L42 40 Z" stroke="${NEUTRAL_STROKE}" stroke-width="2.4" stroke-linejoin="round"/><path d="${marker}" stroke="${NEUTRAL_STROKE}" stroke-width="2.2" stroke-linecap="round"/></svg>`;
 
-const ENVELOPE =
-  '<rect x="59" y="35" width="16" height="11" stroke="#262626" stroke-width="1.4"/><path d="M59 35 L67 42 L75 35" stroke="#262626" stroke-width="1.4" stroke-linejoin="round"/>';
-const CLOCK =
-  '<circle cx="67" cy="40" r="9" stroke="#262626" stroke-width="1.4"/><path d="M67 40 V33 M67 40 L72 43" stroke="#262626" stroke-width="1.4" stroke-linecap="round"/>';
+const ENVELOPE = `<rect x="59" y="35" width="16" height="11" stroke="${NEUTRAL_STROKE}" stroke-width="1.4"/><path d="M59 35 L67 42 L75 35" stroke="${NEUTRAL_STROKE}" stroke-width="1.4" stroke-linejoin="round"/>`;
+const CLOCK = `<circle cx="67" cy="40" r="9" stroke="${NEUTRAL_STROKE}" stroke-width="1.4"/><path d="M67 40 V33 M67 40 L72 43" stroke="${NEUTRAL_STROKE}" stroke-width="1.4" stroke-linecap="round"/>`;
 /** The collapsed `[+]`, on the activity's bottom edge — sub-process and call alike. */
-const COLLAPSED =
-  '<rect x="61" y="44" width="12" height="12" stroke="#262626" stroke-width="1.4"/><path d="M67 47 V53 M64 50 H70" stroke="#262626" stroke-width="1.4" stroke-linecap="round"/>';
+const COLLAPSED = `<rect x="61" y="44" width="12" height="12" stroke="${NEUTRAL_STROKE}" stroke-width="1.4"/><path d="M67 47 V53 M64 50 H70" stroke="${NEUTRAL_STROKE}" stroke-width="1.4" stroke-linecap="round"/>`;
 
 const previews = {
-  process: `<svg ${A} fill="none"><circle cx="16" cy="40" r="8" stroke="#43a06b" stroke-width="2"/><rect x="34" y="31" width="26" height="18" rx="3" stroke="#262626" stroke-width="1.6"/><path d="M78 31 L88 40 L78 49 L68 40 Z" stroke="#262626" stroke-width="1.4"/><path d="M73 37 L83 43 M83 37 L73 43" stroke="#262626" stroke-width="1.2"/><circle cx="118" cy="40" r="8" stroke="#cf5648" stroke-width="3"/><path d="M24 40 H34 M60 40 H68 M88 40 H110" stroke="#262626" stroke-width="1.2"/></svg>`,
-  startEvent: eventPreview('#43a06b', 3),
-  startEventMessage: eventPreview('#43a06b', 3, ENVELOPE),
-  startEventTimer: eventPreview('#43a06b', 3, CLOCK),
-  endEvent: eventPreview('#cf5648', 5),
-  endEventMessage: eventPreview('#cf5648', 5, ENVELOPE),
+  process: `<svg ${A} fill="none"><circle cx="16" cy="40" r="8" stroke="${EVENT_START}" stroke-width="2"/><rect x="34" y="31" width="26" height="18" rx="3" stroke="${NEUTRAL_STROKE}" stroke-width="1.6"/><path d="M78 31 L88 40 L78 49 L68 40 Z" stroke="${NEUTRAL_STROKE}" stroke-width="1.4"/><path d="M73 37 L83 43 M83 37 L73 43" stroke="${NEUTRAL_STROKE}" stroke-width="1.2"/><circle cx="118" cy="40" r="8" stroke="${EVENT_END}" stroke-width="3"/><path d="M24 40 H34 M60 40 H68 M88 40 H110" stroke="${SEQUENCE_STROKE}" stroke-width="1.2"/></svg>`,
+  startEvent: eventPreview(EVENT_START, 3),
+  startEventMessage: eventPreview(EVENT_START, 3, ENVELOPE),
+  startEventTimer: eventPreview(EVENT_START, 3, CLOCK),
+  endEvent: eventPreview(EVENT_END, 5),
+  endEventMessage: eventPreview(EVENT_END, 5, ENVELOPE),
   endEventTerminate: eventPreview(
-    '#cf5648',
+    EVENT_END,
     5,
-    '<circle cx="67" cy="40" r="8" fill="#262626"/>'
+    `<circle cx="67" cy="40" r="8" fill="${NEUTRAL_STROKE}"/>`
   ),
   task: taskPreview(),
   taskUser: taskPreview(
-    '<circle cx="41" cy="31" r="2.6" stroke="#262626" stroke-width="1.2"/><path d="M37.4 38 a3.6 3.6 0 0 1 7.2 0" stroke="#262626" stroke-width="1.2"/>'
+    `<circle cx="41" cy="31" r="2.6" stroke="${NEUTRAL_STROKE}" stroke-width="1.2"/><path d="M37.4 38 a3.6 3.6 0 0 1 7.2 0" stroke="${NEUTRAL_STROKE}" stroke-width="1.2"/>`
   ),
   taskService: taskPreview(
-    '<circle cx="41" cy="32" r="3.4" stroke="#262626" stroke-width="1.2"/><circle cx="41" cy="32" r="1" fill="#262626"/><path d="M41 27.4 V29 M41 35 V36.6 M36.4 32 H38 M44 32 H45.6" stroke="#262626" stroke-width="1.2" stroke-linecap="round"/>'
+    `<circle cx="41" cy="32" r="3.4" stroke="${NEUTRAL_STROKE}" stroke-width="1.2"/><circle cx="41" cy="32" r="1" fill="${NEUTRAL_STROKE}"/><path d="M41 27.4 V29 M41 35 V36.6 M36.4 32 H38 M44 32 H45.6" stroke="${NEUTRAL_STROKE}" stroke-width="1.2" stroke-linecap="round"/>`
   ),
   subProcess: taskPreview(COLLAPSED),
   // The thick border IS the distinction: this box stands for a process defined
@@ -210,18 +213,18 @@ const previews = {
   callActivity: taskPreview(COLLAPSED, 4.5),
   gateway: gatewayPreview('M58 31 L76 49 M76 31 L58 49'),
   gatewayParallel: gatewayPreview('M67 30 V50 M57 40 H77'),
-  dataObject: `<svg ${A} fill="none"><path d="M52 14 H76 L88 26 V66 H52 Z" stroke="#262626" stroke-width="2.2" stroke-linejoin="round"/><path d="M76 14 V26 H88" stroke="#262626" stroke-width="1.8" stroke-linejoin="round"/></svg>`,
-  dataStore: `<svg ${A} fill="none"><path d="M48 22 V58 C48 62 56 65 67 65 C78 65 86 62 86 58 V22" stroke="#262626" stroke-width="2.2" stroke-linejoin="round"/><ellipse cx="67" cy="22" rx="19" ry="6" stroke="#262626" stroke-width="2.2"/></svg>`,
-  textAnnotation: `<svg ${A} fill="none"><path d="M46 16 H36 V64 H46" stroke="#262626" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M54 28 H100 M54 40 H100 M54 52 H86" stroke="#262626" stroke-width="1.8" stroke-linecap="round"/></svg>`,
-  group: `<svg ${A} fill="none"><rect x="18" y="12" width="99" height="56" rx="10" stroke="#8e8d91" stroke-width="2.2" stroke-dasharray="7 5"/></svg>`,
-  sequence: `<svg ${A} fill="none"><path d="M24 40 H96" stroke="#262626" stroke-width="2.4" stroke-linecap="round"/><path d="M94 33 L108 40 L94 47 Z" fill="#262626"/></svg>`,
-  pool: `<svg ${A} fill="none"><rect x="14" y="20" width="107" height="40" rx="3" stroke="#262626" stroke-width="2"/><path d="M30 20 V60" stroke="#262626" stroke-width="1.8"/><rect x="14" y="20" width="16" height="40" fill="#f4f4f5"/><path d="M30 20 V60" stroke="#262626" stroke-width="1.8"/></svg>`,
+  dataObject: `<svg ${A} fill="none"><path d="M52 14 H76 L88 26 V66 H52 Z" stroke="${NEUTRAL_STROKE}" stroke-width="2.2" stroke-linejoin="round"/><path d="M76 14 V26 H88" stroke="${NEUTRAL_STROKE}" stroke-width="1.8" stroke-linejoin="round"/></svg>`,
+  dataStore: `<svg ${A} fill="none"><path d="M48 22 V58 C48 62 56 65 67 65 C78 65 86 62 86 58 V22" stroke="${NEUTRAL_STROKE}" stroke-width="2.2" stroke-linejoin="round"/><ellipse cx="67" cy="22" rx="19" ry="6" stroke="${NEUTRAL_STROKE}" stroke-width="2.2"/></svg>`,
+  textAnnotation: `<svg ${A} fill="none"><path d="M46 16 H36 V64 H46" stroke="${NEUTRAL_STROKE}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M54 28 H100 M54 40 H100 M54 52 H86" stroke="${NEUTRAL_STROKE}" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+  group: `<svg ${A} fill="none"><rect x="18" y="12" width="99" height="56" rx="10" stroke="${GROUP_STROKE}" stroke-width="2.2" stroke-dasharray="7 5"/></svg>`,
+  sequence: `<svg ${A} fill="none"><path d="M24 40 H96" stroke="${SEQUENCE_STROKE}" stroke-width="2.4" stroke-linecap="round"/><path d="M94 33 L108 40 L94 47 Z" fill="${SEQUENCE_STROKE}"/></svg>`,
+  pool: `<svg ${A} fill="none"><rect x="14" y="20" width="107" height="40" rx="3" stroke="${POOL_FRAME_COLOR}" stroke-width="2"/><path d="M30 20 V60" stroke="${POOL_FRAME_COLOR}" stroke-width="1.8"/><rect x="14" y="20" width="16" height="40" fill="${POOL_BAND_FILL}"/><path d="M30 20 V60" stroke="${POOL_FRAME_COLOR}" stroke-width="1.8"/></svg>`,
   // Two participants stacked, and the dashed line between them is the whole
   // point of the card: a message flow is the one arrow that crosses a pool.
   // Its source terminator is a FILLED disc, matching what `renderCircle`
   // actually paints rather than the hollow ring the norm asks for — a preview
   // has one job, which is to look like what lands on the board.
-  messageExchange: `<svg ${A} fill="none"><rect x="14" y="8" width="107" height="27" rx="3" stroke="#262626" stroke-width="1.6"/><rect x="14" y="8" width="11" height="27" fill="#f4f4f5"/><path d="M25 8 V35" stroke="#262626" stroke-width="1.4"/><rect x="14" y="45" width="107" height="27" rx="3" stroke="#262626" stroke-width="1.6"/><rect x="14" y="45" width="11" height="27" fill="#f4f4f5"/><path d="M25 45 V72" stroke="#262626" stroke-width="1.4"/><circle cx="33" cy="21.5" r="4.5" stroke="#43a06b" stroke-width="1.6"/><rect x="46" y="14" width="26" height="15" rx="3" stroke="#262626" stroke-width="1.6"/><circle cx="88" cy="21.5" r="4.5" stroke="#cf5648" stroke-width="2.6"/><rect x="46" y="51" width="26" height="15" rx="3" stroke="#262626" stroke-width="1.6"/><path d="M41 21.5 H46 M72 21.5 H83" stroke="#262626" stroke-width="1.4"/><circle cx="59" cy="31.5" r="2.2" fill="#262626"/><path d="M59 34 V48" stroke="#262626" stroke-width="1.4" stroke-dasharray="3 2.4"/><path d="M56 46 L59 50 L62 46" stroke="#262626" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  messageExchange: `<svg ${A} fill="none"><rect x="14" y="8" width="107" height="27" rx="3" stroke="${POOL_FRAME_COLOR}" stroke-width="1.6"/><rect x="14" y="8" width="11" height="27" fill="${POOL_BAND_FILL}"/><path d="M25 8 V35" stroke="${POOL_FRAME_COLOR}" stroke-width="1.4"/><rect x="14" y="45" width="107" height="27" rx="3" stroke="${POOL_FRAME_COLOR}" stroke-width="1.6"/><rect x="14" y="45" width="11" height="27" fill="${POOL_BAND_FILL}"/><path d="M25 45 V72" stroke="${POOL_FRAME_COLOR}" stroke-width="1.4"/><circle cx="33" cy="21.5" r="4.5" stroke="${EVENT_START}" stroke-width="1.6"/><rect x="46" y="14" width="26" height="15" rx="3" stroke="${NEUTRAL_STROKE}" stroke-width="1.6"/><circle cx="88" cy="21.5" r="4.5" stroke="${EVENT_END}" stroke-width="2.6"/><rect x="46" y="51" width="26" height="15" rx="3" stroke="${NEUTRAL_STROKE}" stroke-width="1.6"/><path d="M41 21.5 H46 M72 21.5 H83" stroke="${SEQUENCE_STROKE}" stroke-width="1.4"/><circle cx="59" cy="31.5" r="2.2" fill="${MESSAGE_STROKE}"/><path d="M59 34 V48" stroke="${MESSAGE_STROKE}" stroke-width="1.4" stroke-dasharray="3 2.4"/><path d="M56 46 L59 50 L62 46" stroke="${MESSAGE_STROKE}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
 };
 
 /* ── The two worked scenes ────────────────────────────────────────────────── */

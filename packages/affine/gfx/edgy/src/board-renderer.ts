@@ -3,9 +3,11 @@ import {
   ElementRendererExtension,
 } from '@labre/affine-block-surface';
 import type { EdgyBoardElementModel } from '@labre/affine-model';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 
-const BOARD_FILL = '#ffffff';
-const BOARD_BORDER = '#e0e0e0';
+/** The shared notation scale's card: painted at render time, so every board. */
+const BOARD_FILL = NOTATION_NEUTRALS.cardFill;
+const BOARD_BORDER = NOTATION_NEUTRALS.cardBorder;
 const BOARD_RADIUS = 16;
 const BOARD_BORDER_WIDTH = 2;
 

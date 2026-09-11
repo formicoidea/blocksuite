@@ -14,7 +14,9 @@ import {
   TextAlign,
 } from '@labre/affine-model';
 
+import { COLORS } from '../consts';
 import {
+  INERTIA_COLOR,
   LINK_GREY,
   LINK_STROKE_WIDTH,
   NODE_FILL,
@@ -255,7 +257,7 @@ function panel(x: number, y: number, w: number, h: number) {
     type: 'shape',
     shapeType: 'rect',
     filled: true,
-    fillColor: '#ffffff',
+    fillColor: NODE_FILL,
     strokeColor: NODE_STROKE,
     strokeWidth: 1.2,
     shapeStyle: ShapeStyle.General,
@@ -298,7 +300,7 @@ function title(str: string) {
 const ATTRS =
   'width="100%" height="100%" viewBox="0 0 135 80" xmlns="http://www.w3.org/2000/svg"';
 const mapPreview = (extra: string) =>
-  `<svg ${ATTRS} fill="none"><path d="M22 12 V64 H120" stroke="#3b3d42" stroke-width="2"/>${extra}</svg>`;
+  `<svg ${ATTRS} fill="none"><path d="M22 12 V64 H120" stroke="${COLORS.axis}" stroke-width="2"/>${extra}</svg>`;
 
 function tpl(
   name: string,
@@ -320,7 +322,7 @@ function ann(e: number, v: number) {
     type: 'shape',
     shapeType: 'ellipse',
     filled: true,
-    fillColor: '#ffffff',
+    fillColor: NODE_FILL,
     strokeColor: NODE_STROKE,
     strokeWidth: 1.5,
     shapeStyle: ShapeStyle.General,
@@ -479,14 +481,14 @@ export const wardleyMaps: Template[] = [
   tpl(
     'Tea Shop',
     mapPreview(
-      '<circle cx="78" cy="24" r="3" fill="#fff" stroke="#1f2328"/><circle cx="50" cy="44" r="3" fill="#fff" stroke="#1f2328"/><circle cx="86" cy="40" r="3" fill="#fff" stroke="#1f2328"/><circle cx="92" cy="58" r="3" fill="#fff" stroke="#1f2328"/><path d="M78 24 L50 44 M78 24 L86 40 L92 58" stroke="#666"/><path d="M50 44 h22" stroke="#d6455d" stroke-dasharray="3 2"/>'
+      `<circle cx="78" cy="24" r="3" fill="${NODE_FILL}" stroke="${NODE_STROKE}"/><circle cx="50" cy="44" r="3" fill="${NODE_FILL}" stroke="${NODE_STROKE}"/><circle cx="86" cy="40" r="3" fill="${NODE_FILL}" stroke="${NODE_STROKE}"/><circle cx="92" cy="58" r="3" fill="${NODE_FILL}" stroke="${NODE_STROKE}"/><path d="M78 24 L50 44 M78 24 L86 40 L92 58" stroke="${LINK_GREY}"/><path d="M50 44 h22" stroke="${WARDLEY_RED}" stroke-dasharray="3 2"/>`
     ),
     teaShop()
   ),
   tpl(
     'Kodak inertia',
     mapPreview(
-      '<circle cx="56" cy="22" r="3" fill="#fff" stroke="#1f2328"/><circle cx="54" cy="40" r="3" fill="#fff" stroke="#1f2328"/><circle cx="86" cy="40" r="3" fill="#fff" stroke="#d6455d"/><rect x="76" y="35" width="2.5" height="11" fill="#1f2328"/><path d="M57 40 h17" stroke="#d6455d" stroke-dasharray="3 2"/>'
+      `<circle cx="56" cy="22" r="3" fill="${NODE_FILL}" stroke="${NODE_STROKE}"/><circle cx="54" cy="40" r="3" fill="${NODE_FILL}" stroke="${NODE_STROKE}"/><circle cx="86" cy="40" r="3" fill="${NODE_FILL}" stroke="${WARDLEY_RED}"/><rect x="76" y="35" width="2.5" height="11" fill="${INERTIA_COLOR}"/><path d="M57 40 h17" stroke="${WARDLEY_RED}" stroke-dasharray="3 2"/>`
     ),
     kodak()
   ),

@@ -17,6 +17,8 @@ interface SentenceLayout {
 
 export interface ParagraphLayout extends BlockLayout {
   type: 'affine:paragraph';
+  /** The paragraph block's own `props.type`: `text`, `quote`, `h1`…`h6`. */
+  paragraphType: string;
   sentences: SentenceLayout[];
 }
 
@@ -81,11 +83,16 @@ class ParagraphLayoutPainter implements BlockLayoutPainter {
       return;
     }
 
+    // Headings are not painted (TODO: fine-tune the baseline for heading
+    // sizes). Skipped on the block TYPE, not on the font size: H6 is set at
+    // the body's 15px (`HEADING_SCALE`), so a size test would paint it as text.
+    if (layout.paragraphType.startsWith('h')) return;
+
     const renderedPositions = new Set<string>();
     layout.sentences.forEach(sentence => {
       const fontSize = sentence.fontSize;
       const baselineY = getBaseline(fontSize);
-      if (fontSize !== 15) return; // TODO: fine-tune for heading font sizes
+      if (fontSize !== 15) return; // the baseline is tuned for body text only
 
       ctx.font = `${fontSize}px Inter`;
       ctx.strokeStyle = 'yellow';

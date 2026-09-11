@@ -1,5 +1,10 @@
+import {
+  type HeadingLevel,
+  HEADING_SCALE,
+  headingLineBox,
+} from '@labre/affine-shared/consts';
 import type { SlashMenuTooltip } from '@labre/affine-widget-slash-menu';
-import { html } from 'lit';
+import { html, svg } from 'lit';
 // prettier-ignore
 const TextTooltip = html`<svg width="170" height="68" viewBox="0 0 170 68" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect width="170" height="68" rx="2" fill="white"/>
@@ -12,83 +17,117 @@ const TextTooltip = html`<svg width="170" height="68" viewBox="0 0 170 68" fill=
 </svg>
 `;
 
-// prettier-ignore
-const Heading1Tooltip = html`<svg width="170" height="68" viewBox="0 0 170 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="170" height="68" rx="2" fill="white"/>
-<mask id="mask0_16460_873" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="170" height="68">
-<rect width="170" height="68" rx="2" fill="white"/>
-</mask>
-<g mask="url(#mask0_16460_873)">
-<text fill="#121212" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="28" font-weight="bold" letter-spacing="-0.24px"><tspan x="8" y="34.1818">Heading 1</tspan></text>
-<text fill="#121212" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="10" letter-spacing="0px"><tspan x="8" y="51.6364">In a decentralized system, we can have a kaleidoscopic </tspan><tspan x="8" y="63.6364">complexity to our data.&#10;</tspan><tspan x="8" y="79.6364">Any user may have a different perspective on what data they </tspan><tspan x="8" y="91.6364">either have, choose to share, or accept.&#10;</tspan><tspan x="8" y="107.636">For example, one user&#x2019;s edits to a document might be on </tspan><tspan x="8" y="119.636">their laptop on an airplane; when the plane lands and the </tspan><tspan x="8" y="131.636">computer reconnects, those changes are distributed to </tspan><tspan x="8" y="143.636">other users.&#10;</tspan><tspan x="8" y="159.636">Other users might choose to accept all, some, or none of </tspan><tspan x="8" y="171.636">those changes to their version of the document.</tspan></text>
-</g>
-</svg>
-`;
+/** The preview frame: every slash-menu figure is a 170×68 card. */
+const PREVIEW_HEIGHT = 68;
+/** Space above the first line of a preview, px. */
+const PREVIEW_PADDING_TOP = 6;
+/**
+ * Space a preview keeps free under its last line, px. A body line is drawn only
+ * if its whole line box ends above it, so no line is ever cut by the frame.
+ */
+const PREVIEW_PADDING_BOTTOM = 2;
 
-// prettier-ignore
-const Heading2Tooltip = html`<svg width="170" height="68" viewBox="0 0 170 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="170" height="68" rx="2" fill="white"/>
-<mask id="mask0_16460_880" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="170" height="68">
-<rect width="170" height="68" rx="2" fill="white"/>
-</mask>
-<g mask="url(#mask0_16460_880)">
-<text fill="#121212" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="26" font-weight="600" letter-spacing="-0.24px"><tspan x="8" y="33.4545">Heading 2</tspan></text>
-<text fill="#121212" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="10" letter-spacing="0px"><tspan x="8" y="51.6364">In a decentralized system, we can have a kaleidoscopic </tspan><tspan x="8" y="63.6364">complexity to our data.&#10;</tspan><tspan x="8" y="79.6364">Any user may have a different perspective on what data they </tspan><tspan x="8" y="91.6364">either have, choose to share, or accept.&#10;</tspan><tspan x="8" y="107.636">For example, one user&#x2019;s edits to a document might be on </tspan><tspan x="8" y="119.636">their laptop on an airplane; when the plane lands and the </tspan><tspan x="8" y="131.636">computer reconnects, those changes are distributed to </tspan><tspan x="8" y="143.636">other users.&#10;</tspan><tspan x="8" y="159.636">Other users might choose to accept all, some, or none of </tspan><tspan x="8" y="171.636">those changes to their version of the document.</tspan></text>
-</g>
-</svg>
-`;
+/** The body text under a heading preview, shrunk to 10px on a 12px line. */
+const BODY_FONT_SIZE = 10;
+const BODY_LINE_HEIGHT = 12;
+/** Extra space between two paragraphs of the body, px. */
+const BODY_PARAGRAPH_GAP = 4;
+/**
+ * The body, as the lines it is set in (the `text` preview's own wording). A
+ * paragraph ends with a newline, as the Figma export wrote it.
+ */
+const BODY_PARAGRAPHS: readonly (readonly string[])[] = [
+  [
+    'In a decentralized system, we can have a kaleidoscopic ',
+    'complexity to our data.\n',
+  ],
+  [
+    'Any user may have a different perspective on what data they ',
+    'either have, choose to share, or accept.\n',
+  ],
+  [
+    'For example, one user\u2019s edits to a document might be on ',
+    'their laptop on an airplane; when the plane lands and the ',
+    'computer reconnects, those changes are distributed to ',
+    'other users.\n',
+  ],
+  [
+    'Other users might choose to accept all, some, or none of ',
+    'those changes to their version of the document.',
+  ],
+];
 
-// prettier-ignore
-const Heading3Tooltip = html`<svg width="170" height="68" viewBox="0 0 170 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="170" height="68" rx="2" fill="white"/>
-<mask id="mask0_16460_887" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="170" height="68">
-<rect width="170" height="68" rx="2" fill="white"/>
-</mask>
-<g mask="url(#mask0_16460_887)">
-<text fill="#121212" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="24" font-weight="600" letter-spacing="-0.24px"><tspan x="8" y="30.7273">Heading 3</tspan></text>
-<text fill="#121212" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="10" letter-spacing="0px"><tspan x="8" y="47.6364">In a decentralized system, we can have a kaleidoscopic </tspan><tspan x="8" y="59.6364">complexity to our data.&#10;</tspan><tspan x="8" y="75.6364">Any user may have a different perspective on what data they </tspan><tspan x="8" y="87.6364">either have, choose to share, or accept.&#10;</tspan><tspan x="8" y="103.636">For example, one user&#x2019;s edits to a document might be on </tspan><tspan x="8" y="115.636">their laptop on an airplane; when the plane lands and the </tspan><tspan x="8" y="127.636">computer reconnects, those changes are distributed to </tspan><tspan x="8" y="139.636">other users.&#10;</tspan><tspan x="8" y="155.636">Other users might choose to accept all, some, or none of </tspan><tspan x="8" y="167.636">those changes to their version of the document.</tspan></text>
-</g>
-</svg>
-`;
+/**
+ * Where Figma sets an Inter baseline in a line box: 4/11 em below the box's
+ * centre (half of Inter's ascent minus descent).
+ */
+function interBaseline(top: number, lineHeight: number, fontSize: number) {
+  return Number((top + lineHeight / 2 + (fontSize * 4) / 11).toFixed(4));
+}
 
-// prettier-ignore
-const Heading4Tooltip = html`<svg width="170" height="68" viewBox="0 0 170 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="170" height="68" rx="2" fill="white"/>
-<mask id="mask0_16460_894" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="170" height="68">
-<rect width="170" height="68" rx="2" fill="white"/>
-</mask>
-<g mask="url(#mask0_16460_894)">
-<text fill="#121212" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="22" font-weight="600" letter-spacing="0.24px"><tspan x="8" y="29">Heading 4</tspan></text>
-<text fill="#121212" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="10" letter-spacing="0px"><tspan x="8" y="45.6364">In a decentralized system, we can have a kaleidoscopic </tspan><tspan x="8" y="57.6364">complexity to our data.&#10;</tspan><tspan x="8" y="73.6364">Any user may have a different perspective on what data they </tspan><tspan x="8" y="85.6364">either have, choose to share, or accept.&#10;</tspan><tspan x="8" y="101.636">For example, one user&#x2019;s edits to a document might be on </tspan><tspan x="8" y="113.636">their laptop on an airplane; when the plane lands and the </tspan><tspan x="8" y="125.636">computer reconnects, those changes are distributed to </tspan><tspan x="8" y="137.636">other users.&#10;</tspan><tspan x="8" y="153.636">Other users might choose to accept all, some, or none of </tspan><tspan x="8" y="165.636">those changes to their version of the document.</tspan></text>
-</g>
-</svg>
-`;
+/**
+ * The body lines of a heading preview that fit ENTIRELY in the frame, with the
+ * baseline each is set on.
+ *
+ * The body starts right under the heading's line box, so how many of its lines
+ * the card can show depends on the level: derived here from the geometry (line
+ * boxes, frame height, bottom padding) rather than tuned per level. At 10px on
+ * a 12px line, Inter's descenders end within a twentieth of a pixel of the line
+ * box's bottom edge, which the bottom padding covers: a line whose box fits is
+ * never clipped.
+ */
+export function headingPreviewBodyLines(
+  level: HeadingLevel
+): { y: number; text: string }[] {
+  const limit = PREVIEW_HEIGHT - PREVIEW_PADDING_BOTTOM;
+  const lines: { y: number; text: string }[] = [];
+  let top = PREVIEW_PADDING_TOP + headingLineBox(level);
+  for (const [index, paragraph] of BODY_PARAGRAPHS.entries()) {
+    if (index > 0) top += BODY_PARAGRAPH_GAP;
+    for (const text of paragraph) {
+      if (top + BODY_LINE_HEIGHT > limit) return lines;
+      lines.push({
+        y: interBaseline(top, BODY_LINE_HEIGHT, BODY_FONT_SIZE),
+        text,
+      });
+      top += BODY_LINE_HEIGHT;
+    }
+  }
+  return lines;
+}
 
+/**
+ * A heading preview drawn at the heading's real size, weight and line box
+ * (from `HEADING_SCALE`), above as many lines of body text as the card shows
+ * whole (`headingPreviewBodyLines`).
+ */
 // prettier-ignore
-const Heading5Tooltip = html`<svg width="170" height="68" viewBox="0 0 170 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+function headingTooltip(level: HeadingLevel) {
+  const { fontSize, fontWeight, letterSpacing } = HEADING_SCALE[level];
+  const lineBox = headingLineBox(level);
+  const maskId = `mask_heading_tooltip_${level}`;
+  const body = headingPreviewBodyLines(level).map(
+    line => svg`<tspan x="8" y=${line.y}>${line.text}</tspan>`
+  );
+  return html`<svg width="170" height="68" viewBox="0 0 170 68" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect width="170" height="68" rx="2" fill="white"/>
-<mask id="mask0_16460_901" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="170" height="68">
+<mask id=${maskId} style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="170" height="68">
 <rect width="170" height="68" rx="2" fill="white"/>
 </mask>
-<g mask="url(#mask0_16460_901)">
-<text fill="#121212" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="20" font-weight="600" letter-spacing="0.24px"><tspan x="8" y="27.2727">Heading 5</tspan></text>
-<text fill="#121212" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="10" letter-spacing="0px"><tspan x="8" y="43.6364">In a decentralized system, we can have a kaleidoscopic </tspan><tspan x="8" y="55.6364">complexity to our data.&#10;</tspan><tspan x="8" y="71.6364">Any user may have a different perspective on what data they </tspan><tspan x="8" y="83.6364">either have, choose to share, or accept.&#10;</tspan><tspan x="8" y="99.6364">For example, one user&#x2019;s edits to a document might be on </tspan><tspan x="8" y="111.636">their laptop on an airplane; when the plane lands and the </tspan><tspan x="8" y="123.636">computer reconnects, those changes are distributed to </tspan><tspan x="8" y="135.636">other users.&#10;</tspan><tspan x="8" y="151.636">Other users might choose to accept all, some, or none of </tspan><tspan x="8" y="163.636">those changes to their version of the document.</tspan></text>
+<g mask="url(#${maskId})">
+<text fill="#121212" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size=${fontSize} font-weight=${fontWeight} letter-spacing="${letterSpacing}em"><tspan x="8" y=${interBaseline(PREVIEW_PADDING_TOP, lineBox, fontSize)}>Heading ${level.slice(1)}</tspan></text>
+<text fill="#121212" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size=${BODY_FONT_SIZE} letter-spacing="0px">${body}</text>
 </g>
 </svg>
 `;
+}
 
-// prettier-ignore
-const Heading6Tooltip = html`<svg width="170" height="68" viewBox="0 0 170 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="170" height="68" rx="2" fill="white"/>
-<mask id="mask0_16460_908" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="170" height="68">
-<rect width="170" height="68" rx="2" fill="white"/>
-</mask>
-<g mask="url(#mask0_16460_908)">
-<text fill="#121212" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="18" font-weight="600" letter-spacing="0.24px"><tspan x="8" y="25.5455">Heading 6</tspan></text>
-<text fill="#121212" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="10" letter-spacing="0px"><tspan x="8" y="41.6364">In a decentralized system, we can have a kaleidoscopic </tspan><tspan x="8" y="53.6364">complexity to our data.&#10;</tspan><tspan x="8" y="69.6364">Any user may have a different perspective on what data they </tspan><tspan x="8" y="81.6364">either have, choose to share, or accept.&#10;</tspan><tspan x="8" y="97.6364">For example, one user&#x2019;s edits to a document might be on </tspan><tspan x="8" y="109.636">their laptop on an airplane; when the plane lands and the </tspan><tspan x="8" y="121.636">computer reconnects, those changes are distributed to </tspan><tspan x="8" y="133.636">other users.&#10;</tspan><tspan x="8" y="149.636">Other users might choose to accept all, some, or none of </tspan><tspan x="8" y="161.636">those changes to their version of the document.</tspan></text>
-</g>
-</svg>
-`;
+const Heading1Tooltip = headingTooltip('h1');
+const Heading2Tooltip = headingTooltip('h2');
+const Heading3Tooltip = headingTooltip('h3');
+const Heading4Tooltip = headingTooltip('h4');
+const Heading5Tooltip = headingTooltip('h5');
+const Heading6Tooltip = headingTooltip('h6');
 
 // prettier-ignore
 const CodeBlockTooltip = html`<svg width="170" height="68" viewBox="0 0 170 68" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -7,6 +7,7 @@ import {
   templateFromCommand,
 } from '@labre/affine-gfx-template';
 import { FontFamily, ShapeStyle, TextAlign } from '@labre/affine-model';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import type { CommandDescriptor } from '@labre/std';
 
 import { cynefinEstuarineCommands } from '../commands';
@@ -58,7 +59,7 @@ function sticky(x: number, y: number, text: string) {
     roughness: 0,
     radius: 8,
     text: surfaceText(text),
-    color: '#1a1a1a',
+    color: NOTATION_NEUTRALS.ink,
     fontFamily: FontFamily.Inter,
     fontSize: 18,
     textAlign: TextAlign.Center,
@@ -97,7 +98,7 @@ function caption(cx: number, cy: number, str: string) {
   return {
     type: 'text',
     text: surfaceText(str),
-    color: '#1a1a1a',
+    color: NOTATION_NEUTRALS.ink,
     fontFamily: FontFamily.Inter,
     fontSize: 16,
     textAlign: TextAlign.Center,
@@ -127,7 +128,7 @@ export const cynefinTemplateCategory: TemplateCategory = {
   templates: [
     tpl(
       'Decision sorting',
-      `<svg ${ATTRS} fill="none"><rect x="8" y="10" width="119" height="60" rx="4" stroke="#2a9d99" stroke-width="1.5"/><path d="M67 10 V70 M8 40 H127" stroke="#9aa0a6"/><rect x="18" y="18" width="34" height="14" rx="2" fill="#fff3b0"/><rect x="83" y="18" width="34" height="14" rx="2" fill="#fff3b0"/><rect x="18" y="48" width="34" height="14" rx="2" fill="#fff3b0"/><rect x="83" y="48" width="34" height="14" rx="2" fill="#fff3b0"/></svg>`,
+      `<svg ${ATTRS} fill="none"><rect x="8" y="10" width="119" height="60" rx="4" stroke="#2a9d99" stroke-width="1.5"/><path d="M67 10 V70 M8 40 H127" stroke="${NOTATION_NEUTRALS.divider}"/><rect x="18" y="18" width="34" height="14" rx="2" fill="#fff3b0"/><rect x="83" y="18" width="34" height="14" rx="2" fill="#fff3b0"/><rect x="18" y="48" width="34" height="14" rx="2" fill="#fff3b0"/><rect x="83" y="48" width="34" height="14" rx="2" fill="#fff3b0"/></svg>`,
       {
         bg: cynefinBackgroundProps({
           xywh: `[0,0,${CYNEFIN_W},${CYNEFIN_H}]`,
@@ -140,7 +141,7 @@ export const cynefinTemplateCategory: TemplateCategory = {
     ),
     templateFromCommand(
       byId('cynefin-estuarine.addCynefin'),
-      `<svg ${ATTRS} fill="none"><rect x="14" y="12" width="107" height="56" rx="4" stroke="#2a9d99" stroke-width="1.6"/><path d="M67 12 V68 M14 40 H121" stroke="#9aa0a6"/></svg>`,
+      `<svg ${ATTRS} fill="none"><rect x="14" y="12" width="107" height="56" rx="4" stroke="#2a9d99" stroke-width="1.6"/><path d="M67 12 V68 M14 40 H121" stroke="${NOTATION_NEUTRALS.divider}"/></svg>`,
       'Cynefin framework'
     ),
   ],

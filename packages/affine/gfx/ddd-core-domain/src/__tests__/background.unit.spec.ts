@@ -1,4 +1,5 @@
 import { backgroundSize } from '@labre/affine-block-surface';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import { describe, expect, it } from 'vitest';
 
 import { CORE_DOMAIN_BACKGROUND } from '../core-domain/background';
@@ -28,7 +29,16 @@ import { recordingCtx, stubMatrix } from './canvas-stub';
  * 2. the arrowheads were 9 long and 10 wide; the primitive draws a triangle as
  *    long as it is wide, so they are 9 × 9. Half a unit either side of a
  *    nine-unit head, at the tip of a 786-unit axis.
+ *
+ * And one deliberate, visible change since: the frame's neutrals are the shared
+ * notation scale's. The axes and their titles were `#000000` and are now
+ * `frameInk`; the Low/High ticks were `#777777` and are now `label`. Render-time
+ * colours, so every existing chart repaints in them; every coordinate below is
+ * still the old renderer's literal.
  */
+
+const FRAME_INK = NOTATION_NEUTRALS.frameInk;
+const TICK = NOTATION_NEUTRALS.label;
 
 const W = 900;
 const H = 820;
@@ -164,20 +174,20 @@ describe('the Core Domain Chart paints what it always painted', () => {
       t('Supporting', 340, 474, '700 20px Inter, sans-serif', '#ffffff'),
       t('Core', 640, 214, '700 26px Inter, sans-serif', '#ffffff'),
       // The rotated Y title, hugging the axis.
-      t('Complexity', 28, 400, '600 14px Inter, sans-serif', '#000000', true),
+      t('Complexity', 28, 400, '600 14px Inter, sans-serif', FRAME_INK, true),
       // The Y ticks, at their two (different) hand-placed insets.
-      t('Low', 48, 758, '12px Inter, sans-serif', '#777777', true),
-      t('High', 38, 44, '12px Inter, sans-serif', '#777777', true),
+      t('Low', 48, 758, '12px Inter, sans-serif', TICK, true),
+      t('High', 38, 44, '12px Inter, sans-serif', TICK, true),
       // The X title and its ticks, below the axis.
       t(
         'Business differentiation',
         450,
         800,
         '600 14px Inter, sans-serif',
-        '#000000'
+        FRAME_INK
       ),
-      t('Low', 84, 792, '12px Inter, sans-serif', '#777777'),
-      t('High', 838, 792, '12px Inter, sans-serif', '#777777'),
+      t('Low', 84, 792, '12px Inter, sans-serif', TICK),
+      t('High', 838, 792, '12px Inter, sans-serif', TICK),
     ]);
   });
 
@@ -190,9 +200,9 @@ describe('the Core Domain Chart paints what it always painted', () => {
     // AXIS.top and AXIS.right: the two tips, to the unit.
     expect(segments).toContainEqual({ x1: 60, y1: 24, x2: 55.5, y2: 33 });
     expect(segments).toContainEqual({ x1: 846, y1: 770, x2: 837, y2: 765.5 });
-    // Both axes, and both heads, in black.
-    expect(strokes).toEqual(['#000000', '#000000']);
-    expect(fills).toEqual(['#000000', '#000000']);
+    // Both axes, and both heads, in the scale's frame ink.
+    expect(strokes).toEqual([FRAME_INK, FRAME_INK]);
+    expect(fills).toEqual([FRAME_INK, FRAME_INK]);
   });
 
   it('rotates about the element centre, as every surface element does', () => {

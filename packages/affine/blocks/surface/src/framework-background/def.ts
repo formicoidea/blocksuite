@@ -1,3 +1,4 @@
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import type { RoleId } from '@labre/std/gfx';
 
 /**
@@ -512,9 +513,12 @@ export interface FrameworkBackgroundDef {
   chrome?: BackgroundChromeDef;
 }
 
-/** The default card: a plain white rectangle, no border, no radius. */
+/**
+ * The default card: a plain rectangle in the shared notation scale's card
+ * fill, no border, no radius.
+ */
 export const DEFAULT_BACKGROUND_SURFACE: BackgroundSurfaceDef = {
-  fill: '#ffffff',
+  fill: NOTATION_NEUTRALS.cardFill,
 };
 
 /** The plot rectangle of a background of size `w × h`, in element-local units. */

@@ -1,5 +1,6 @@
 import type { FrameworkBackgroundDef } from '@labre/affine-block-surface';
 import { ES_STICKIES, FONT_FAMILY } from '@labre/affine-gfx-ddd-shared';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 
 import { ES_ROLE } from './roles';
 
@@ -37,9 +38,12 @@ import { ES_ROLE } from './roles';
  * card it belongs to.
  */
 
-/** Ink for the frame itself: the axis line and the word beside it. */
-const AXIS_COLOR = '#6d6e71';
-const CARD_BORDER = '#d5d9e0';
+/**
+ * Ink for the frame itself: the axis line and the word beside it. The card, its
+ * border and this ink are the shared notation scale's, painted at render time.
+ */
+const AXIS_COLOR = NOTATION_NEUTRALS.frameInk;
+const CARD_BORDER = NOTATION_NEUTRALS.cardBorder;
 
 /**
  * The one word this board writes on itself, and it is written BIG: 64 units
@@ -90,7 +94,7 @@ export const EVENT_STORMING_BACKGROUND: FrameworkBackgroundDef = {
   chrome: {
     fontFamily: FONT_FAMILY,
     palette: {
-      card: '#ffffff',
+      card: NOTATION_NEUTRALS.cardFill,
       cardBorder: CARD_BORDER,
       axis: AXIS_COLOR,
       ...STICKY_PALETTE,

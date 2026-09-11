@@ -2,6 +2,7 @@ import {
   backgroundLabelHits,
   backgroundSize,
 } from '@labre/affine-block-surface';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import { describe, expect, it } from 'vitest';
 
 import { BPMN_POOL_BACKGROUND } from '../background';
@@ -53,7 +54,16 @@ import { recordingCtx, stubMatrix } from './canvas-stub';
  *    model units. A pool that narrow is smaller than one character of its own
  *    name, and the primitive has no vocabulary for "give up below this size" —
  *    the band itself still clamps to the element, as it always did.
+ *
+ * And one deliberate visual change since: the pool's neutrals are the shared
+ * notation scale's (`NOTATION_NEUTRALS`), so the frame and the name are drawn in
+ * `frameInk` rather than `#262626`, and the band in plain card white
+ * rather than `#f4f4f5` (no tinted bands, PO 11/09/2026). Every geometry literal below is still the old
+ * renderer's; only the colours read from the scale.
  */
+
+const FRAME_INK = NOTATION_NEUTRALS.frameInk;
+const BAND = NOTATION_NEUTRALS.cardFill;
 
 const W = 560;
 const H = 200;
@@ -133,20 +143,20 @@ describe('the pool the primitive paints', () => {
       // Traced twice: the divider resets the current path between the two.
       { x: 0.75, y: 0.75, w: 558.5, h: 198.5, r: 6 },
     ]);
-    expect(rec.strokes).toEqual(['#262626', '#262626']);
+    expect(rec.strokes).toEqual([FRAME_INK, FRAME_INK]);
   });
 
   it('fills the card white, like every other framework background', () => {
     // Knowing difference 1, and the only visible one: the old renderer left the
     // pool transparent. The PO settled it the other way at the red-zone review
     // of 26/08/2026 — a pool IS a map background, so it paints a card.
-    expect(render(pool()).fills).toEqual(['#ffffff']);
+    expect(render(pool()).fills).toEqual([NOTATION_NEUTRALS.cardFill]);
   });
 
   it('paints the name band and its divider where they have always been', () => {
     const rec = render(pool());
 
-    expect(rec.rects).toEqual([{ x: 0, y: 0, w: 28, h: 200, fill: '#f4f4f5' }]);
+    expect(rec.rects).toEqual([{ x: 0, y: 0, w: 28, h: 200, fill: BAND }]);
     expect(rec.segments).toEqual([{ x1: 28, y1: 0, x2: 28, y2: 200 }]);
     expect(rec.dashes).toEqual([]);
   });
@@ -164,7 +174,7 @@ describe('the pool the primitive paints', () => {
         font: '600 15px Inter, sans-serif',
         align: 'center',
         baseline: 'middle',
-        color: '#262626',
+        color: FRAME_INK,
         vertical: true,
       },
     ]);
@@ -201,7 +211,7 @@ describe('the pool the primitive paints', () => {
 
   it('clamps the band to a pool narrower than the band itself', () => {
     const rec = render(pool({ deserializedXYWH: [0, 0, 8, 200] }));
-    expect(rec.rects).toEqual([{ x: 0, y: 0, w: 8, h: 200, fill: '#f4f4f5' }]);
+    expect(rec.rects).toEqual([{ x: 0, y: 0, w: 8, h: 200, fill: BAND }]);
     expect(rec.segments).toEqual([{ x1: 8, y1: 0, x2: 8, y2: 200 }]);
     // Knowing difference 3, pinned rather than hidden: the old renderer gave up
     // on the name below twelve units, the declaration still writes it — at the
@@ -214,7 +224,7 @@ describe('the pool the primitive paints', () => {
     // Ratios scale, model units do not: a pool three times as wide has the same
     // 28-unit band and the same 15px name.
     const rec = render(pool({ deserializedXYWH: [0, 0, 1680, 200] }));
-    expect(rec.rects).toEqual([{ x: 0, y: 0, w: 28, h: 200, fill: '#f4f4f5' }]);
+    expect(rec.rects).toEqual([{ x: 0, y: 0, w: 28, h: 200, fill: BAND }]);
     expect(rec.texts[0].x).toBe(14);
     expect(rec.texts[0].font).toBe('600 15px Inter, sans-serif');
   });

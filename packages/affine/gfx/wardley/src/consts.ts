@@ -1,3 +1,5 @@
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
+
 /**
  * Visual constants for the Wardley map background.
  *
@@ -59,13 +61,20 @@ export const AXIS_LABELS = {
   visibilityLow: 'Invisible',
 };
 
-/** Colors (light theme, faithful to the reference renderer / mockup C). */
+/**
+ * Colors (light theme, faithful to the reference renderer / mockup C).
+ *
+ * The neutrals are the shared notation scale, of which Wardley is the
+ * reference: the values are unchanged, they are simply read from the one place
+ * every framework reads them from. The first phase band is the scale's band
+ * tint; the three after it are Wardley's own graded wash.
+ */
 export const COLORS = {
-  card: '#ffffff',
-  cardBorder: '#e3e2e4',
-  axis: '#3b3d42',
-  divider: '#9aa0a6',
-  label: '#6b7280',
+  card: NOTATION_NEUTRALS.cardFill,
+  cardBorder: NOTATION_NEUTRALS.cardBorder,
+  axis: NOTATION_NEUTRALS.frameInk,
+  divider: NOTATION_NEUTRALS.divider,
+  label: NOTATION_NEUTRALS.label,
   band: ['#f7faff', '#eef4fb', '#e6eef8', '#dde8f4'] as const,
 };
 

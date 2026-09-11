@@ -6,6 +6,7 @@ import {
   placeDddElement,
   TEAM_TOPOLOGIES,
 } from '@labre/affine-gfx-ddd-shared';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import type { BlockStdScope, CommandDescriptor } from '@labre/std';
 import { svg, type TemplateResult } from 'lit';
 
@@ -20,10 +21,10 @@ import { markerRole, subdomainRole } from './roles';
  */
 const chartSwatch = svg`<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="17" height="17" fill="#4d9900" fill-opacity="0.5"/><rect x="4" y="3" width="6" height="17" fill="#9933ff" fill-opacity="0.5"/><path d="M4 20 V3 M4 20 H21" stroke="currentColor" stroke-width="1.8"/></svg>`;
 const dotSwatch = (color: string) =>
-  svg`<svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="${color}" stroke="#1f2328" stroke-width="1.2"/></svg>`;
+  svg`<svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="${color}" stroke="${NOTATION_NEUTRALS.ink}" stroke-width="1.2"/></svg>`;
 const movementSwatch = svg`<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 18 L16 7" stroke="${MOVEMENT_COLOR}" stroke-width="2" stroke-dasharray="3 3"/><path d="M12 6 L18 5 L17 11" stroke="${MOVEMENT_COLOR}" stroke-width="2" fill="none"/></svg>`;
 const markerSwatch = (fill: string, letter: string) =>
-  svg`<svg width="24" height="24" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3" fill="${fill}" stroke="#1f2328" stroke-width="1.2"/><text x="12" y="16" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#1f2328">${letter}</text></svg>`;
+  svg`<svg width="24" height="24" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3" fill="${fill}" stroke="${NOTATION_NEUTRALS.ink}" stroke-width="1.2"/><text x="12" y="16" text-anchor="middle" font-size="11" font-family="sans-serif" fill="${NOTATION_NEUTRALS.ink}">${letter}</text></svg>`;
 
 interface Spec {
   id: string;

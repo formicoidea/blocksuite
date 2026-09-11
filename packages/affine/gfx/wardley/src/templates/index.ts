@@ -11,7 +11,15 @@ import { GfxControllerIdentifier } from '@labre/std/gfx';
 
 import { lowerWardleyArea } from '../actions';
 import { wardleyCommands } from '../commands';
-import { LINK_GREY, LINK_STROKE_WIDTH, WARDLEY_RED } from '../node/consts';
+import { COLORS } from '../consts';
+import {
+  INERTIA_COLOR,
+  LINK_GREY,
+  LINK_STROKE_WIDTH,
+  NODE_FILL,
+  NODE_STROKE,
+  WARDLEY_RED,
+} from '../node/consts';
 import { WARDLEY_ROLE } from '../roles';
 import { wardleyMaps } from './maps';
 
@@ -81,9 +89,9 @@ function connect(
 const ATTRS =
   'width="100%" height="100%" viewBox="0 0 135 80" xmlns="http://www.w3.org/2000/svg"';
 const bgPreview = (extra = '') =>
-  `<svg ${ATTRS} fill="none"><path d="M22 12 V64 H120" stroke="#3b3d42" stroke-width="2"/><path d="M44 12 V64 M68 12 V64 M94 12 V64" stroke="#9aa0a6" stroke-width="0.8"/>${extra}</svg>`;
+  `<svg ${ATTRS} fill="none"><path d="M22 12 V64 H120" stroke="${COLORS.axis}" stroke-width="2"/><path d="M44 12 V64 M68 12 V64 M94 12 V64" stroke="${COLORS.divider}" stroke-width="0.8"/>${extra}</svg>`;
 const dotPreview = (fill: string, sw = 2) =>
-  `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="13" fill="${fill}" stroke="#1f2328" stroke-width="${sw}"/></svg>`;
+  `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="13" fill="${fill}" stroke="${NODE_STROKE}" stroke-width="${sw}"/></svg>`;
 
 /** The two fat arrows: the same outline, mirrored — the direction IS the kind. */
 const arrowPreview = (rightwards: boolean) =>
@@ -91,7 +99,7 @@ const arrowPreview = (rightwards: boolean) =>
     rightwards
       ? 'M32 32 H80 V23 L103 40 L80 57 V48 H32 Z'
       : 'M103 32 H55 V23 L32 40 L55 57 V48 H103 Z'
-  }" fill="#bfbfbf" stroke="#1f2328" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
+  }" fill="#bfbfbf" stroke="${NODE_STROKE}" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
 
 /** The zone, in its Peace wash — the pair differs on the outline and on nothing else. */
 const areaPreview = (outline: string) =>
@@ -160,42 +168,42 @@ export const wardleyTemplateCategory: TemplateCategory = {
     ),
     templateFromCommand(
       byId('wardley.addComponent'),
-      dotPreview('#ffffff', 1.5),
+      dotPreview(NODE_FILL, 1.5),
       'Component'
     ),
     templateFromCommand(
       byId('wardley.addMethod'),
-      `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="15" fill="#d9d9d9" stroke="#1f2328" stroke-width="1.5"/><circle cx="67" cy="40" r="7" fill="#fff" stroke="#1f2328"/></svg>`,
+      `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="15" fill="#d9d9d9" stroke="${NODE_STROKE}" stroke-width="1.5"/><circle cx="67" cy="40" r="7" fill="${NODE_FILL}" stroke="${NODE_STROKE}"/></svg>`,
       'Method'
     ),
     templateFromCommand(
       byId('wardley.addMarket'),
-      `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="16" fill="#fff" stroke="#1f2328"/><circle cx="67" cy="30" r="3.5" fill="#fff" stroke="#1f2328" stroke-width="1.5"/><circle cx="75" cy="46" r="3.5" fill="#fff" stroke="#1f2328" stroke-width="1.5"/><circle cx="59" cy="46" r="3.5" fill="#fff" stroke="#1f2328" stroke-width="1.5"/><path d="M67 30 L75 46 L59 46 Z" stroke="#1f2328" stroke-width="0.8" fill="none"/></svg>`,
+      `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="16" fill="${NODE_FILL}" stroke="${NODE_STROKE}"/><circle cx="67" cy="30" r="3.5" fill="${NODE_FILL}" stroke="${NODE_STROKE}" stroke-width="1.5"/><circle cx="75" cy="46" r="3.5" fill="${NODE_FILL}" stroke="${NODE_STROKE}" stroke-width="1.5"/><circle cx="59" cy="46" r="3.5" fill="${NODE_FILL}" stroke="${NODE_STROKE}" stroke-width="1.5"/><path d="M67 30 L75 46 L59 46 Z" stroke="${NODE_STROKE}" stroke-width="0.8" fill="none"/></svg>`,
       'Market'
     ),
     templateFromCommand(
       byId('wardley.addEcosystem'),
-      `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="15" fill="#fff" stroke="#1f2328" stroke-width="1.5"/><circle cx="67" cy="40" r="11" fill="none" stroke="#1f2328"/><circle cx="67" cy="40" r="5" fill="#fff" stroke="#1f2328"/></svg>`,
+      `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="15" fill="${NODE_FILL}" stroke="${NODE_STROKE}" stroke-width="1.5"/><circle cx="67" cy="40" r="11" fill="none" stroke="${NODE_STROKE}"/><circle cx="67" cy="40" r="5" fill="${NODE_FILL}" stroke="${NODE_STROKE}"/></svg>`,
       'Ecosystem'
     ),
     templateFromCommand(
       byId('wardley.addAnchor'),
-      `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="13" fill="#fff" stroke="#1f2328" stroke-width="1.5"/><circle cx="67" cy="36" r="3.5" fill="#1f2328"/><path d="M59 48 q8 -9 16 0" stroke="#1f2328" stroke-width="1.5" fill="none"/></svg>`,
+      `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="13" fill="${NODE_FILL}" stroke="${NODE_STROKE}" stroke-width="1.5"/><circle cx="67" cy="36" r="3.5" fill="${NODE_STROKE}"/><path d="M59 48 q8 -9 16 0" stroke="${NODE_STROKE}" stroke-width="1.5" fill="none"/></svg>`,
       'Anchor'
     ),
     templateFromCommand(
       byId('wardley.addPipeline'),
-      `<svg ${ATTRS} fill="none"><rect x="34" y="40" width="66" height="14" fill="#fff" stroke="#1f2328"/><rect x="60" y="33" width="14" height="14" fill="#fff" stroke="#1f2328"/></svg>`,
+      `<svg ${ATTRS} fill="none"><rect x="34" y="40" width="66" height="14" fill="${NODE_FILL}" stroke="${NODE_STROKE}"/><rect x="60" y="33" width="14" height="14" fill="${NODE_FILL}" stroke="${NODE_STROKE}"/></svg>`,
       'Pipeline'
     ),
     templateFromCommand(
       byId('wardley.addInertia'),
-      `<svg ${ATTRS} fill="none"><rect x="63" y="22" width="8" height="36" fill="#1f2328"/></svg>`,
+      `<svg ${ATTRS} fill="none"><rect x="63" y="22" width="8" height="36" fill="${INERTIA_COLOR}"/></svg>`,
       'Inertia'
     ),
     templateFromCommand(
       byId('wardley.addPorter'),
-      `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="13" fill="#fff" stroke="#1f2328" stroke-width="1.5"/><g stroke="${WARDLEY_RED}" stroke-width="2" stroke-linecap="round"><line x1="67" y1="26" x2="67" y2="19"/><line x1="81" y1="40" x2="88" y2="40"/><line x1="67" y1="54" x2="67" y2="61"/><line x1="53" y1="40" x2="46" y2="40"/></g><g fill="${WARDLEY_RED}"><path d="M67 13 L71 21 H63 Z"/><path d="M94 40 L86 44 V36 Z"/><path d="M67 67 L63 59 H71 Z"/><path d="M40 40 L48 36 V44 Z"/></g></svg>`
+      `<svg ${ATTRS} fill="none"><circle cx="67" cy="40" r="13" fill="${NODE_FILL}" stroke="${NODE_STROKE}" stroke-width="1.5"/><g stroke="${WARDLEY_RED}" stroke-width="2" stroke-linecap="round"><line x1="67" y1="26" x2="67" y2="19"/><line x1="81" y1="40" x2="88" y2="40"/><line x1="67" y1="54" x2="67" y2="61"/><line x1="53" y1="40" x2="46" y2="40"/></g><g fill="${WARDLEY_RED}"><path d="M67 13 L71 21 H63 Z"/><path d="M94 40 L86 44 V36 Z"/><path d="M67 67 L63 59 H71 Z"/><path d="M40 40 L48 36 V44 Z"/></g></svg>`
     ),
     templateFromCommand(byId('wardley.addAccelerator'), arrowPreview(true)),
     templateFromCommand(byId('wardley.addDecelerator'), arrowPreview(false)),
@@ -210,7 +218,7 @@ export const wardleyTemplateCategory: TemplateCategory = {
     // artefact to record — the user draws it.
     tpl(
       'Link',
-      `<svg ${ATTRS} fill="none"><path d="M24 40 H110" stroke="#666" stroke-width="2.4"/></svg>`,
+      `<svg ${ATTRS} fill="none"><path d="M24 40 H110" stroke="${LINK_GREY}" stroke-width="2.4"/></svg>`,
       {
         a: connect(
           { position: [0, 0] },
@@ -221,7 +229,7 @@ export const wardleyTemplateCategory: TemplateCategory = {
     ),
     tpl(
       'Evolution arrow',
-      `<svg ${ATTRS} fill="none"><path d="M24 40 H100" stroke="#d6455d" stroke-width="2.4" stroke-dasharray="6 4"/><path d="M98 33 L112 40 L98 47 Z" fill="#d6455d"/></svg>`,
+      `<svg ${ATTRS} fill="none"><path d="M24 40 H100" stroke="${WARDLEY_RED}" stroke-width="2.4" stroke-dasharray="6 4"/><path d="M98 33 L112 40 L98 47 Z" fill="${WARDLEY_RED}"/></svg>`,
       {
         a: connect(
           { position: [0, 0] },

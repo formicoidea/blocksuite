@@ -1,5 +1,37 @@
+import { HEADING_LEVELS, HEADING_SCALE } from '@labre/affine-shared/consts';
 import { unsafeCSSVarV2 } from '@labre/affine-shared/theme';
-import { css } from 'lit';
+import { css, unsafeCSS } from 'lit';
+
+/** Inline code is set this much smaller than the text around it. */
+const INLINE_CODE_SHRINK_PX = 3;
+
+/**
+ * H1…H6, generated from `HEADING_SCALE` so every size, line box and margin has
+ * one source. Inline code in a heading stays `INLINE_CODE_SHRINK_PX` below the
+ * heading's size; H6, the level closest to body text, keeps the body's code
+ * padding (with its 2px bottom).
+ */
+const headingStyles = unsafeCSS(
+  HEADING_LEVELS.map(level => {
+    const { fontSize, fontWeight, letterSpacing, lineHeightExtra, marginTop } =
+      HEADING_SCALE[level];
+    return `
+  .${level} {
+    font-size: ${fontSize}px;
+    font-weight: ${fontWeight};
+    letter-spacing: ${letterSpacing}em;
+    line-height: calc(1em + ${lineHeightExtra}px);
+    margin-top: ${marginTop}px;
+    margin-bottom: 10px;
+  }
+
+  .${level} code {
+    font-size: ${fontSize - INLINE_CODE_SHRINK_PX}px;
+    padding: ${level === 'h6' ? '0px 4px 2px' : '0px 4px'};
+  }
+`;
+  }).join('')
+);
 
 export const paragraphBlockStyles = css`
   affine-paragraph {
@@ -22,91 +54,11 @@ export const paragraphBlockStyles = css`
   }
 
   affine-paragraph code {
-    font-size: calc(var(--affine-font-base) - 3px);
+    font-size: calc(var(--affine-font-base) - ${INLINE_CODE_SHRINK_PX}px);
     padding: 0px 4px 2px;
   }
 
-  .h1 {
-    font-size: var(--affine-font-h-1);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: calc(1em + 8px);
-    margin-top: 18px;
-    margin-bottom: 10px;
-  }
-
-  .h1 code {
-    font-size: calc(var(--affine-font-base) + 10px);
-    padding: 0px 4px;
-  }
-
-  .h2 {
-    font-size: var(--affine-font-h-2);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: calc(1em + 10px);
-    margin-top: 14px;
-    margin-bottom: 10px;
-  }
-
-  .h2 code {
-    font-size: calc(var(--affine-font-base) + 8px);
-    padding: 0px 4px;
-  }
-
-  .h3 {
-    font-size: var(--affine-font-h-3);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: calc(1em + 8px);
-    margin-top: 12px;
-    margin-bottom: 10px;
-  }
-
-  .h3 code {
-    font-size: calc(var(--affine-font-base) + 6px);
-    padding: 0px 4px;
-  }
-
-  .h4 {
-    font-size: var(--affine-font-h-4);
-    font-weight: 600;
-    letter-spacing: -0.015em;
-    line-height: calc(1em + 8px);
-    margin-top: 12px;
-    margin-bottom: 10px;
-  }
-  .h4 code {
-    font-size: calc(var(--affine-font-base) + 4px);
-    padding: 0px 4px;
-  }
-
-  .h5 {
-    font-size: var(--affine-font-h-5);
-    font-weight: 600;
-    letter-spacing: -0.015em;
-    line-height: calc(1em + 8px);
-    margin-top: 12px;
-    margin-bottom: 10px;
-  }
-  .h5 code {
-    font-size: calc(var(--affine-font-base) + 2px);
-    padding: 0px 4px;
-  }
-
-  .h6 {
-    font-size: var(--affine-font-h-6);
-    font-weight: 600;
-    letter-spacing: -0.015em;
-    line-height: calc(1em + 8px);
-    margin-top: 12px;
-    margin-bottom: 10px;
-  }
-
-  .h6 code {
-    font-size: var(--affine-font-base);
-    padding: 0px 4px 2px;
-  }
+  ${headingStyles}
 
   .quote {
     line-height: 26px;
