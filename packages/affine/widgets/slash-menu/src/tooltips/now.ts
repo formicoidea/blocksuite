@@ -8,7 +8,7 @@ export const NowTooltip = html`<svg width="170" height="68" viewBox="0 0 170 68"
 <g mask="url(#mask0_16460_1143)">
 <rect x="38.0488" y="9.1364" width="16.5" height="8" rx="4" fill="#8E8D91" fill-opacity="0.55"/><rect x="81.8574" y="9.1364" width="55" height="8" rx="4" fill="#8E8D91" fill-opacity="0.55"/>
 <rect x="8" y="9.1364" width="38.5" height="8" rx="4" fill="#8E8D91" fill-opacity="0.55"/><rect x="57.8047" y="9.1364" width="27.5" height="8" rx="4" fill="#8E8D91" fill-opacity="0.55"/>
-<text fill="#121212" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="10" letter-spacing="0px"><tspan x="8" y="34.6364">11:45:14 Wed 3 Aug, 2022</tspan></text>
+<rect x="8" y="27.1364" width="132" height="8" rx="4" fill="#121212" fill-opacity="0.3"/>
 </g>
 </svg>
 `;
