@@ -12,10 +12,20 @@ for a key.
 import { TranslationExtension } from '@labre/affine-shared/services';
 
 const HostTranslation = TranslationExtension({
-  t: key => (i18n.exists(key) ? i18n.t(key) : undefined),
-  language: i18n.language, // BCP-47; gates language-scoped naming conventions
+  t: (key, params) =>
+    i18n.exists(key, params) ? i18n.t(key, params) : undefined,
+  language: i18n.language, // BCP-47; Intl formatting + naming conventions
 });
 ```
+
+`params` carries the values of a sentence with holes in it. The fallbacks use
+i18next's placeholders (`'Failed to upload {{name}}'`), so a catalogue seeded
+from the manifest interpolates as is. Pluralisation is the host's: the library
+passes `count` and keeps its English fallback neutral (`'{{count}} element(s)'`).
+With no entry, the library fills the fallback itself (`fillPlaceholders`).
+
+Dates and numbers carry no key: they go through `Intl` in `hostLocale(std)`,
+the host's full tag (`'fr-CA'`: the region matters for a date).
 
 Standalone (playground, tests), register nothing: every call site falls back —
 chrome falls back to its bundled English wording, framework prose falls back
@@ -100,6 +110,25 @@ missing from the manifest, when a manifest entry is used by nobody, or when a
 chrome fallback it restates drifts from the wording a widget actually renders.
 It is flag-independent: build one catalogue for the whole library, so a
 framework toggled on later finds no holes.
+
+### Where a wording is declared
+
+Each package declares its wordings as named `ChromeWording` constants in its
+own `translations.ts`, beside the code that renders them. A non-framework
+package's table joins `PACKAGE_WORDINGS` in `@labre/affine/translations`, and a
+framework's entries join its `…TranslationEntries`. `chrome.ts` keeps only the
+words several packages share ("Copy", "Card view"). Never write an inline
+`['com.labre.…', '…']` tuple at a call site: the manifest cannot walk it.
+
+### The other direction: literals with no key
+
+`packages/affine/all/src/__tests__/translations/literals.unit.spec.ts` scans
+the source for displayed literals that carry no key (ADR 0016). Anything it
+finds must be listed in `literals.baseline.json`, and that list can only
+shrink: a new literal fails the test, and so does a listed one that has gone.
+Translating a string therefore means running
+`UPDATE_I18N_BASELINE=1 yarn vitest run literals` from `packages/affine/all`.
+That command only removes entries, never adds them.
 
 Related manifests, same seam philosophy (typed, serializable, render-free):
 `getShortcutManifest` (Settings › Shortcuts) and `getCommandManifest`
