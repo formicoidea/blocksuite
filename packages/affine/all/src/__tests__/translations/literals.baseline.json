@@ -1323,9 +1323,6 @@
       "This file declares ${} root",
       "Two elements in this file share the id \"${}\", which BPMN"
     ],
-    "packages/affine/gfx/bpmn/src/templates/index.ts": [
-      "BPMN"
-    ],
     "packages/affine/gfx/brush/src/toolbar/configs/brush.ts": [
       "Color"
     ],
@@ -1352,7 +1349,6 @@
       "Connector shape",
       "End point style",
       "Flip direction",
-      "Reverse direction",
       "Shape",
       "Start point style",
       "Stroke style",
@@ -1393,25 +1389,16 @@
       "Legend",
       "Relationships"
     ],
-    "packages/affine/gfx/ddd-context-map/src/templates.ts": [
-      "Context Map"
-    ],
     "packages/affine/gfx/ddd-core-domain/src/core-domain/legend.ts": [
       "Legend",
       "Movement",
       "Sub-domains",
       "Team interaction modes"
     ],
-    "packages/affine/gfx/ddd-core-domain/src/templates.ts": [
-      "Core Domain Chart"
-    ],
     "packages/affine/gfx/ddd-event-storming/src/legend.ts": [
       "Flow",
       "Legend",
       "Stickies"
-    ],
-    "packages/affine/gfx/ddd-event-storming/src/templates.ts": [
-      "Event Storming"
     ],
     "packages/affine/gfx/ddd-shared/src/shared/consts.ts": [
       "Actor",
@@ -1444,16 +1431,13 @@
     "packages/affine/gfx/edgy/src/legend.ts": [
       "Base elements",
       "Intersections",
-      "Legend",
-      "Relations"
+      "Legend"
     ],
     "packages/affine/gfx/edgy/src/templates/index.ts": [
       "Admission Form",
       "Channel ${}",
       "Confirmation",
-      "EDGY",
       "Journey step ${}",
-      "Task",
       "Task ${}"
     ],
     "packages/affine/gfx/group/src/command/group-api.ts": [
@@ -1550,10 +1534,6 @@
     "packages/affine/gfx/note/src/toolbar/senior-tool.ts": [
       "Note"
     ],
-    "packages/affine/gfx/shape/src/draggable/shape-menu.ts": [
-      "General",
-      "Scribbled"
-    ],
     "packages/affine/gfx/shape/src/toolbar/config.ts": [
       "Add text",
       "Contained text",
@@ -1577,14 +1557,12 @@
     "packages/affine/gfx/template/src/builtin/other.ts": [
       "CATEGORY",
       "Card",
-      "Effect",
-      "Other"
+      "Effect"
     ],
     "packages/affine/gfx/template/src/toolbar/senior-tool.ts": [
       "Template"
     ],
     "packages/affine/gfx/template/src/toolbar/template-panel.ts": [
-      "Add",
       "Search file or anything..."
     ],
     "packages/affine/gfx/text/src/edgeless-text-editor.ts": [
@@ -1613,21 +1591,12 @@
     ],
     "packages/affine/gfx/wardley/src/natures.ts": [
       "A way of doing — a method, a convention, an operating model.",
-      "Activity",
-      "Competition",
-      "Data",
       "Established players competing against one another on a market that exists.",
-      "Knowledge",
-      "Nature",
-      "Practice",
       "Pressure on a newcomer trying to get into a market.",
       "Pressure on a player to stay in a market it is already in.",
-      "Relative competition (R)",
       "Something that is DONE — a step, a service, a process.",
       "Something that is KNOWN — a model, a theory, a rule.",
       "Something that is RECORDED — a dataset, a register.",
-      "Struggle for survival (L)",
-      "Struggle to establish (E)",
       "Wardley",
       "What kind of thing this component is: an activity, data, a practice or knowledge.",
       "Which of Porter's forces this glyph marks: relative competition, a struggle for survival, or a struggle to establish."

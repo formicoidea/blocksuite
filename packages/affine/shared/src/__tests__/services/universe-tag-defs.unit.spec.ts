@@ -9,15 +9,29 @@
  * boundary between "the app misconfigured a pack" and "the user lost their
  * board".
  */
+import type { BlockStdScope } from '@labre/std';
 import type { RoleDefs } from '@labre/std/gfx';
 import { describe, expect, test } from 'vitest';
 
 import {
   buildUniverseRegistry,
   tagAppliesToRole,
+  tagDefsTranslationEntries,
   type TagDef,
+  translateTagLabel,
   type UniverseTagDefs,
 } from '../../services/universe-tag-defs-service.js';
+
+/** No host: every `translateKey` call falls through to its own fallback. */
+const NO_HOST_STD = {
+  getOptional: () => undefined,
+} as unknown as BlockStdScope;
+
+/** A host whose catalogue answers `entries` and nothing else. */
+const stdWith = (entries: Record<string, string>): BlockStdScope =>
+  ({
+    getOptional: () => ({ t: (key: string) => entries[key] }),
+  }) as unknown as BlockStdScope;
 
 /** A three-role vocabulary with one specialisation, enough to exercise `roleIsA`. */
 const ROLES: RoleDefs = {
@@ -301,5 +315,114 @@ describe('ordering', () => {
       'wardley:alpha',
       'wardley:zeta',
     ]);
+  });
+});
+
+describe('translateTagLabel', () => {
+  test('with no `labelKey`, is exactly `label` — a host pack needs no change', () => {
+    expect(
+      translateTagLabel(NO_HOST_STD, {
+        label: 'Criticité',
+        labelKey: undefined,
+      })
+    ).toBe('Criticité');
+  });
+
+  test('with no host, renders the fallback letter for letter', () => {
+    expect(
+      translateTagLabel(NO_HOST_STD, {
+        label: 'Nature',
+        labelKey: 'com.labre.wardley.tag.nature',
+      })
+    ).toBe('Nature');
+  });
+
+  test("prefers the host's catalogue entry over the baked fallback", () => {
+    const std = stdWith({ 'com.labre.wardley.tag.nature': 'Nature (FR)' });
+    expect(
+      translateTagLabel(std, {
+        label: 'Nature',
+        labelKey: 'com.labre.wardley.tag.nature',
+      })
+    ).toBe('Nature (FR)');
+  });
+});
+
+describe('tagDefsTranslationEntries', () => {
+  test('one entry per `labelKey`, the tag AND its values, fallback from `label`', () => {
+    const entries = tagDefsTranslationEntries(
+      pack({
+        tags: [
+          nature({
+            labelKey: 'com.labre.wardley.tag.nature',
+            values: [
+              {
+                id: 'wardley:nature/data',
+                label: 'Data',
+                labelKey: 'com.labre.wardley.tag.nature.data',
+              },
+              // No `labelKey`: no entry, same as a host pack that never sets one.
+              { id: 'wardley:nature/activity', label: 'Activity' },
+            ],
+          }),
+        ],
+      })
+    );
+
+    expect(entries).toEqual([
+      {
+        key: 'com.labre.wardley.tag.nature',
+        fallback: 'Nature',
+        source: 'tag',
+      },
+      {
+        key: 'com.labre.wardley.tag.nature.data',
+        fallback: 'Data',
+        source: 'tag',
+      },
+    ]);
+  });
+
+  test('a host pack with no `labelKey` at all contributes nothing', () => {
+    expect(tagDefsTranslationEntries(pack())).toEqual([]);
+  });
+
+  test('an `open` tag has no values to walk', () => {
+    expect(
+      tagDefsTranslationEntries(
+        pack({
+          tags: [
+            nature({
+              labelKey: 'com.labre.wardley.tag.nature',
+              values: 'open',
+            }),
+          ],
+        })
+      )
+    ).toEqual([
+      {
+        key: 'com.labre.wardley.tag.nature',
+        fallback: 'Nature',
+        source: 'tag',
+      },
+    ]);
+  });
+});
+
+describe('merging `labelKey` across packs', () => {
+  test('is cosmetic — the last pack to declare it wins, like `label`', () => {
+    const registry = buildUniverseRegistry([
+      pack({ tags: [nature({ labelKey: 'com.labre.wardley.tag.nature' })] }),
+      pack({
+        packId: 'wardley-client',
+        tags: [nature({ labelKey: undefined })],
+      }),
+    ]);
+
+    // The second pack said nothing about `labelKey` (left `undefined`), so the
+    // first pack's still stands — absent never blanks what an earlier pack said.
+    expect(registry.tag('wardley:nature')?.labelKey).toBe(
+      'com.labre.wardley.tag.nature'
+    );
   });
 });

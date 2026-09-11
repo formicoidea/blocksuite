@@ -138,6 +138,8 @@ function areaTemplate(id: string, preview: string): Template {
 
 export const wardleyTemplateCategory: TemplateCategory = {
   name: 'Wardley',
+  // Reuses the senior button's own key — see `TemplateCategory.nameKey`.
+  nameKey: 'com.labre.framework.wardley',
   templates: [
     ...wardleyMaps,
     templateFromCommand(

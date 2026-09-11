@@ -50,7 +50,8 @@ for (const { key, fallback, source } of getTranslationKeyManifest()) {
   // key:      'com.labre.validation.map-quality.open'
   // fallback: 'Map quality…' (undefined where the library ships no wording)
   // source:   'command' | 'framework' | 'role' | 'background' | 'rule'
-  //         | 'nudge' | 'profile' | 'audit-criterion' | 'reading' | 'chrome'
+  //         | 'nudge' | 'profile' | 'audit-criterion' | 'reading' | 'tag'
+  //         | 'seed' | 'chrome'
 }
 ```
 

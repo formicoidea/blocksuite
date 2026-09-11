@@ -1,5 +1,6 @@
 import { autoLegendSections } from '@labre/affine-gfx-ddd-shared';
 import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
+import type { BlockStdScope } from '@labre/std';
 import { describe, expect, it } from 'vitest';
 
 import { EDGY_AUTO_LEGEND } from '../legend';
@@ -104,11 +105,20 @@ describe('the EDGY auto-legend table derives from the metamodel', () => {
 });
 
 describe('what an EDGY board puts in its legend', () => {
+  // No host catalogue: every `translateKey` call falls through to the fallback
+  // it is given, which is what lets this describe block still assert on the
+  // plain English wording.
+  const NO_HOST_STD = {
+    getOptional: () => undefined,
+  } as unknown as BlockStdScope;
+
   const labels = (present: string[]) =>
-    autoLegendSections(new Set(present), EDGY_AUTO_LEGEND).map(s => ({
-      title: s.title,
-      rows: s.rows.map(r => r.label),
-    }));
+    autoLegendSections(new Set(present), EDGY_AUTO_LEGEND, NO_HOST_STD).map(
+      s => ({
+        title: s.title,
+        rows: s.rows.map(r => r.label),
+      })
+    );
 
   it('lists the elements actually drawn on it, and nothing else', () => {
     expect(
