@@ -9,6 +9,7 @@ import { describe, expect, test } from 'vitest';
 
 import {
   fillPlaceholders,
+  formatLocale,
   hostLanguage,
   hostLocale,
   TranslationProvider,
@@ -76,5 +77,16 @@ describe('hostLocale', () => {
     expect(hostLocale(stdWith({ t: () => undefined, language: '' }))).toBe(
       undefined
     );
+  });
+});
+
+describe('formatLocale', () => {
+  test('no host: falls back to en-US, not the runtime default', () => {
+    expect(formatLocale(stdWith())).toBe('en-US');
+  });
+
+  test('a host that said a language wins', () => {
+    const std = stdWith({ t: () => undefined, language: 'fr-FR' });
+    expect(formatLocale(std)).toBe('fr-FR');
   });
 });

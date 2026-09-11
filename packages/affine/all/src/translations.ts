@@ -11,11 +11,12 @@ import { coreDomainTranslationEntries } from '@labre/affine-gfx-ddd-core-domain'
 import { eventStormingTranslationEntries } from '@labre/affine-gfx-ddd-event-storming';
 import { edgyTranslationEntries } from '@labre/affine-gfx-edgy';
 import { wardleyTranslationEntries } from '@labre/affine-gfx-wardley';
+import { OUTLINE_WORDINGS } from '@labre/affine-fragment-outline/translations';
 import {
   CHROME_WORDINGS,
   type ChromeWording,
 } from '@labre/affine-shared/services';
-import { SLASH_MENU_WORDINGS } from '@labre/affine-widget-slash-menu';
+import { SLASH_MENU_WORDINGS } from '@labre/affine-widget-slash-menu/translations';
 import {
   collectTranslationKeys,
   commandCategoryTranslationEntries,
@@ -302,6 +303,7 @@ const CHROME_KEYS: readonly [key: string, fallback: string][] = [
  */
 const PACKAGE_WORDINGS: readonly (readonly ChromeWording[])[] = [
   SLASH_MENU_WORDINGS,
+  OUTLINE_WORDINGS,
 ];
 
 /**
