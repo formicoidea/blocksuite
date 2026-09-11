@@ -505,6 +505,8 @@ function tpl(
 
 export const edgyTemplateCategory: TemplateCategory = {
   name: 'EDGY',
+  // Reuses the senior button's own key — see `TemplateCategory.nameKey`.
+  nameKey: 'com.labre.framework.edgy',
   templates: [
     tpl(
       'Facets overview',
@@ -526,6 +528,12 @@ export const edgyTemplateCategory: TemplateCategory = {
       `<svg ${ATTRS} fill="none"><rect x="52" y="12" width="32" height="14" rx="2" fill="#4fd0ea"/><rect x="14" y="38" width="32" height="14" rx="2" fill="#4fd0ea"/><rect x="52" y="38" width="32" height="14" rx="2" fill="#4fd0ea"/><rect x="90" y="38" width="32" height="14" rx="2" fill="#4fd0ea"/><path d="M68 26 V32 M30 32 H106 M30 32 V38 M68 32 V38 M106 32 V38" stroke="${NODE_STROKE}"/></svg>`,
       orgChart()
     ),
+    // Kept: `addFacets`'s own label is "Enterprise Design facets" (the senior
+    // sub-menu's wording), and this tile's tooltip has always said the
+    // shorter "Facets diagram". `resolveTemplateName` still resolves it
+    // through the command's `labelKey`, with THIS literal (not the command's)
+    // as the fallback, so the tile keeps its own English wording with no
+    // catalogue.
     templateFromCommand(
       byId('edgy.addFacets'),
       `<svg ${ATTRS}><circle cx="55" cy="34" r="18" fill="#00ea4e" opacity="0.9"/><circle cx="80" cy="34" r="18" fill="#034cee" opacity="0.9"/><circle cx="67" cy="54" r="18" fill="#ff0056" opacity="0.9"/></svg>`,
@@ -534,6 +542,9 @@ export const edgyTemplateCategory: TemplateCategory = {
     edgyDynamicTemplate,
     // The blank board had no template at all until the palette was derived —
     // the coverage test is what said so.
+    //
+    // Kept, same reason as `addFacets` above: `addBoard`'s own label spells
+    // out "(hover spotlight)", which this tile's tooltip never has.
     templateFromCommand(
       byId('edgy.addBoard'),
       `<svg ${ATTRS} fill="none"><rect x="8" y="9" width="119" height="62" rx="8" fill="${NOTATION_NEUTRALS.cardFill}" stroke="${NOTATION_NEUTRALS.cardBorder}" stroke-width="2"/><path d="M52 30 H84 M53 31 L66 58 M83 31 L70 58" stroke="${NODE_STROKE}" stroke-width="1.4"/><rect x="48" y="26" width="9" height="9" fill="#00ea4e"/><circle cx="84" cy="30" r="4.5" fill="#034cee"/><path d="M61 54 h8 l4 4 -4 4 h-8 z" fill="#ff0056"/></svg>`,

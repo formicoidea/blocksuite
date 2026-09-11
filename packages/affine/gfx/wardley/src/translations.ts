@@ -1,3 +1,4 @@
+import { tagDefsTranslationEntries } from '@labre/affine-shared/services';
 import {
   collectTranslationKeys,
   commandCategoryTranslationEntries,
@@ -9,6 +10,7 @@ import {
 import { WARDLEY_AUDIT_CRITERIA } from './audit-criteria.js';
 import { WARDLEY_BACKGROUND } from './background.js';
 import { wardleyCommands } from './commands.js';
+import { WARDLEY_TAG_DEFS } from './natures.js';
 import { WARDLEY_NUDGES } from './nudges.js';
 import { WARDLEY_PROFILES } from './profiles.js';
 import { WARDLEY_READING } from './reading.js';
@@ -44,5 +46,9 @@ export const wardleyTranslationEntries: TranslationKeyManifestEntry[] =
     collectTranslationKeys('nudge', WARDLEY_NUDGES),
     collectTranslationKeys('profile', WARDLEY_PROFILES),
     collectTranslationKeys('audit-criterion', WARDLEY_AUDIT_CRITERIA),
-    collectTranslationKeys('reading', WARDLEY_READING)
+    collectTranslationKeys('reading', WARDLEY_READING),
+    // The library's own tag pack (`WARDLEY_TAG_DEFS`) — the natures and the
+    // Porter competition tags. A host's app-seeded pack needs no entry here:
+    // see `tagDefsTranslationEntries`.
+    tagDefsTranslationEntries(WARDLEY_TAG_DEFS)
   );

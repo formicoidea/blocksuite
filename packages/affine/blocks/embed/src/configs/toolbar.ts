@@ -521,7 +521,10 @@ const createBuiltinSurfaceToolbarConfigForExternal = (
               ?.viewType ?? 'card';
           const actions = this.actions.map(action => ({ ...action }));
           const viewType$ = signal(
-            `${viewType === 'card' ? 'Card' : 'Embed'} view`
+            translateKey(
+              ctx.std,
+              ...(viewType === 'card' ? TOOLBAR_CARD_VIEW : TOOLBAR_EMBED_VIEW)
+            )
           );
           const onToggle = createOnToggleFn(
             ctx,

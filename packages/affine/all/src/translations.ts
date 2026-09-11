@@ -11,6 +11,7 @@ import { coreDomainTranslationEntries } from '@labre/affine-gfx-ddd-core-domain'
 import { eventStormingTranslationEntries } from '@labre/affine-gfx-ddd-event-storming';
 import { edgyTranslationEntries } from '@labre/affine-gfx-edgy';
 import { wardleyTranslationEntries } from '@labre/affine-gfx-wardley';
+import { TEMPLATE_PACKAGE_WORDINGS } from '@labre/affine-gfx-template';
 import {
   CHROME_WORDINGS,
   type ChromeWording,
@@ -299,7 +300,9 @@ const CHROME_KEYS: readonly [key: string, fallback: string][] = [
  * in the framework's own `…TranslationEntries`, so a bundled host gets them
  * with the framework bundle.
  */
-const PACKAGE_WORDINGS: readonly (readonly ChromeWording[])[] = [];
+const PACKAGE_WORDINGS: readonly (readonly ChromeWording[])[] = [
+  TEMPLATE_PACKAGE_WORDINGS,
+];
 
 /**
  * Every i18n key THIS package can ask the host for, with its English fallback

@@ -321,6 +321,7 @@ function t(
 
 export const otherTemplateCategory: TemplateCategory = {
   name: 'Other',
+  nameKey: 'com.labre.template.panel.category.other',
   templates: [
     t('SWOT', previews.swot, swot()),
     t('Kanban board', previews.kanban, kanban()),

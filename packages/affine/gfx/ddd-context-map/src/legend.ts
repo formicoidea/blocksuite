@@ -52,6 +52,7 @@ export const CONTEXT_MAP_AUTO_LEGEND: AutoLegendSpec = {
       // the board draws them.
       entries: CM_RELATIONSHIPS.map(preset => ({
         role: CM_PATTERN_ROLE[preset.kind],
+        labelPrefix: preset.abbrev,
         row: {
           swatch: 'line' as const,
           color: LABEL_COLOR,

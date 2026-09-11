@@ -7,6 +7,8 @@ import {
 } from '@labre/std';
 
 import { edgyCommands } from './commands.js';
+import { EDGY_FACET_TITLE_KEY } from './legend.js';
+import { edgyElementLabel, type EdgyZone } from './metamodel.js';
 import { NODE_LABEL, nodeLabelKey } from './node/consts.js';
 import { EDGY_NUDGES } from './nudges.js';
 import { EDGY_PROFILES } from './profiles.js';
@@ -55,6 +57,14 @@ export const edgyTranslationEntries: TranslationKeyManifestEntry[] =
     Object.entries(NODE_LABEL).map(([kind, label]) => ({
       key: nodeLabelKey(kind as keyof typeof NODE_LABEL),
       fallback: label,
+      source: 'seed' as const,
+    })),
+    // The three facet section titles the automatic legend writes onto the
+    // canvas — a facet names no role of its own (`EDGY_FACET_TITLE_KEY`), so
+    // it is walked here rather than through `collectTranslationKeys('role', …)`.
+    Object.entries(EDGY_FACET_TITLE_KEY).map(([zone, key]) => ({
+      key,
+      fallback: edgyElementLabel(zone as EdgyZone),
       source: 'seed' as const,
     })),
     // LAST, and the order is load-bearing: a reading profile carries the
