@@ -24,8 +24,10 @@ from the manifest interpolates as is. Pluralisation is the host's: the library
 passes `count` and keeps its English fallback neutral (`'{{count}} element(s)'`).
 With no entry, the library fills the fallback itself (`fillPlaceholders`).
 
-Dates and numbers carry no key: they go through `Intl` in `hostLocale(std)`,
-the host's full tag (`'fr-CA'`: the region matters for a date).
+Dates and numbers carry no key: they go through `Intl` in `formatLocale(std)`
+(`hostLocale(std) ?? 'en-US'`) — the host's full tag (`'fr-CA'`: the region
+matters for a date), falling back to English like every string does so a
+standalone playground stays deterministic.
 
 Standalone (playground, tests), register nothing: every call site falls back —
 chrome falls back to its bundled English wording, framework prose falls back
