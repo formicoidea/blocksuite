@@ -9,6 +9,7 @@ import {
   EDGY_ZONE_FILL,
   EDGY_ZONES,
   edgyElementLabel,
+  edgyElementLabelKey,
   type EdgyElementName,
   type EdgyZone,
 } from './metamodel';
@@ -59,23 +60,15 @@ function zoneEntries(zone: EdgyZone) {
 }
 
 /**
- * i18n key of a facet's section title — `identity` → `com.labre.edgy.legend.
- * facet.identity`. The three facets name no role of their own (a section
- * groups twelve ELEMENT roles, it is not one itself), so this is a small key
- * table of its own rather than a `roleLabel` lookup — see
- * {@link edgyTranslationEntries}, which ships it with the framework.
+ * A facet's section title says the facet's own name, so it reuses the key the
+ * metamodel's seeds already carry (`edgyElementLabelKey`): the legend and the
+ * facets diagram say "Identity" with one key, not two.
  */
-export const EDGY_FACET_TITLE_KEY: Readonly<Record<string, string>> = {
-  identity: 'com.labre.edgy.legend.facet.identity',
-  architecture: 'com.labre.edgy.legend.facet.architecture',
-  experience: 'com.labre.edgy.legend.facet.experience',
-};
-
 const FACET_SECTIONS: AutoLegendSectionSpec[] = EDGY_ZONES.filter(
   zone => zone.group === 'facet'
 ).map(zone => ({
   title: edgyElementLabel(zone.id),
-  titleKey: EDGY_FACET_TITLE_KEY[zone.id],
+  titleKey: edgyElementLabelKey(zone.id),
   entries: zoneEntries(zone.id),
 }));
 
@@ -86,6 +79,7 @@ const FACET_SECTIONS: AutoLegendSectionSpec[] = EDGY_ZONES.filter(
  */
 const INTERSECTIONS_SECTION: AutoLegendSectionSpec = {
   title: 'Intersections',
+  titleKey: 'com.labre.edgy.seed.intersections-title',
   entries: EDGY_ZONES.filter(zone => zone.group === 'intersection').flatMap(
     zone => zoneEntries(zone.id)
   ),
