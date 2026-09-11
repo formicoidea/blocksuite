@@ -273,6 +273,26 @@ export const CodeExtension = InlineMarkdownExtension<AffineTextAttributes>({
   },
 });
 
+// typographic replacement: word -- + space => word — + space
+// not convert: --- + space (divider shortcut), --flag + space, inside inline code
+export const EmDashExtension = InlineMarkdownExtension<AffineTextAttributes>({
+  name: 'em-dash',
+  pattern: /(?:^|[^-])--\s$/,
+  action: ({ inlineEditor, inlineRange, undoManager }) => {
+    const dashes = { index: inlineRange.index - 3, length: 2 };
+    const format = inlineEditor.getFormat(dashes);
+    if (format.code) return;
+
+    undoManager.stopCapturing();
+
+    inlineEditor.insertText(dashes, '—', format);
+    inlineEditor.setInlineRange({
+      index: inlineRange.index - 1,
+      length: 0,
+    });
+  },
+});
+
 export const MarkdownExtensions: ExtensionType[] = [
   BoldItalicMarkdown,
   BoldMarkdown,
@@ -281,4 +301,5 @@ export const MarkdownExtensions: ExtensionType[] = [
   UnderthroughExtension,
   CodeExtension,
   LatexExtension,
+  EmDashExtension,
 ];
