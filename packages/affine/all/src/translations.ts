@@ -15,6 +15,7 @@ import {
   CHROME_WORDINGS,
   type ChromeWording,
 } from '@labre/affine-shared/services';
+import { SLASH_MENU_WORDINGS } from '@labre/affine-widget-slash-menu';
 import {
   collectTranslationKeys,
   commandCategoryTranslationEntries,
@@ -299,7 +300,9 @@ const CHROME_KEYS: readonly [key: string, fallback: string][] = [
  * in the framework's own `…TranslationEntries`, so a bundled host gets them
  * with the framework bundle.
  */
-const PACKAGE_WORDINGS: readonly (readonly ChromeWording[])[] = [];
+const PACKAGE_WORDINGS: readonly (readonly ChromeWording[])[] = [
+  SLASH_MENU_WORDINGS,
+];
 
 /**
  * Every i18n key THIS package can ask the host for, with its English fallback
