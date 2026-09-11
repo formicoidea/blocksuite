@@ -1,4 +1,9 @@
-import { type ChromeWording } from '@labre/affine-shared/services';
+import {
+  type ChromeWording,
+  TOOLBAR_COPY,
+  TOOLBAR_DELETE,
+  TOOLBAR_DUPLICATE,
+} from '@labre/affine-shared/services';
 
 /**
  * The slash menu's own wordings — one `ChromeWording` per static config
@@ -67,19 +72,17 @@ export const SLASH_MENU_MOVE_DOWN_DESCRIPTION: ChromeWording = [
   'Shift this line down.',
 ];
 
-export const SLASH_MENU_COPY: ChromeWording = [
-  'com.labre.slash-menu.actions.copy',
-  'Copy',
-];
+/**
+ * "Copy", "Duplicate" and "Delete" are the editor's shared verbs, already
+ * declared once for every toolbar in `chrome.ts`: one word, one key.
+ */
+export const SLASH_MENU_COPY = TOOLBAR_COPY;
+export const SLASH_MENU_DUPLICATE = TOOLBAR_DUPLICATE;
+export const SLASH_MENU_DELETE = TOOLBAR_DELETE;
 
 export const SLASH_MENU_COPY_DESCRIPTION: ChromeWording = [
   'com.labre.slash-menu.actions.copy.description',
   'Copy this line to clipboard.',
-];
-
-export const SLASH_MENU_DUPLICATE: ChromeWording = [
-  'com.labre.slash-menu.actions.duplicate',
-  'Duplicate',
 ];
 
 export const SLASH_MENU_DUPLICATE_DESCRIPTION: ChromeWording = [
@@ -95,11 +98,6 @@ export const SLASH_MENU_DUPLICATE_DESCRIPTION: ChromeWording = [
 export const SLASH_MENU_COPY_DUPLICATE_CAPTION: ChromeWording = [
   'com.labre.slash-menu.actions.copy-duplicate.caption',
   'Copy / Duplicate',
-];
-
-export const SLASH_MENU_DELETE: ChromeWording = [
-  'com.labre.slash-menu.actions.delete',
-  'Delete',
 ];
 
 export const SLASH_MENU_DELETE_DESCRIPTION: ChromeWording = [
@@ -192,12 +190,9 @@ export const SLASH_MENU_WORDINGS: readonly ChromeWording[] = [
   SLASH_MENU_MOVE_UP_DESCRIPTION,
   SLASH_MENU_MOVE_DOWN,
   SLASH_MENU_MOVE_DOWN_DESCRIPTION,
-  SLASH_MENU_COPY,
   SLASH_MENU_COPY_DESCRIPTION,
-  SLASH_MENU_DUPLICATE,
   SLASH_MENU_DUPLICATE_DESCRIPTION,
   SLASH_MENU_COPY_DUPLICATE_CAPTION,
-  SLASH_MENU_DELETE,
   SLASH_MENU_DELETE_DESCRIPTION,
   SLASH_MENU_GROUP_BASIC,
   SLASH_MENU_GROUP_CONTENT_MEDIA,
