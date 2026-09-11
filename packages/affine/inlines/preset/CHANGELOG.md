@@ -1,5 +1,27 @@
 # @labre/affine-inline-preset
 
+## 0.40.0
+
+### Patch Changes
+
+- 5b41d83: feat(blocks): typing `--` followed by a space turns the two hyphens into an em dash (`—`); undo brings them back, and the `---` divider shortcut, `--flag` words and inline code are left alone
+- Updated dependencies [95ff0a5]
+- Updated dependencies [95ff0a5]
+  - @labre/affine-shared@0.40.0
+  - @labre/affine-components@0.40.0
+  - @labre/affine-inline-comment@0.40.0
+  - @labre/affine-inline-footnote@0.40.0
+  - @labre/affine-inline-latex@0.40.0
+  - @labre/affine-inline-link@0.40.0
+  - @labre/affine-inline-mention@0.40.0
+  - @labre/affine-inline-reference@0.40.0
+  - @labre/affine-rich-text@0.40.0
+  - @labre/affine-ext-loader@0.40.0
+  - @labre/affine-model@0.40.0
+  - @labre/global@0.40.0
+  - @labre/std@0.40.0
+  - @labre/store@0.40.0
+
 ## 0.39.3
 
 ### Patch Changes
