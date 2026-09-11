@@ -53,10 +53,10 @@ describe('the generic ("Other") templates', () => {
     // change of shape this test should hear about.
     if (!Array.isArray(templates)) throw new Error('expected eager templates');
     const found = coloursOf(templates.map(t => t.content));
-    // The walk does reach the elements: the ink, the kanban column's band and
+    // The walk does reach the elements: the ink, the kanban column's card white and
     // the gantt's label grey are all in there.
     expect(found).toContain(NOTATION_NEUTRALS.ink);
-    expect(found).toContain(NOTATION_NEUTRALS.band);
+    expect(found).toContain(NOTATION_NEUTRALS.cardFill);
     expect(found).toContain(NOTATION_NEUTRALS.label);
 
     const outside = [...found].filter(

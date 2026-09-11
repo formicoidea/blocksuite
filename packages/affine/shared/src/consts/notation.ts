@@ -16,10 +16,11 @@
  * the EDGY facet picto) and the greys that carry a meaning (a future bounded
  * context, a Core Domain zone): those are content of the notation, not chrome.
  *
- * **One band tint.** The title or header strip of a board (BPMN participant
- * band, C4 board header, a generic template's strip) is the first of the
- * Wardley phase bands; the other three phase tints stay Wardley's own, because
- * a graded wash across four zones is the map's meaning, not chrome.
+ * **No band tint.** The title or header strip of a board (BPMN participant
+ * band, C4 board header, a generic template's column) is plain `cardFill`
+ * white, set apart by its divider line (PO, 11/09/2026). The Wardley phase
+ * bands are not chrome: a graded wash across four zones is the map's meaning,
+ * so they stay Wardley's own.
  *
  * **Stored colours are never rewritten.** A creation default is copied into
  * the element when it is placed, so changing a value here repaints only the
@@ -54,11 +55,6 @@ const SCALE = {
   cardBorder: '#e3e2e4',
   /** A legend's frame and separators (the Wardley legend). */
   legendBorder: '#cfd2d6',
-  /**
-   * A board's title or header band — the tint a strip needs to be SEEN without
-   * reading as a second object (Wardley `COLORS.band[0]`).
-   */
-  band: '#f7faff',
 };
 
 /**

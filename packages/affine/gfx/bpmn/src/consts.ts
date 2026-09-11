@@ -200,10 +200,11 @@ export const POOL_FRAME_COLOR = NOTATION_NEUTRALS.frameInk;
  */
 export const POOL_CARD_FILL = NOTATION_NEUTRALS.cardFill;
 /**
- * The participant and lane title bands: the shared scale's band tint, painted
- * at render time (a pool stores no colour of its own).
+ * The participant and lane title bands: plain card white, painted at render
+ * time (a pool stores no colour of its own). The strip reads through the frame
+ * divider beside it, not through a tint (PO, 11/09/2026: no tinted bands).
  */
-export const POOL_BAND_FILL = NOTATION_NEUTRALS.band;
+export const POOL_BAND_FILL = NOTATION_NEUTRALS.cardFill;
 export const POOL_FRAME_WIDTH = 1.5;
 export const POOL_CORNER_RADIUS = 6;
 export const POOL_NAME_FONT_SIZE = 15;

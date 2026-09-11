@@ -17,7 +17,6 @@ describe('NOTATION_NEUTRALS', () => {
       cardFill: '#ffffff',
       cardBorder: '#e3e2e4',
       legendBorder: '#cfd2d6',
-      band: '#f7faff',
     });
   });
 

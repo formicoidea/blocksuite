@@ -57,13 +57,13 @@ import { recordingCtx, stubMatrix } from './canvas-stub';
  *
  * And one deliberate visual change since: the pool's neutrals are the shared
  * notation scale's (`NOTATION_NEUTRALS`), so the frame and the name are drawn in
- * `frameInk` rather than `#262626`, and the band in the scale's `band` tint
- * rather than `#f4f4f5`. Every geometry literal below is still the old
+ * `frameInk` rather than `#262626`, and the band in plain card white
+ * rather than `#f4f4f5` (no tinted bands, PO 11/09/2026). Every geometry literal below is still the old
  * renderer's; only the colours read from the scale.
  */
 
 const FRAME_INK = NOTATION_NEUTRALS.frameInk;
-const BAND = NOTATION_NEUTRALS.band;
+const BAND = NOTATION_NEUTRALS.cardFill;
 
 const W = 560;
 const H = 200;

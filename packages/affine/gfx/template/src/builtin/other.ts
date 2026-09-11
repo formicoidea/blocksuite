@@ -24,7 +24,7 @@ import type { Template, TemplateCategory } from '../toolbar/template-type.js';
 
 /**
  * Their neutrals are the shared notation scale's, like every framework's:
- * the ink, the divider grey, the label grey, the card and the band tint. Only
+ * the ink, the divider grey, the label grey and the card white. Only
  * the hues (kanban cards, gantt bars) are the diagrams' own.
  */
 const DARK = NOTATION_NEUTRALS.ink;
@@ -140,7 +140,7 @@ function swot(): SurfaceElementsJSON {
 // ── Kanban (To do / Doing / Done) ─────────────────────────────────────
 function kanban(): SurfaceElementsJSON {
   const colOpts = {
-    fill: NOTATION_NEUTRALS.band,
+    fill: NOTATION_NEUTRALS.cardFill,
     stroke: MUTED,
     sw: 1.5,
     radius: 10,

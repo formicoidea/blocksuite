@@ -75,7 +75,7 @@ export const COLORS = {
   axis: NOTATION_NEUTRALS.frameInk,
   divider: NOTATION_NEUTRALS.divider,
   label: NOTATION_NEUTRALS.label,
-  band: [NOTATION_NEUTRALS.band, '#eef4fb', '#e6eef8', '#dde8f4'] as const,
+  band: ['#f7faff', '#eef4fb', '#e6eef8', '#dde8f4'] as const,
 };
 
 export const FONT_FAMILY = 'Inter, sans-serif';

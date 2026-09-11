@@ -487,7 +487,6 @@ describe('the Wardley neutrals', () => {
     expect(COLORS.axis).toBe(NOTATION_NEUTRALS.frameInk);
     expect(COLORS.divider).toBe(NOTATION_NEUTRALS.divider);
     expect(COLORS.label).toBe(NOTATION_NEUTRALS.label);
-    expect(COLORS.band[0]).toBe(NOTATION_NEUTRALS.band);
     expect(NODE_STROKE).toBe(NOTATION_NEUTRALS.ink);
     expect(NODE_FILL).toBe(NOTATION_NEUTRALS.cardFill);
 

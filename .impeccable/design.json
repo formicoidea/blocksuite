@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-11T08:18:56.800Z",
+  "generatedAt": "2026-09-11T09:03:36.318Z",
   "title": "Design System: Labre editor library",
   "extensions": {
     "colorMeta": {
@@ -351,21 +351,6 @@
           "oklch(70% 0.006 255.5)",
           "oklch(82% 0.006 255.5)",
           "oklch(95% 0.006 255.5)"
-        ]
-      },
-      "notation-band": {
-        "role": "notation",
-        "displayName": "Notation Band",
-        "canonical": "oklch(98.4% 0.007 260.7)",
-        "tonalRamp": [
-          "oklch(15% 0.007 260.7)",
-          "oklch(26% 0.007 260.7)",
-          "oklch(37% 0.007 260.7)",
-          "oklch(48% 0.007 260.7)",
-          "oklch(59% 0.007 260.7)",
-          "oklch(70% 0.007 260.7)",
-          "oklch(82% 0.007 260.7)",
-          "oklch(95% 0.007 260.7)"
         ]
       },
       "edgy-identity": {
@@ -750,7 +735,7 @@
       "refersTo": "framework-board-card",
       "description": "Signature: the white card that frames a framework canvas; notation colours are drawn on it and never follow the app theme.",
       "html": "<div class=\"ds-board\"><div class=\"ds-board-title\">Context — C4 level 1</div><div class=\"ds-board-band\"><span class=\"ds-c4 ds-c4-person\">Architect</span><span class=\"ds-c4-rel\"></span><span class=\"ds-c4 ds-c4-system\">Labre</span><span class=\"ds-c4-rel\"></span><span class=\"ds-c4 ds-c4-component\">Renderer</span></div></div>",
-      "css": ".ds-board { width: 440px; padding: 16px; border: 1px solid #E3E2E4; border-radius: 4px; background: #FFFFFF; font: 400 14px/1.4 Inter, system-ui, sans-serif; } .ds-board-title { margin-bottom: 12px; color: #3B3D42; font-weight: 600; } .ds-board-band { display: flex; align-items: center; gap: 0; padding: 16px 12px; background: #F7FAFF; } .ds-c4 { display: inline-flex; align-items: center; justify-content: center; min-width: 88px; height: 52px; padding: 0 8px; border-radius: 4px; font-size: 13px; font-weight: 600; } .ds-c4-person { background: #08427B; border: 1px solid #073B6F; color: #FFFFFF; } .ds-c4-system { background: #1168BD; border: 1px solid #1864AD; color: #FFFFFF; } .ds-c4-component { background: #85BBF0; border: 1px solid #78A8D8; color: #000000; } .ds-c4-rel { flex: 1; height: 0; border-top: 1.5px dashed #444444; }"
+      "css": ".ds-board { width: 440px; padding: 16px; border: 1px solid #E3E2E4; border-radius: 4px; background: #FFFFFF; font: 400 14px/1.4 Inter, system-ui, sans-serif; } .ds-board-title { margin-bottom: 12px; color: #3B3D42; font-weight: 600; } .ds-board-band { display: flex; align-items: center; gap: 0; padding: 16px 12px; background: #FFFFFF; border-bottom: 1px solid #E3E2E4; } .ds-c4 { display: inline-flex; align-items: center; justify-content: center; min-width: 88px; height: 52px; padding: 0 8px; border-radius: 4px; font-size: 13px; font-weight: 600; } .ds-c4-person { background: #08427B; border: 1px solid #073B6F; color: #FFFFFF; } .ds-c4-system { background: #1168BD; border: 1px solid #1864AD; color: #FFFFFF; } .ds-c4-component { background: #85BBF0; border: 1px solid #78A8D8; color: #000000; } .ds-c4-rel { flex: 1; height: 0; border-top: 1.5px dashed #444444; }"
     },
     {
       "name": "EDGY Facet Swatches",
@@ -833,7 +818,7 @@
       "Do use Hover Veil (rgba(0,0,0,.04)) as the only hover treatment on transparent controls, gated by @media (hover: hover).",
       "Do keep controls at 4px corners and 4px padding, and panels at 8px gaps.",
       "Do copy notation hues (and any neutral the standard prescribes) from the published standard or stencil into the module's consts.ts, and cite the source in a comment, as C4 and EDGY already do.",
-      "Do take every other neutral from NOTATION_NEUTRALS (Wardley reference): ink, frame ink, label grey, divider, card, card border, legend border, band.",
+      "Do take every other neutral from NOTATION_NEUTRALS (Wardley reference): ink, frame ink, label grey, divider, card, card border, legend border. Board strips stay white.",
       "Do size canvas labels in fixed model units, so the notation zooms and exports faithfully.",
       "Do keep document surfaces flat and keep shadows for floating chrome."
     ],

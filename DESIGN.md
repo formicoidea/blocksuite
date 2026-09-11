@@ -26,7 +26,6 @@ colors:
   notation-divider: '#9AA0A6'
   notation-card-border: '#E3E2E4'
   notation-legend-border: '#CFD2D6'
-  notation-band: '#F7FAFF'
   edgy-identity: '#00EA4E'
   edgy-architecture: '#034CEE'
   edgy-experience: '#FF0056'
@@ -220,7 +219,7 @@ A single scale, `NOTATION_NEUTRALS` (`packages/affine/shared/src/consts/notation
 - **Divider Grey** (notation-divider): dashed dividers, BPMN group strokes, secondary strokes.
 - **Card** (paper) and **Card Border** (notation-card-border): the white board card and its hairline.
 - **Legend Border** (notation-legend-border): the frame and separators of auto-legends.
-- **Band** (notation-band): tinted strips on board backgrounds (the BPMN participant strip, the C4 title band). It is Wardley's first evolution band; the Wardley map keeps its full four-step gradient.
+- **No tinted bands.** Strips on board backgrounds (the BPMN participant strip, the C4 title band, generic template columns) are plain Card white, set apart by their divider line. Only the Wardley map keeps a tint, its four-step evolution gradient, because there the gradient carries meaning.
 
 Greys that carry a meaning are not neutrals and stay put: C4 external elements (out of scope), Core Domain grey zones, the DDD "future position" dot. Stencil-sourced neutrals stay too: C4 `#444444`, the EDGY base-shape ink `#262626` (official pictograms), and the Cynefin/Estuarine official inks. The DDD Aggregate canvas keeps its own blue-greys.
 
@@ -280,7 +279,7 @@ Chrome spacing uses a 4px base: 4px icon padding, 8px gaps between toolbar entri
 
 ## Elevation & Depth
 
-The system is hybrid. Document surfaces (the page, the canvas, framework boards) are flat, with depth shown by hairlines and bands. Floating chrome sits above them with layered, neutral shadows. There is no tinted or coloured shadow anywhere.
+The system is hybrid. Document surfaces (the page, the canvas, framework boards) are flat, with depth shown by hairlines (and, on a Wardley map, its evolution bands). Floating chrome sits above them with layered, neutral shadows. There is no tinted or coloured shadow anywhere.
 
 ### Shadow Vocabulary
 
@@ -335,7 +334,7 @@ Black (`tooltip-black`) with white text, optionally showing the keyboard shortcu
 
 ### Framework Board (signature component)
 
-The white card that frames a framework's canvas: Card fill and Card Border from `NOTATION_NEUTRALS`, optional bands (Band for strips, Wardley's gradient for evolution stages), and a title in Frame Ink. It is painted at render time, so it always follows the scale. The frameworks draw their elements on this card. It is the point where quiet chrome ends and loud notation starts.
+The white card that frames a framework's canvas: Card fill and Card Border from `NOTATION_NEUTRALS`, white strips set apart by a divider (Wardley alone adds its evolution gradient), and a title in Frame Ink. It is painted at render time, so it always follows the scale. The frameworks draw their elements on this card. It is the point where quiet chrome ends and loud notation starts.
 
 ## Do's and Don'ts
 
@@ -345,7 +344,7 @@ The white card that frames a framework's canvas: Card fill and Card Border from 
 - **Do** use Hover Veil (`rgba(0,0,0,.04)`) as the only hover treatment on transparent controls, gated by `@media (hover: hover)`.
 - **Do** keep controls at 4px corners and 4px padding, and panels at 8px gaps.
 - **Do** copy notation hues (and any neutral the standard prescribes) from the published standard or stencil into the module's `consts.ts`, and cite the source in a comment, as C4 and EDGY already do.
-- **Do** take every other neutral from `NOTATION_NEUTRALS` (Wardley reference): ink, frame ink, label grey, divider, card, card border, legend border, band.
+- **Do** take every other neutral from `NOTATION_NEUTRALS` (Wardley reference): ink, frame ink, label grey, divider, card, card border, legend border. Board strips stay white.
 - **Do** size canvas labels in fixed model units, so the notation zooms and exports faithfully.
 - **Do** keep document surfaces flat and keep shadows for floating chrome.
 

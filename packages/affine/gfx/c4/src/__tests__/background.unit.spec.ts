@@ -163,7 +163,7 @@ describe('the C4 board', () => {
     expect(rec.rects).toEqual([
       { x: 0, y: 0, w: W, h: BAND, fill: BOARD_BAND_FILL },
     ]);
-    expect(BOARD_BAND_FILL).toBe(NOTATION_NEUTRALS.band);
+    expect(BOARD_BAND_FILL).toBe(NOTATION_NEUTRALS.cardFill);
     // …and the rule under it runs the whole width, at the band's foot.
     expect(rec.segments).toEqual([{ x1: 0, y1: BAND, x2: W, y2: BAND }]);
 

@@ -259,7 +259,7 @@ describe('the C4 neutrals', () => {
     expect(BOARD_CARD_FILL).toBe(NOTATION_NEUTRALS.cardFill);
     expect(BOARD_CARD_BORDER).toBe(NOTATION_NEUTRALS.cardBorder);
     expect(BOARD_TITLE_COLOR).toBe(NOTATION_NEUTRALS.frameInk);
-    expect(BOARD_BAND_FILL).toBe(NOTATION_NEUTRALS.band);
+    expect(BOARD_BAND_FILL).toBe(NOTATION_NEUTRALS.cardFill);
   });
 
   it("keeps the stencil's own greys where the stencil draws them", () => {

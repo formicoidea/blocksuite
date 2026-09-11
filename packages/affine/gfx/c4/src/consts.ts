@@ -341,15 +341,12 @@ export const BOARD_TITLE_FONT_SIZE = 20;
 export const BOARD_TITLE_COLOR = NOTATION_NEUTRALS.frameInk;
 
 /**
- * The header strip's own tint — a shade of the card, not a colour of its own.
- *
- * Sober on purpose, and the same tint as the pool's participant band
- * (`POOL_BAND_FILL`): the band has to be SEEN, because a strip a user cannot
- * see is a target they cannot aim at, and it must not read as a second object
- * sitting on the sheet. Both are the shared notation scale's band tint, painted
- * at render time.
+ * The header strip's fill: plain card white, like the pool's participant band
+ * (`POOL_BAND_FILL`), painted at render time. The strip stays visible, and so
+ * aimable, through the divider drawn under it in `BOARD_CARD_BORDER`, not
+ * through a tint (PO, 11/09/2026: no tinted bands).
  */
-export const BOARD_BAND_FILL = NOTATION_NEUTRALS.band;
+export const BOARD_BAND_FILL = NOTATION_NEUTRALS.cardFill;
 
 /**
  * The size a fresh board is created at, and the room its furniture takes.

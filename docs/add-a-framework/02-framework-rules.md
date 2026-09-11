@@ -181,7 +181,7 @@ pane).** `private: true`, `sideEffects: false`.
 ## Colour
 
 **R33. Neutrals come from one scale; hues stay per framework.** Inks, greys,
-borders, the card fill and the board band tint are read from
+borders and the card fill (board strips included: no tinted bands) are read from
 `NOTATION_NEUTRALS` (`@labre/affine-shared/consts`), whose values are
 Wardley's. A framework's `consts.ts` names them (`NODE_STROKE =
 NOTATION_NEUTRALS.ink`) rather than restating a hex, and previews, toolbar
