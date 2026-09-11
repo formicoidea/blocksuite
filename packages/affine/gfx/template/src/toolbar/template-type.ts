@@ -57,6 +57,18 @@ export type Template = {
 
 export type TemplateCategory = {
   name: string;
+  /**
+   * i18n key of the category's own tab label, resolved with {@link name} as
+   * its fallback — so registering no `TranslationProvider` shows exactly
+   * `name`, letter for letter. A framework category reuses its OWN existing
+   * key (`com.labre.framework.<id>`, the senior button's); a generic one
+   * (`Other`) gets a key of its own. Absent for a category whose display name
+   * cannot be attributed to one owner (Cynefin and Estuarine share a single
+   * `cynefin-estuarine` framework key that names neither individually) or that
+   * a host contributed through {@link TemplateManager.extend} — either way
+   * `name` is shown as is.
+   */
+  nameKey?: string;
   templates: Template[] | (() => Promise<Template[]>);
 };
 
@@ -66,6 +78,9 @@ export interface TemplateManager {
   categories(): Promise<string[]> | string[];
 
   search(keyword: string, category?: string): Promise<Template[]> | Template[];
+
+  /** {@link TemplateCategory.nameKey} of the category named `name`, if any. */
+  categoryLabel?(name: string): string | undefined;
 
   extend?(manager: TemplateManager): void;
 }

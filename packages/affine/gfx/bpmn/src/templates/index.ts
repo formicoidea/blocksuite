@@ -295,6 +295,8 @@ const messageExchange: SurfaceElementsJSON = {
 
 export const bpmnTemplateCategory: TemplateCategory = {
   name: 'BPMN',
+  // Reuses the senior button's own key — see `TemplateCategory.nameKey`.
+  nameKey: 'com.labre.framework.bpmn',
   templates: [
     scene('Simple process', previews.process, process),
     scene('Message exchange', previews.messageExchange, messageExchange),

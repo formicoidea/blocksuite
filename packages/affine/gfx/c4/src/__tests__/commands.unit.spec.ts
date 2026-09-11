@@ -531,8 +531,13 @@ describe('the c4 automatic legend', () => {
    * would have listed "Boundary" twice or not at all.
    */
   it('lists the one Boundary row for a board drawn at either level', () => {
+    // No host catalogue: `translateKey` falls through to the fallback it is
+    // given, so the plain English wording is still what these rows show.
+    const NO_HOST_STD = {
+      getOptional: () => undefined,
+    } as unknown as BlockStdScope;
     const framesOf = (present: string[]) =>
-      autoLegendSections(new Set(present), C4_AUTO_LEGEND).find(
+      autoLegendSections(new Set(present), C4_AUTO_LEGEND, NO_HOST_STD).find(
         section => section.title === 'Frames'
       );
     for (const role of [

@@ -22,11 +22,17 @@
  * - **Ids are forever.** A def is never removed, only `deprecated`.
  */
 import { createIdentifier } from '@labre/global/di';
-import type { BlockStdScope, FrameworkId } from '@labre/std';
+import type {
+  BlockStdScope,
+  FrameworkId,
+  TranslationKeyManifestEntry,
+} from '@labre/std';
 import { FRAMEWORK_IDS } from '@labre/std';
 import type { RoleDefs, RoleId } from '@labre/std/gfx';
 import { roleIsA } from '@labre/std/gfx';
 import type { ExtensionType } from '@labre/store';
+
+import { translateKey } from './translation-service';
 
 /**
  * `'<framework>:<local>'` — e.g. `'wardley:component'`, `'wardley:nature'`.
@@ -51,8 +57,22 @@ const ID_PATTERN =
 export type TagValueDef = {
   /** `'<tagId>/<local>'`, e.g. `'wardley:nature/data'`. */
   id: TagValueId;
-  /** Display label, already localized by the host. */
+  /**
+   * Display label. For a HOST-seeded pack this is already localized — the app
+   * seeds a pack per deployment and `label` is that deployment's own wording,
+   * same as ever. For the library's OWN pack (`WARDLEY_TAG_DEFS`, the format's
+   * worked example) it is the ENGLISH fallback beside {@link labelKey}, on the
+   * same seam every other library string uses (ADR 0007 § 2bis's rule for role
+   * labels, extended here to tag values).
+   */
   label: string;
+  /**
+   * i18n key resolved by the host's catalogue, `label` its fallback — see
+   * {@link translateTagLabel}. Optional and additive: a pack seeded before this
+   * field existed (or a host pack that never sets it) still shows `label`
+   * exactly as it always has.
+   */
+  labelKey?: string;
   description?: string;
   /** Advisory colour token. The library may ignore it; it never affects layout. */
   color?: string;
@@ -63,7 +83,10 @@ export type TagValueDef = {
 export type TagDef = {
   /** `'<framework>:<local>'`, e.g. `'wardley:nature'`. */
   id: QualifiedId;
+  /** See {@link TagValueDef.label}. */
   label: string;
+  /** See {@link TagValueDef.labelKey}. */
+  labelKey?: string;
   description?: string;
   /** How many values an element may carry for this tag. */
   cardinality: 'single' | 'multi';
@@ -108,6 +131,64 @@ export type UniverseTagDefs = {
   label: string;
   tags: TagDef[];
 };
+
+/**
+ * The DISPLAYED wording of a tag def or a tag value def — {@link translateKey}
+ * over {@link TagDef.labelKey} / {@link TagValueDef.labelKey} when present,
+ * `label` unresolved otherwise (a host pack that never sets `labelKey` shows
+ * exactly what it always has).
+ *
+ * The one function every RENDERER of a tag label goes through — the "Qualify"
+ * toolbar's section titles and options (`tags-toolbar.ts`), the reading
+ * panel's nature value (`reading-widget.ts`). `resolveRecordNature` in
+ * `reading.ts` deliberately does NOT: it matches an external record's words
+ * against `label`, which is a comparison and not a display, and the wording it
+ * matches against is the one the record itself was written with.
+ */
+export function translateTagLabel(
+  std: BlockStdScope,
+  def: Pick<TagDef | TagValueDef, 'label' | 'labelKey'>
+): string {
+  return def.labelKey ? translateKey(std, def.labelKey, def.label) : def.label;
+}
+
+/**
+ * A pack's contribution to the translation-key manifest — every `labelKey` a
+ * tag or a tag value declares, paired with `label` as its English fallback.
+ *
+ * Manual, not `collectTranslationKeys('tag', pack)`: that generic walker pairs
+ * a `labelKey` with a sibling `labelFallback` (the roles' / rules' own
+ * convention), and this format's fallback field is named `label` — the same
+ * field a host-seeded pack's ALREADY-localized wording lives in. Walking it
+ * generically would either miss the fallback entirely or, worse, treat a
+ * host's own pack as a manifest contribution the library never asked for.
+ *
+ * For the library's own pack ONLY (`WARDLEY_TAG_DEFS` — see
+ * `wardleyTranslationEntries`); a host's app-seeded pack needs no entry here,
+ * because it carries no key at all unless the host itself decides to add one.
+ */
+export function tagDefsTranslationEntries(
+  pack: UniverseTagDefs
+): TranslationKeyManifestEntry[] {
+  const out: TranslationKeyManifestEntry[] = [];
+  for (const tag of pack.tags) {
+    if (tag.labelKey) {
+      out.push({ key: tag.labelKey, fallback: tag.label, source: 'tag' });
+    }
+    if (tag.values !== 'open') {
+      for (const value of tag.values) {
+        if (value.labelKey) {
+          out.push({
+            key: value.labelKey,
+            fallback: value.label,
+            source: 'tag',
+          });
+        }
+      }
+    }
+  }
+  return out;
+}
 
 /** A seed-time problem, for a host diagnostics panel. Never thrown. */
 export type UniverseDefIssue = {
@@ -340,6 +421,7 @@ function mergeTagDef(
   // earlier pack said.
   const draft = existing.def;
   if (def.label !== undefined) draft.label = def.label;
+  if (def.labelKey !== undefined) draft.labelKey = def.labelKey;
   if (def.description !== undefined) draft.description = def.description;
   if (def.order !== undefined) draft.order = def.order;
   if (def.required !== undefined) draft.required = def.required;

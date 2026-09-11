@@ -139,10 +139,12 @@ export const cynefinTemplateCategory: TemplateCategory = {
         s4: sticky(690, 505, 'Known issue'),
       }
     ),
+    // No name override: it would only restate `addCynefin`'s own
+    // `labelFallback` as a second literal the panel could not translate — see
+    // `resolveTemplateName`, which now reads the command's `labelKey` instead.
     templateFromCommand(
       byId('cynefin-estuarine.addCynefin'),
-      `<svg ${ATTRS} fill="none"><rect x="14" y="12" width="107" height="56" rx="4" stroke="#2a9d99" stroke-width="1.6"/><path d="M67 12 V68 M14 40 H121" stroke="${NOTATION_NEUTRALS.divider}"/></svg>`,
-      'Cynefin framework'
+      `<svg ${ATTRS} fill="none"><rect x="14" y="12" width="107" height="56" rx="4" stroke="#2a9d99" stroke-width="1.6"/><path d="M67 12 V68 M14 40 H121" stroke="${NOTATION_NEUTRALS.divider}"/></svg>`
     ),
   ],
 };
@@ -165,11 +167,17 @@ export const estuarineTemplateCategory: TemplateCategory = {
         c3: caption(290, 580, 'Budget'),
       }
     ),
+    // No name override: same reason as `addCynefin` above.
     templateFromCommand(
       byId('cynefin-estuarine.addEstuarineMap'),
-      `<svg ${ATTRS} fill="none"><path d="M24 10 V70 M24 70 H120" stroke="#941253" stroke-width="2.4"/><path d="M30 52 q40 -30 84 -34" stroke="#5ecc44" stroke-width="2" fill="none"/></svg>`,
-      'Estuarine map'
+      `<svg ${ATTRS} fill="none"><path d="M24 10 V70 M24 70 H120" stroke="#941253" stroke-width="2.4"/><path d="M30 52 q40 -30 84 -34" stroke="#5ecc44" stroke-width="2" fill="none"/></svg>`
     ),
+    // Kept, unlike the two overrides above: `addConstraintHexagon`'s own
+    // label is "Hexagon node" (the generic node-picker's wording), and this
+    // tile is specifically the CONSTRAINT preset of it — a name of its own,
+    // not a restatement. `resolveTemplateName` still resolves it through the
+    // command's `labelKey`, with THIS literal (not the command's) as the
+    // fallback, so the tile keeps its own English wording with no catalogue.
     templateFromCommand(
       byId('cynefin-estuarine.addConstraintHexagon'),
       `<svg ${ATTRS} fill="none"><path d="M67 24 l18 11 l0 22 l-18 11 l-18 -11 l0 -22 z" fill="#34c724" stroke="#1f1f1f" stroke-width="2"/></svg>`,

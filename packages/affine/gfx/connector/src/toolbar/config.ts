@@ -60,7 +60,10 @@ import { html } from 'lit';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import { isConnectorWithLabel } from '../connector-manager';
-import { INVERT_EDGE_DIRECTION } from '../direction/invert-direction';
+import {
+  INVERT_EDGE_DIRECTION,
+  invertEdgeDirection,
+} from '../direction/invert-direction';
 import {
   asTypedEdge,
   edgeIsBound,
@@ -355,7 +358,13 @@ export const connectorToolbarConfig = {
            */
           id: 'b.invert-direction',
           icon: FlipDirectionIcon(),
-          tooltip: 'Reverse direction',
+          tooltip: invertEdgeDirection.labelFallback,
+          // Reuses the registered command's own key/fallback — no restated
+          // literal (see `direction/invert-direction.ts`).
+          tooltipWording: [
+            invertEdgeDirection.labelKey,
+            invertEdgeDirection.labelFallback!,
+          ],
           /**
            * Shown as soon as the selection holds ONE reversible typed edge, and
            * it then acts on the typed edges of that selection and on nothing

@@ -12,6 +12,7 @@ import { eventStormingTranslationEntries } from '@labre/affine-gfx-ddd-event-sto
 import { edgyTranslationEntries } from '@labre/affine-gfx-edgy';
 import { wardleyTranslationEntries } from '@labre/affine-gfx-wardley';
 import { OUTLINE_WORDINGS } from '@labre/affine-fragment-outline/translations';
+import { TEMPLATE_PACKAGE_WORDINGS } from '@labre/affine-gfx-template/translations';
 import {
   CHROME_WORDINGS,
   type ChromeWording,
@@ -304,6 +305,7 @@ const CHROME_KEYS: readonly [key: string, fallback: string][] = [
 const PACKAGE_WORDINGS: readonly (readonly ChromeWording[])[] = [
   SLASH_MENU_WORDINGS,
   OUTLINE_WORDINGS,
+  TEMPLATE_PACKAGE_WORDINGS,
 ];
 
 /**
