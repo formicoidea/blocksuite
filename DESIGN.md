@@ -248,7 +248,7 @@ Greys that carry a meaning are not neutrals and stay put: C4 external elements (
 
 ### Hierarchy
 
-The scale lives in `HEADING_SCALE` (`packages/affine/shared/src/consts/heading.ts`). Labre owns it; the upstream `--affine-font-h-*` variables no longer drive document headings. Everything aligned on a heading's first line derives from it: paragraph styles, inline code, the drag-handle grabber, the callout emoji and the slash-menu previews.
+The scale lives in `HEADING_SCALE` (`packages/affine/shared/src/consts/heading.ts`). Labre owns it; the upstream `--affine-font-h-*` variables no longer drive document headings. Paragraph styles, inline code, the callout emoji and the slash-menu previews derive from it. The hover affordances (the drag-handle grabber, the collapse chevron and the heading-level icon) keep their upstream tuning, because what matters is that they line up with each other, not with the text line.
 
 - **Doc title** (700, 40px, 50px line): the page title, above the scale.
 - **Headline 1** (700, 32px, calc(1em + 8px), -0.02em): 18px space above.

@@ -27,10 +27,12 @@ export const HEADING_LEVELS: readonly HeadingLevel[] = [
  * The sizes step down by a ratio of about 1.25 from the doc title (40px/700)
  * to H3, so each level reads as clearly smaller than the one above and H1
  * never competes with the title. Below H3 the steps tighten: H4–H6 only need
- * to stay above body text. Everything positioned against a heading's first
- * line (the paragraph styles, the drag-handle grabber, the callout emoji, the
- * slash-menu previews) derives from this table rather than from the upstream
+ * to stay above body text. The paragraph styles, the callout emoji and the
+ * slash-menu previews derive from this table rather than from the upstream
  * `--affine-font-h-N` theme variables, which no longer drive document headings.
+ * The hover affordances (drag-handle grabber, heading-level icon) keep their
+ * upstream tuning on purpose: the PO prefers them aligned with each other as
+ * they were (recette 11/09/2026), not re-centred on the text line.
  */
 export const HEADING_SCALE: Readonly<Record<HeadingLevel, HeadingMetrics>> = {
   h1: {
