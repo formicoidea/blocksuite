@@ -1,11 +1,11 @@
-import { readdirSync, readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 import { bpmnTranslationEntries } from '@labre/affine-gfx-bpmn';
 import { describe, expect, test } from 'vitest';
 
 import { getTranslationKeyManifest } from '../../translations.js';
+import { allSourceFiles } from './source-files.js';
 
 /**
  * The exhaustiveness contract of `getTranslationKeyManifest`, in both
@@ -25,30 +25,11 @@ import { getTranslationKeyManifest } from '../../translations.js';
  * the same objects, so checking the monorepo assembly checks every part.
  */
 
-const HERE = dirname(fileURLToPath(import.meta.url));
-// …/packages/affine/all/src/__tests__/translations → repo root is 6 levels up.
-const ROOT = join(HERE, '..', '..', '..', '..', '..', '..');
-
-/** The library source: everything a host can import. Tests excluded. */
-const SCAN_DIRS = ['packages/affine', 'packages/framework'];
-const SKIP_DIRS = new Set(['node_modules', 'dist', '__tests__']);
 /**
  * The manifest itself is NOT a use site. Scanning it would let `CHROME_KEYS`
  * justify its own entries, and the dead-entry check below would never fire.
  */
 const SKIP_FILES = new Set([join('affine', 'all', 'src', 'translations.ts')]);
-
-function sourceFiles(dir: string, out: string[] = []): string[] {
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    const path = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      if (!SKIP_DIRS.has(entry.name)) sourceFiles(path, out);
-    } else if (entry.name.endsWith('.ts') && !entry.name.includes('.spec.')) {
-      if (![...SKIP_FILES].some(skip => path.endsWith(skip))) out.push(path);
-    }
-  }
-  return out;
-}
 
 /** `'com.labre.…'` string literals. */
 const LITERAL = /'(com\.labre\.[^']+)'/g;
@@ -256,7 +237,7 @@ describe('getTranslationKeyManifest', () => {
   });
 
   test('the manifest and the library source agree, in both directions', () => {
-    const files = SCAN_DIRS.flatMap(dir => sourceFiles(join(ROOT, dir)));
+    const files = allSourceFiles(SKIP_FILES);
     expect(files.length).toBeGreaterThan(100);
 
     /** Full keys seen as literals. */
