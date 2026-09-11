@@ -8,7 +8,11 @@ import {
 } from '@labre/affine-gfx-template';
 import { FontFamily, ShapeStyle, TextAlign } from '@labre/affine-model';
 import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
-import type { CommandDescriptor } from '@labre/std';
+import {
+  type ChromeWording,
+  translateKey,
+} from '@labre/affine-shared/services';
+import type { BlockStdScope, CommandDescriptor } from '@labre/std';
 
 import { cynefinEstuarineCommands } from '../commands';
 import { HEX_SIZE } from '../estuarine/consts';
@@ -106,17 +110,75 @@ function caption(cx: number, cy: number, str: string) {
   };
 }
 
-/** A hand-composed template — what is left once the artefacts are derived. */
+/**
+ * The seeds the two hand-composed templates below write into the document:
+ * the "Decision sorting" board's four domain stickies, and the "Constraint
+ * map" board's three hexagon captions. Exported so `translations.ts` derives
+ * the manifest entries from the SAME constants rather than restating them.
+ */
+export const CYNEFIN_SEED_PROBE_LEARN: ChromeWording = [
+  'com.labre.cynefin-estuarine.seed.probe-learn',
+  'Probe & learn',
+];
+export const CYNEFIN_SEED_EXPERT_ANALYSIS: ChromeWording = [
+  'com.labre.cynefin-estuarine.seed.expert-analysis',
+  'Expert analysis',
+];
+export const CYNEFIN_SEED_ACT_NOW: ChromeWording = [
+  'com.labre.cynefin-estuarine.seed.act-now',
+  'Act now',
+];
+export const CYNEFIN_SEED_KNOWN_ISSUE: ChromeWording = [
+  'com.labre.cynefin-estuarine.seed.known-issue',
+  'Known issue',
+];
+export const ESTUARINE_SEED_POLICY: ChromeWording = [
+  'com.labre.cynefin-estuarine.seed.policy',
+  'Policy',
+];
+export const ESTUARINE_SEED_HABIT: ChromeWording = [
+  'com.labre.cynefin-estuarine.seed.habit',
+  'Habit',
+];
+export const ESTUARINE_SEED_BUDGET: ChromeWording = [
+  'com.labre.cynefin-estuarine.seed.budget',
+  'Budget',
+];
+
+/** All seven, for `translations.ts`'s manifest contribution. */
+export const CYNEFIN_ESTUARINE_TEMPLATE_SEEDS: readonly ChromeWording[] = [
+  CYNEFIN_SEED_PROBE_LEARN,
+  CYNEFIN_SEED_EXPERT_ANALYSIS,
+  CYNEFIN_SEED_ACT_NOW,
+  CYNEFIN_SEED_KNOWN_ISSUE,
+  ESTUARINE_SEED_POLICY,
+  ESTUARINE_SEED_HABIT,
+  ESTUARINE_SEED_BUDGET,
+];
+
+/** Resolve a wording through the host, or its English fallback with no host. */
+function tr(std: BlockStdScope | undefined, wording: ChromeWording): string {
+  return std ? translateKey(std, ...wording) : wording[1];
+}
+
+/**
+ * A hand-composed template — what is left once the artefacts are derived.
+ *
+ * The seeds a template writes into the document go through the translation
+ * seam at placement (ADR 0016); `content` stays the English build, and
+ * `localize` rebuilds the same snapshot with translated seeds.
+ */
 function tpl(
   name: string,
   preview: string,
-  elements: SurfaceElementsJSON
+  build: (std?: BlockStdScope) => SurfaceElementsJSON
 ): Template {
   return {
     name,
     type: 'template',
     preview,
-    content: makeTemplateSnapshot(elements, name),
+    content: makeTemplateSnapshot(build(), name),
+    localize: std => makeTemplateSnapshot(build(std), name),
   };
 }
 
@@ -129,15 +191,15 @@ export const cynefinTemplateCategory: TemplateCategory = {
     tpl(
       'Decision sorting',
       `<svg ${ATTRS} fill="none"><rect x="8" y="10" width="119" height="60" rx="4" stroke="#2a9d99" stroke-width="1.5"/><path d="M67 10 V70 M8 40 H127" stroke="${NOTATION_NEUTRALS.divider}"/><rect x="18" y="18" width="34" height="14" rx="2" fill="#fff3b0"/><rect x="83" y="18" width="34" height="14" rx="2" fill="#fff3b0"/><rect x="18" y="48" width="34" height="14" rx="2" fill="#fff3b0"/><rect x="83" y="48" width="34" height="14" rx="2" fill="#fff3b0"/></svg>`,
-      {
+      std => ({
         bg: cynefinBackgroundProps({
           xywh: `[0,0,${CYNEFIN_W},${CYNEFIN_H}]`,
         }),
-        s1: sticky(190, 175, 'Probe & learn'),
-        s2: sticky(690, 175, 'Expert analysis'),
-        s3: sticky(190, 505, 'Act now'),
-        s4: sticky(690, 505, 'Known issue'),
-      }
+        s1: sticky(190, 175, tr(std, CYNEFIN_SEED_PROBE_LEARN)),
+        s2: sticky(690, 175, tr(std, CYNEFIN_SEED_EXPERT_ANALYSIS)),
+        s3: sticky(190, 505, tr(std, CYNEFIN_SEED_ACT_NOW)),
+        s4: sticky(690, 505, tr(std, CYNEFIN_SEED_KNOWN_ISSUE)),
+      })
     ),
     // No name override: it would only restate `addCynefin`'s own
     // `labelFallback` as a second literal the panel could not translate — see
@@ -155,17 +217,17 @@ export const estuarineTemplateCategory: TemplateCategory = {
     tpl(
       'Constraint map',
       `<svg ${ATTRS} fill="none"><path d="M20 12 V70 M20 70 H120" stroke="#941253" stroke-width="2"/><g fill="#34c724" stroke="#1f1f1f"><path d="M44 28 l6 4 l0 8 l-6 4 l-6 -4 l0 -8 z"/><path d="M74 40 l6 4 l0 8 l-6 4 l-6 -4 l0 -8 z"/><path d="M56 52 l6 4 l0 8 l-6 4 l-6 -4 l0 -8 z"/></g></svg>`,
-      {
+      std => ({
         bg: estuarineMapProps({
           xywh: `[0,0,${ESTUARINE_MAP_W},${ESTUARINE_MAP_H}]`,
         }),
         h1: hexAt(210, 280),
-        c1: caption(210, 280, 'Policy'),
+        c1: caption(210, 280, tr(std, ESTUARINE_SEED_POLICY)),
         h2: hexAt(390, 420),
-        c2: caption(390, 420, 'Habit'),
+        c2: caption(390, 420, tr(std, ESTUARINE_SEED_HABIT)),
         h3: hexAt(290, 580),
-        c3: caption(290, 580, 'Budget'),
-      }
+        c3: caption(290, 580, tr(std, ESTUARINE_SEED_BUDGET)),
+      })
     ),
     // No name override: same reason as `addCynefin` above.
     templateFromCommand(

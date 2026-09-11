@@ -10,6 +10,7 @@ import { cynefinEstuarineCommands } from './commands.js';
 import { ESTUARINE_NUDGES } from './estuarine/nudges.js';
 import { ESTUARINE_READING } from './estuarine/reading.js';
 import { ESTUARINE_ROLES } from './estuarine/roles.js';
+import { CYNEFIN_ESTUARINE_TEMPLATE_SEEDS } from './templates/index.js';
 
 /**
  * THIS framework's contribution to the translation-key manifest.
@@ -46,5 +47,13 @@ export const cynefinEstuarineTranslationEntries: TranslationKeyManifestEntry[] =
     // This profile declares no relation, so today it contributes no key of its
     // own — walking it costs nothing and means the day it gains one the
     // manifest already names it.
-    collectTranslationKeys('reading', ESTUARINE_READING)
+    collectTranslationKeys('reading', ESTUARINE_READING),
+    // The seeds the two hand-composed templates write into the document
+    // (`templates/index.ts`), resolved through `Template.localize` rather than
+    // a creation action — no command draws these two scenes.
+    CYNEFIN_ESTUARINE_TEMPLATE_SEEDS.map(([key, fallback]) => ({
+      key,
+      fallback,
+      source: 'seed' as const,
+    }))
   );

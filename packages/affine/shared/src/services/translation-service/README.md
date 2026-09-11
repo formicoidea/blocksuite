@@ -118,10 +118,15 @@ framework toggled on later finds no holes.
 
 Each package declares its wordings as named `ChromeWording` constants in its
 own `translations.ts`, beside the code that renders them. A non-framework
-package's table joins `PACKAGE_WORDINGS` in `@labre/affine/translations`, and a
-framework's entries join its `…TranslationEntries`. `chrome.ts` keeps only the
-words several packages share ("Copy", "Card view"). Never write an inline
-`['com.labre.…', '…']` tuple at a call site: the manifest cannot walk it.
+package's CHROME table joins `PACKAGE_WORDINGS` in `@labre/affine/translations`
+under source `chrome`, and its SEEDS — text a creation action writes INTO the
+document, never re-rendered once placed — join `PACKAGE_SEED_WORDINGS` in the
+same file, under source `seed`. A framework's entries of either kind join its
+own `…TranslationEntries` instead (a seed there uses the same
+`nodeLabelKey`-style derivation the BPMN precedent above does). `chrome.ts`
+keeps only the words several packages share ("Copy", "Card view"). Never write
+an inline `['com.labre.…', '…']` tuple at a call site: the manifest cannot walk
+it.
 
 ### The other direction: literals with no key
 

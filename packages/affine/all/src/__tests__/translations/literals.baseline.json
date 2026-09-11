@@ -606,7 +606,6 @@
       "RightTab",
       "StrikeThrough",
       "Table view",
-      "Text",
       "Turn into",
       "UnderLine",
       "Undo",
@@ -998,10 +997,7 @@
       "Frame:",
       "Group:",
       "Insert a blank frame",
-      "Insert a mind map",
-      "Mind Map",
-      "Mind Map",
-      "Text"
+      "Insert a mind map"
     ],
     "packages/affine/blocks/surface-ref/src/utils.ts": [
       "Edgeless content",
@@ -1231,10 +1227,6 @@
       "Cynefin",
       "Estuarine"
     ],
-    "packages/affine/gfx/ddd-aggregate/src/templates.ts": [
-      "Aggregate Design Canvas",
-      "Aggregate Design Canvas"
-    ],
     "packages/affine/gfx/ddd-context-map/src/legend.ts": [
       "${} — ${}",
       "Boundaries",
@@ -1284,9 +1276,6 @@
       "Base elements",
       "Legend"
     ],
-    "packages/affine/gfx/group/src/command/group-api.ts": [
-      "Group ${}"
-    ],
     "packages/affine/gfx/group/src/toolbar/config.ts": [
       "Group has been inserted into doc",
       "Insert into Page",
@@ -1299,13 +1288,6 @@
     ],
     "packages/affine/gfx/link/src/toolbar/undo-tool-button.ts": [
       "Undo"
-    ],
-    "packages/affine/gfx/mindmap/src/templates/index.ts": [
-      "Mind Map"
-    ],
-    "packages/affine/gfx/mindmap/src/toolbar/basket-elements.ts": [
-      "Mind Map",
-      "Text"
     ],
     "packages/affine/gfx/mindmap/src/toolbar/config.ts": [
       "Layout",
@@ -1397,11 +1379,6 @@
       "Rounded rectangle",
       "Square",
       "Triangle"
-    ],
-    "packages/affine/gfx/template/src/builtin/other.ts": [
-      "CATEGORY",
-      "Card",
-      "Effect"
     ],
     "packages/affine/gfx/template/src/toolbar/senior-tool.ts": [
       "Template"
