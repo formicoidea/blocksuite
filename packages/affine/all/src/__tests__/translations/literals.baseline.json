@@ -1,5 +1,12 @@
 {
   "kept": {
+    "packages/affine/blocks/surface-ref/src/configs/tooltips.ts": [
+      "Create a blank frame in Edgeless",
+      "Create a mind map in Edgeless",
+      "Frame",
+      "Group",
+      "Mind Map"
+    ],
     "packages/affine/gfx/text/src/toolbar/actions.ts": [
       "Aa"
     ]
@@ -628,12 +635,6 @@
       "Replace attachment",
       "Vertical style"
     ],
-    "packages/affine/blocks/attachment/src/configs/tooltips.ts": [
-      "Attach a file.",
-      "Rickroll.mp3",
-      "Rickroll.pdf",
-      "Upload a pdf to document."
-    ],
     "packages/affine/blocks/attachment/src/utils.ts": [
       "Download in progress...",
       "Downloading ${}",
@@ -659,29 +660,10 @@
       "Small horizontal style",
       "Small vertical style"
     ],
-    "packages/affine/blocks/bookmark/src/configs/tooltips.ts": [
-      "Any user may have a different perspective on what data they",
-      "For example, one user&#x2019;s edits to a document might be on",
-      "In a decentralized system, we can have a kaleidoscopic",
-      "Learn about AFFiNE",
-      "Other users might choose to accept all, some, or none of",
-      "complexity to our data.&#10;",
-      "computer reconnects, those changes are distributed to",
-      "either have, choose to share, or accept.&#10;",
-      "other users.&#10;",
-      "their laptop on an airplane; when the plane lands and the",
-      "those changes to their version of the document."
-    ],
     "packages/affine/blocks/callout/src/configs/slash-menu.ts": [
       "Callout",
       "Callout",
       "Let your words stand out."
-    ],
-    "packages/affine/blocks/callout/src/configs/tooltips.ts": [
-      "A storyboard is a visual representation of a story, typically presented in the form of sequential",
-      "Highlight important notes.",
-      "panels. Each panel features illustrations or images accompanied by notes describing key",
-      "scenes or shots, including details of action and dialogue."
     ],
     "packages/affine/blocks/code/src/code-block.ts": [
       "Copied failed, something went wrong",
@@ -738,21 +720,6 @@
       "Small horizontal style",
       "Small vertical style"
     ],
-    "packages/affine/blocks/embed-doc/src/embed-linked-doc-block/configs/tooltips.ts": [
-      "Any user may have a different perspective on what data they",
-      "For example, one user&#x2019;s edits to a document might be on",
-      "In a decentralized system, we can have a kaleidoscopic",
-      "Other users might choose to accept all, some, or none of",
-      "Title",
-      "Type &#39;/&#39; for commands",
-      "What&#x2019;s AFFiNE?",
-      "complexity to our data.&#10;",
-      "computer reconnects, those changes are distributed to",
-      "either have, choose to share, or accept.&#10;",
-      "other users.&#10;",
-      "their laptop on an airplane; when the plane lands and the",
-      "those changes to their version of the document."
-    ],
     "packages/affine/blocks/embed-doc/src/embed-linked-doc-block/embed-linked-doc-block.ts": [
       "Reload",
       "Updated"
@@ -802,22 +769,6 @@
       "Large horizontal style",
       "Open this doc",
       "Small horizontal style"
-    ],
-    "packages/affine/blocks/embed/src/embed-html-block/configs/tooltips.ts": [
-      "@AFFiNEOfficial",
-      "AFFiNE",
-      "Change theme following phone case color",
-      "Embed a X post (tweet).",
-      "High",
-      "Insert a Linear issue.",
-      "To Shape, Not to Adapt.",
-      "Work in Progress &#xb7;",
-      "qpomelo",
-      "qpomelo",
-      "re-assigned to",
-      "re-assigned to",
-      "tsiheng",
-      "tsiheng"
     ],
     "packages/affine/blocks/embed/src/embed-html-block/embed-html-block.ts": [
       "Empty"
@@ -905,9 +856,6 @@
       "Download",
       "Turn into card view"
     ],
-    "packages/affine/blocks/image/src/configs/tooltips.ts": [
-      "Insert a photo."
-    ],
     "packages/affine/blocks/image/src/image-block.ts": [
       "Image"
     ],
@@ -983,109 +931,23 @@
       "View in Toc"
     ],
     "packages/affine/blocks/note/src/configs/tooltips.ts": [
-      "&#34;Hello",
-      "&#34;World&#34;&#10;",
-      "@State",
-      "Any user may have a different perspective",
-      "Any user may have a different perspective on what data they",
-      "Any user may have a different perspective on what data they",
-      "Any user may have a different perspective on what data they",
-      "Any user may have a different perspective on what data they",
-      "Any user may have a different perspective on what data they",
       "Bold Text",
       "Bulleted List",
       "Code Block",
-      "ContentView",
       "Divider",
-      "For example, one user&#x2019;s edits to a",
-      "For example, one user&#x2019;s edits to a document might be on",
-      "For example, one user&#x2019;s edits to a document might be on",
-      "For example, one user&#x2019;s edits to a document might be on",
-      "For example, one user&#x2019;s edits to a document might be on",
-      "For example, one user&#x2019;s edits to a document might be on",
       "Heading #1",
       "Heading #2",
       "Heading #3",
       "Heading #4",
       "Heading #5",
       "Heading #6",
-      "Heading ${}",
-      "Here is an example of todo list.",
-      "Here&#39;s an example of a bulleted list.",
-      "Here&#39;s an example of a numbered list.",
-      "In a decentralized system, we can have a",
-      "In a decentralized system, we can have a",
-      "In a decentralized system, we can have a kaleidoscopic",
-      "In a decentralized system, we can have a kaleidoscopic",
-      "In a decentralized system, we can have a kaleidoscopic",
-      "In a decentralized system, we can have a kaleidoscopic",
-      "In a decentralized system, we can have a kaleidoscopic",
       "Italic",
-      "Make a list for building preview.",
       "Numbered List",
-      "Other users might choose to accept all,",
-      "Other users might choose to accept all, some, or none of",
-      "Other users might choose to accept all, some, or none of",
-      "Other users might choose to accept all, some, or none of",
-      "Other users might choose to accept all, some, or none of",
-      "Other users might choose to accept all, some, or none of",
       "Quote",
       "Strikethrough",
       "Text",
-      "Text",
       "To-do List",
-      "Underline",
-      "View",
-      "View",
-      "You can list your plans such as this",
-      "You can list your plans such as this",
-      "airplane; when the plane lands and the",
-      "body:",
-      "complexity to our data.&#10;",
-      "complexity to our data.&#10;",
-      "complexity to our data.&#10;",
-      "complexity to our data.&#10;",
-      "complexity to our data.&#10;",
-      "computer reconnects, those changes are",
-      "computer reconnects, those changes are distributed to",
-      "computer reconnects, those changes are distributed to",
-      "computer reconnects, those changes are distributed to",
-      "computer reconnects, those changes are distributed to",
-      "computer reconnects, those changes are distributed to",
-      "distributed to other users.&#10;",
-      "document might be on their laptop on an",
-      "either have, choose to share, or accept.&#10;",
-      "either have, choose to share, or accept.&#10;",
-      "either have, choose to share, or accept.&#10;",
-      "either have, choose to share, or accept.&#10;",
-      "either have, choose to share, or accept.&#10;",
-      "helloTo",
-      "helloTo)!&#34;",
-      "kaleidoscopic complexity to our data.&#10;",
-      "kaleidoscopic complexity to our data.&#10;…",
-      "on what data they either have, choose to",
-      "other users.&#10;",
-      "other users.&#10;",
-      "other users.&#10;",
-      "other users.&#10;",
-      "other users.&#10;",
-      "share, or accept.&#10;",
-      "some",
-      "some, or none of those changes to their",
-      "struct",
-      "their laptop on an airplane; when the plane lands and the",
-      "their laptop on an airplane; when the plane lands and the",
-      "their laptop on an airplane; when the plane lands and the",
-      "their laptop on an airplane; when the plane lands and the",
-      "their laptop on an airplane; when the plane lands and the",
-      "those changes to their version of the document.",
-      "those changes to their version of the document.",
-      "those changes to their version of the document.",
-      "those changes to their version of the document.",
-      "those changes to their version of the document.",
-      "var",
-      "var",
-      "version of the document."
+      "Underline"
     ],
     "packages/affine/blocks/note/src/move-block.ts": [
       "Move Down",
@@ -1140,13 +1002,6 @@
       "Mind Map",
       "Mind Map",
       "Text"
-    ],
-    "packages/affine/blocks/surface-ref/src/configs/tooltips.ts": [
-      "Create a blank frame in Edgeless",
-      "Create a mind map in Edgeless",
-      "Frame",
-      "Group",
-      "Mind Map"
     ],
     "packages/affine/blocks/surface-ref/src/utils.ts": [
       "Edgeless content",
@@ -1749,77 +1604,6 @@
       "Migrate from other versions of AFFiNE?",
       "Notion",
       "Provide feedback."
-    ],
-    "packages/affine/widgets/slash-menu/src/tooltips/copy.ts": [
-      "Any user may have a different perspective on what data they",
-      "For example, one user&#x2019;s edits to a document might be on",
-      "In a decentralized system, we can have a kaleidoscopic",
-      "Other users might choose to accept all, some, or none of",
-      "complexity to our data.&#10;",
-      "computer reconnects, those changes are distributed to",
-      "either have, choose to share, or accept.&#10;",
-      "other users.&#10;",
-      "their laptop on an airplane; when the plane lands and the",
-      "those changes to their version of the document."
-    ],
-    "packages/affine/widgets/slash-menu/src/tooltips/delete.ts": [
-      "Any user may have a different perspective on what data they",
-      "For example, one user&#x2019;s edits to a document might be on",
-      "In a decentralized system, we can have a kaleidoscopic",
-      "Other users might choose to accept all, some, or none of",
-      "complexity to our data.&#10;",
-      "computer reconnects, those changes are distributed to",
-      "either have, choose to share, or accept.&#10;",
-      "other users.&#10;",
-      "their laptop on an airplane; when the plane lands and the",
-      "those changes to their version of the document."
-    ],
-    "packages/affine/widgets/slash-menu/src/tooltips/move-down.ts": [
-      "Any user may have a different perspective on what data they",
-      "For example, one user&#x2019;s edits to a document might be on",
-      "In a decentralized system, we can have a kaleidoscopic",
-      "Other users might choose to accept all, some, or none of",
-      "complexity to our data.&#10;",
-      "computer reconnects, those changes are distributed to",
-      "either have, choose to share, or accept.&#10;",
-      "other users.&#10;",
-      "their laptop on an airplane; when the plane lands and the",
-      "those changes to their version of the document."
-    ],
-    "packages/affine/widgets/slash-menu/src/tooltips/move-up.ts": [
-      "Any user may have a different perspective on what data they",
-      "For example, one user&#x2019;s edits to a document might be on",
-      "In a decentralized system, we can have a kaleidoscopic",
-      "Other users might choose to accept all, some, or none of",
-      "complexity to our data.&#10;",
-      "computer reconnects, those changes are distributed to",
-      "either have, choose to share, or accept.&#10;",
-      "other users.&#10;",
-      "their laptop on an airplane; when the plane lands and the",
-      "those changes to their version of the document."
-    ],
-    "packages/affine/widgets/slash-menu/src/tooltips/now.ts": [
-      "11:45:14 Wed 3 Aug, 2022",
-      "Insert",
-      "and time.&#10;",
-      "date",
-      "now"
-    ],
-    "packages/affine/widgets/slash-menu/src/tooltips/today.ts": [
-      "Insert today&#x2019;s date",
-      "Wed 3 Aug, 2022"
-    ],
-    "packages/affine/widgets/slash-menu/src/tooltips/tomorrow.ts": [
-      "Insert",
-      "Wed 3 Aug, 2022",
-      "date",
-      "tomorrow&#x2019;s"
-    ],
-    "packages/affine/widgets/slash-menu/src/tooltips/yesterday.ts": [
-      "Insert",
-      "Wed 3 Aug, 2022",
-      "date",
-      "yesterday&#x2019;s"
     ],
     "packages/affine/widgets/toolbar/src/utils.ts": [
       "More menu"
