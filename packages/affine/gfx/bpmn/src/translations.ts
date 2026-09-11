@@ -7,12 +7,23 @@ import {
 } from '@labre/std';
 
 import { bpmnCommands } from './commands.js';
-import { NODE_LABEL, nodeLabelKey } from './consts.js';
+import {
+  LANE_NAME_FALLBACK,
+  LANE_NAME_KEY,
+  NODE_LABEL,
+  nodeLabelKey,
+  POOL_NAME_FALLBACK,
+  POOL_NAME_KEY,
+} from './consts.js';
 import { BPMN_IMPORT_REMARKS } from './import.js';
 import { BPMN_PROFILES } from './profiles.js';
 import { BPMN_READINGS } from './reading.js';
 import { BPMN_ROLES } from './roles.js';
 import { BPMN_RULES } from './rules.js';
+import {
+  MESSAGE_EXCHANGE_SEED,
+  SIMPLE_PROCESS_SEED,
+} from './templates/index.js';
 
 /**
  * The captions a placed artefact is seeded with, and the fixed-wording remarks
@@ -41,6 +52,27 @@ const importRemarkEntries = (): TranslationKeyManifestEntry[] =>
   }));
 
 /**
+ * The pool's own default name and a fresh lane's, resolved at placement
+ * exactly like {@link seedEntries} — the fallback IS `POOL_NAME_FALLBACK` /
+ * `LANE_NAME_FALLBACK`, never restated.
+ */
+const furnitureSeedEntries = (): TranslationKeyManifestEntry[] => [
+  { key: POOL_NAME_KEY, fallback: POOL_NAME_FALLBACK, source: 'seed' },
+  { key: LANE_NAME_KEY, fallback: LANE_NAME_FALLBACK, source: 'seed' },
+];
+
+/**
+ * The seeds the two worked-example scenes write — derived from the very
+ * tables `templates/index.ts` reads at placement, so the words a host is
+ * offered are the words the card would insert.
+ */
+const exampleSeedEntries = (): TranslationKeyManifestEntry[] =>
+  [
+    ...Object.values(SIMPLE_PROCESS_SEED),
+    ...Object.values(MESSAGE_EXCHANGE_SEED),
+  ].map(({ key, fallback }) => ({ key, fallback, source: 'seed' as const }));
+
+/**
  * THIS framework's contribution to the translation-key manifest — every
  * `com.labre.*` key BPMN can hand to `TranslationProvider.t`, derived from the
  * very declarations the editor registers (never restated).
@@ -67,6 +99,8 @@ export const bpmnTranslationEntries: TranslationKeyManifestEntry[] =
     collectTranslationKeys('rule', BPMN_RULES),
     collectTranslationKeys('profile', BPMN_PROFILES),
     seedEntries(),
+    furnitureSeedEntries(),
+    exampleSeedEntries(),
     importRemarkEntries(),
     // LAST, and the order is load-bearing: a reading profile carries the
     // framework's own `roles`, so walking it reaches every role key the `role`

@@ -29,11 +29,15 @@ import { type GfxController, GfxControllerIdentifier } from '@labre/std/gfx';
 import {
   ASSOCIATION_STROKE,
   ASSOCIATION_WIDTH,
+  LANE_NAME_FALLBACK,
+  LANE_NAME_KEY,
   MESSAGE_STROKE,
   MESSAGE_WIDTH,
   NODE_LABEL,
   nodeLabelKey,
   NODE_SIZE,
+  POOL_NAME_FALLBACK,
+  POOL_NAME_KEY,
   SEQUENCE_STROKE,
   SEQUENCE_WIDTH,
 } from './consts';
@@ -106,8 +110,17 @@ export function createBpmnPool(std: BlockStdScope) {
   // and for the same reason: the shipped cards build their participants from it
   // too, so a pool laid out by a template and one dropped from the toolbox
   // cannot say different things. The gesture owns the BOX and nothing else.
+  //
+  // The NAME is the one exception, and it is written HERE rather than left to
+  // the model's default (`BpmnPoolElementModel.name = 'Pool'`, a red-zone
+  // field: a document created before this key existed keeps its literal
+  // 'Pool' verbatim). Resolved at placement and never again — content from
+  // the moment it lands, exactly like a node's caption.
   const id = surface.addElement(
-    bpmnPoolProps({ xywh: new Bound(cx - w / 2, cy - h / 2, w, h).serialize() })
+    bpmnPoolProps({
+      xywh: new Bound(cx - w / 2, cy - h / 2, w, h).serialize(),
+      name: translateKey(std, POOL_NAME_KEY, POOL_NAME_FALLBACK),
+    })
   );
   finish(gfx, id);
 }
@@ -281,16 +294,16 @@ function writeLanes(
  * Before it, a single lane was indistinguishable from no lane at all, and the
  * gesture looked broken until the second click.
  *
- * ## `Lane N` is DOCUMENT DATA, not vocabulary
+ * ## `Lane N` is a SEED, resolved once at placement
  *
  * The default name is a plain persisted string, exactly like the pool's own
  * `'Pool'` default: it is written into the document by this action and is the
- * user's to rewrite from that moment on. It is deliberately NOT a `labelKey`
- * through the translation seam — a host that ships a French catalogue must not
- * silently retitle a lane an author named, and a name that changed language
- * when the reader's locale did would be a document that says different things
- * to different people. `N` is the count AFTER this lane, so the first is
- * `Lane 1`.
+ * user's to rewrite from that moment on. Since the i18n pass (#278) it goes
+ * through the translation seam exactly as `nodeLabelKey` does for a node's
+ * caption — resolved HERE, once, so a lane added in a translated host starts
+ * in that language, and never re-resolved afterwards: a lane the author has
+ * since renamed is document content, and nothing here revisits it. `{{n}}` is
+ * the count AFTER this lane, so the first is `Lane 1`.
  */
 export function addBpmnLane(std: BlockStdScope): void {
   const pools = bpmnPoolsForLaneEdit(std);
@@ -310,9 +323,14 @@ export function addBpmnLane(std: BlockStdScope): void {
     const size = lanes.length
       ? lanes.reduce((sum, lane) => sum + lane.size, 0) / lanes.length
       : 1;
+    const n = lanes.length + 1;
     writeLanes(std, model, [
       ...lanes,
-      { id: generateElementId(), name: `Lane ${lanes.length + 1}`, size },
+      {
+        id: generateElementId(),
+        name: translateKey(std, LANE_NAME_KEY, LANE_NAME_FALLBACK, { n }),
+        size,
+      },
     ]);
   }
 }

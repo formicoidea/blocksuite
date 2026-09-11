@@ -12,7 +12,8 @@ import {
   PointStyle,
   StrokeStyle,
 } from '@labre/affine-model';
-import type { CommandDescriptor } from '@labre/std';
+import { translateKey } from '@labre/affine-shared/services';
+import type { BlockStdScope, CommandDescriptor } from '@labre/std';
 
 import { bpmnCommands } from '../commands';
 import {
@@ -30,6 +31,62 @@ import {
 } from '../consts';
 import { bpmnNodeProps, bpmnPoolProps } from '../presets';
 import { BPMN_ROLE } from '../roles';
+
+/**
+ * The seeds the two worked scenes write — declared once so the scene builder
+ * and the manifest ({@link ../translations.ts}) read the very same fallback,
+ * never a restated literal. `com.labre.bpmn.example.<scene>.<slug>`, per
+ * `docs/adr/0016`.
+ */
+export const SIMPLE_PROCESS_SEED = {
+  poolName: {
+    key: 'com.labre.bpmn.example.simple-process.pool-name',
+    fallback: 'Process',
+  },
+  submitRequest: {
+    key: 'com.labre.bpmn.example.simple-process.submit-request',
+    fallback: 'Submit request',
+  },
+  fulfil: {
+    key: 'com.labre.bpmn.example.simple-process.fulfil',
+    fallback: 'Fulfil',
+  },
+  reject: {
+    key: 'com.labre.bpmn.example.simple-process.reject',
+    fallback: 'Reject',
+  },
+} as const;
+
+export const MESSAGE_EXCHANGE_SEED = {
+  customer: {
+    key: 'com.labre.bpmn.example.message-exchange.customer',
+    fallback: 'Customer',
+  },
+  supplier: {
+    key: 'com.labre.bpmn.example.message-exchange.supplier',
+    fallback: 'Supplier',
+  },
+  placeOrder: {
+    key: 'com.labre.bpmn.example.message-exchange.place-order',
+    fallback: 'Place order',
+  },
+  confirmOrder: {
+    key: 'com.labre.bpmn.example.message-exchange.confirm-order',
+    fallback: 'Confirm order',
+  },
+} as const;
+
+/**
+ * One seed's resolved text — the host's catalogue when `std` is a real
+ * inserting editor, the English fallback when building the module's own
+ * `content` (no editor exists yet at that point).
+ */
+function seedText(
+  std: BlockStdScope | undefined,
+  def: { key: string; fallback: string }
+): string {
+  return std ? translateKey(std, def.key, def.fallback) : def.fallback;
+}
 
 /**
  * The BPMN palette — DERIVED from the toolbox, one template per artefact
@@ -229,33 +286,48 @@ const previews = {
 
 /* ── The two worked scenes ────────────────────────────────────────────────── */
 
-/** A hand-composed card — what is left once the artefacts are derived. */
+/**
+ * A hand-composed card — what is left once the artefacts are derived.
+ *
+ * `build` takes the OPTIONAL inserting editor: called with none, at module
+ * load, for the English `content`; called again with the real `std` as
+ * {@link Template.localize}, so the two builds read the very same layout and
+ * differ only in the words a seed resolves to (`docs/adr/0016`).
+ */
 const scene = (
   name: string,
   preview: string,
-  elements: SurfaceElementsJSON
+  build: (std?: BlockStdScope) => SurfaceElementsJSON
 ): Template => ({
   name,
   type: 'template',
   preview,
-  content: makeTemplateSnapshot(elements, name),
+  content: makeTemplateSnapshot(build(), name),
+  localize: std => makeTemplateSnapshot(build(std), name),
 });
 
-const process: SurfaceElementsJSON = {
-  pool: pool(0, 0, 640, 200, 'Process'),
-  start: node('startEvent', 40, 72),
-  task1: node('task', 116, 64, 'Submit request'),
-  gw: node('gatewayExclusive', 272, 64),
-  task2: node('task', 376, 20, 'Fulfil'),
-  task3: node('task', 376, 124, 'Reject'),
-  end: node('endEvent', 556, 72),
-  c1: seq('start', 'task1'),
-  c2: seq('task1', 'gw'),
-  c3: seq('gw', 'task2'),
-  c4: seq('gw', 'task3'),
-  c5: seq('task2', 'end'),
-  c6: seq('task3', 'end'),
-};
+function process(std?: BlockStdScope): SurfaceElementsJSON {
+  return {
+    pool: pool(0, 0, 640, 200, seedText(std, SIMPLE_PROCESS_SEED.poolName)),
+    start: node('startEvent', 40, 72),
+    task1: node(
+      'task',
+      116,
+      64,
+      seedText(std, SIMPLE_PROCESS_SEED.submitRequest)
+    ),
+    gw: node('gatewayExclusive', 272, 64),
+    task2: node('task', 376, 20, seedText(std, SIMPLE_PROCESS_SEED.fulfil)),
+    task3: node('task', 376, 124, seedText(std, SIMPLE_PROCESS_SEED.reject)),
+    end: node('endEvent', 556, 72),
+    c1: seq('start', 'task1'),
+    c2: seq('task1', 'gw'),
+    c3: seq('gw', 'task2'),
+    c4: seq('gw', 'task3'),
+    c5: seq('task2', 'end'),
+    c6: seq('task3', 'end'),
+  };
+}
 
 /**
  * Two participants, and the one arrow that is allowed to cross between them.
@@ -279,19 +351,43 @@ const process: SurfaceElementsJSON = {
  * until this slice ran the rules over the shipped cards. The customer's process
  * now closes where it should: order placed, then done.
  */
-const messageExchange: SurfaceElementsJSON = {
-  customer: pool(0, 0, 640, 200, 'Customer'),
-  supplier: pool(0, 240, 640, 200, 'Supplier'),
-  start: node('startEvent', 40, 72),
-  ask: node('taskUser', 140, 64, 'Place order'),
-  done: node('endEvent', 320, 72),
-  answer: node('taskService', 140, 304, 'Confirm order'),
-  // Inside the first participant: what happens, and in what order.
-  inside: seq('start', 'ask'),
-  closes: seq('ask', 'done'),
-  // Across the two: who told whom.
-  across: msg('ask', 'answer'),
-};
+function messageExchange(std?: BlockStdScope): SurfaceElementsJSON {
+  return {
+    customer: pool(
+      0,
+      0,
+      640,
+      200,
+      seedText(std, MESSAGE_EXCHANGE_SEED.customer)
+    ),
+    supplier: pool(
+      0,
+      240,
+      640,
+      200,
+      seedText(std, MESSAGE_EXCHANGE_SEED.supplier)
+    ),
+    start: node('startEvent', 40, 72),
+    ask: node(
+      'taskUser',
+      140,
+      64,
+      seedText(std, MESSAGE_EXCHANGE_SEED.placeOrder)
+    ),
+    done: node('endEvent', 320, 72),
+    answer: node(
+      'taskService',
+      140,
+      304,
+      seedText(std, MESSAGE_EXCHANGE_SEED.confirmOrder)
+    ),
+    // Inside the first participant: what happens, and in what order.
+    inside: seq('start', 'ask'),
+    closes: seq('ask', 'done'),
+    // Across the two: who told whom.
+    across: msg('ask', 'answer'),
+  };
+}
 
 export const bpmnTemplateCategory: TemplateCategory = {
   name: 'BPMN',
@@ -303,7 +399,7 @@ export const bpmnTemplateCategory: TemplateCategory = {
     templateFromCommand(byId('bpmn.addEndEvent'), previews.endEvent),
     templateFromCommand(byId('bpmn.addTask'), previews.task),
     templateFromCommand(byId('bpmn.addExclusiveGateway'), previews.gateway),
-    scene('Sequence flow', previews.sequence, { a: freeSeq() }),
+    scene('Sequence flow', previews.sequence, () => ({ a: freeSeq() })),
     templateFromCommand(byId('bpmn.addPool'), previews.pool),
     /* ── Activities ─────────────────────────────────────────────────────── */
     templateFromCommand(byId('bpmn.addUserTask'), previews.taskUser),
