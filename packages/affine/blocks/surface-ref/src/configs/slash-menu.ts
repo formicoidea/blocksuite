@@ -1,6 +1,7 @@
 import { EdgelessFrameManagerIdentifier } from '@labre/affine-block-frame';
 import { EdgelessCRUDExtension } from '@labre/affine-block-surface';
 import { MindmapStyle, SurfaceRefBlockSchema } from '@labre/affine-model';
+import { translateKey } from '@labre/affine-shared/services';
 import {
   type SlashMenuActionItem,
   type SlashMenuConfig,
@@ -13,6 +14,10 @@ import { BlockSelection } from '@labre/std';
 import { GfxControllerIdentifier } from '@labre/std/gfx';
 
 import { insertSurfaceRefBlockCommand } from '../commands';
+import {
+  SURFACE_REF_SEED_MINDMAP_NODE,
+  SURFACE_REF_SEED_MINDMAP_ROOT,
+} from '../translations';
 import { EdgelessTooltip, FrameTooltip, MindMapTooltip } from './tooltips';
 
 const surfaceRefSlashMenuConfig: SlashMenuConfig = {
@@ -96,9 +101,12 @@ const surfaceRefSlashMenuConfig: SlashMenuConfig = {
           xywh: string;
         };
 
+        // Translated HERE and once: the captions are document content the
+        // moment they land (ADR 0016), so the host's catalogue is asked at
+        // placement and never again.
         const root: MindMapNode = {
           children: [],
-          text: 'Mind Map',
+          text: translateKey(std, ...SURFACE_REF_SEED_MINDMAP_ROOT),
           xywh: `[${rootX},${rootY},${rootW},${rootH}]`,
         };
 
@@ -107,7 +115,7 @@ const surfaceRefSlashMenuConfig: SlashMenuConfig = {
           const nodeY = centerVertical - nodeH / 2 + (i - 1) * 50;
           root.children.push({
             children: [],
-            text: 'Text',
+            text: translateKey(std, ...SURFACE_REF_SEED_MINDMAP_NODE),
             xywh: `[${nodeX},${nodeY},${nodeW},${nodeH}]`,
           });
         }

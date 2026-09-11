@@ -6,3 +6,4 @@ export * from './template-tool.js';
 export * from './toolbar/senior-tool.js';
 export * from './toolbar/template-panel.js';
 export * from './toolbar/template-type.js';
+export * from './translations.js';
