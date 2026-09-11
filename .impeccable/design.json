@@ -1,0 +1,851 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-11T08:18:56.800Z",
+  "title": "Design System: Labre editor library",
+  "extensions": {
+    "colorMeta": {
+      "accent-borrowed-blue": {
+        "role": "primary",
+        "displayName": "Accent Borrowed Blue",
+        "canonical": "oklch(65.3% 0.160 246.5)",
+        "tonalRamp": [
+          "oklch(15% 0.160 246.5)",
+          "oklch(26% 0.160 246.5)",
+          "oklch(37% 0.160 246.5)",
+          "oklch(48% 0.160 246.5)",
+          "oklch(59% 0.160 246.5)",
+          "oklch(70% 0.160 246.5)",
+          "oklch(82% 0.160 246.5)",
+          "oklch(95% 0.160 246.5)"
+        ]
+      },
+      "link-deep-blue": {
+        "role": "secondary",
+        "displayName": "Link Deep Blue",
+        "canonical": "oklch(50.8% 0.134 252.1)",
+        "tonalRamp": [
+          "oklch(15% 0.134 252.1)",
+          "oklch(26% 0.134 252.1)",
+          "oklch(37% 0.134 252.1)",
+          "oklch(48% 0.134 252.1)",
+          "oklch(59% 0.134 252.1)",
+          "oklch(70% 0.134 252.1)",
+          "oklch(82% 0.134 252.1)",
+          "oklch(95% 0.134 252.1)"
+        ]
+      },
+      "processing-blue": {
+        "role": "secondary",
+        "displayName": "Processing Blue",
+        "canonical": "oklch(60.0% 0.218 260.8)",
+        "tonalRamp": [
+          "oklch(15% 0.200 260.8)",
+          "oklch(26% 0.200 260.8)",
+          "oklch(37% 0.200 260.8)",
+          "oklch(48% 0.200 260.8)",
+          "oklch(59% 0.200 260.8)",
+          "oklch(70% 0.200 260.8)",
+          "oklch(82% 0.200 260.8)",
+          "oklch(95% 0.200 260.8)"
+        ]
+      },
+      "success-green": {
+        "role": "secondary",
+        "displayName": "Success Green",
+        "canonical": "oklch(74.4% 0.167 159.7)",
+        "tonalRamp": [
+          "oklch(15% 0.167 159.7)",
+          "oklch(26% 0.167 159.7)",
+          "oklch(37% 0.167 159.7)",
+          "oklch(48% 0.167 159.7)",
+          "oklch(59% 0.167 159.7)",
+          "oklch(70% 0.167 159.7)",
+          "oklch(82% 0.167 159.7)",
+          "oklch(95% 0.167 159.7)"
+        ]
+      },
+      "error-red": {
+        "role": "secondary",
+        "displayName": "Error Red",
+        "canonical": "oklch(62.7% 0.207 29.1)",
+        "tonalRamp": [
+          "oklch(15% 0.200 29.1)",
+          "oklch(26% 0.200 29.1)",
+          "oklch(37% 0.200 29.1)",
+          "oklch(48% 0.200 29.1)",
+          "oklch(59% 0.200 29.1)",
+          "oklch(70% 0.200 29.1)",
+          "oklch(82% 0.200 29.1)",
+          "oklch(95% 0.200 29.1)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(18.2% 0.000 89.9)",
+        "tonalRamp": [
+          "oklch(15% 0.000 89.9)",
+          "oklch(26% 0.000 89.9)",
+          "oklch(37% 0.000 89.9)",
+          "oklch(48% 0.000 89.9)",
+          "oklch(59% 0.000 89.9)",
+          "oklch(70% 0.000 89.9)",
+          "oklch(82% 0.000 89.9)",
+          "oklch(95% 0.000 89.9)"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Ink Muted",
+        "canonical": "oklch(64.6% 0.006 297.7)",
+        "tonalRamp": [
+          "oklch(15% 0.006 297.7)",
+          "oklch(26% 0.006 297.7)",
+          "oklch(37% 0.006 297.7)",
+          "oklch(48% 0.006 297.7)",
+          "oklch(59% 0.006 297.7)",
+          "oklch(70% 0.006 297.7)",
+          "oklch(82% 0.006 297.7)",
+          "oklch(95% 0.006 297.7)"
+        ]
+      },
+      "ink-disabled": {
+        "role": "neutral",
+        "displayName": "Ink Disabled",
+        "canonical": "oklch(73.6% 0.006 286.3)",
+        "tonalRamp": [
+          "oklch(15% 0.006 286.3)",
+          "oklch(26% 0.006 286.3)",
+          "oklch(37% 0.006 286.3)",
+          "oklch(48% 0.006 286.3)",
+          "oklch(59% 0.006 286.3)",
+          "oklch(70% 0.006 286.3)",
+          "oklch(82% 0.006 286.3)",
+          "oklch(95% 0.006 286.3)"
+        ]
+      },
+      "icon-graphite": {
+        "role": "neutral",
+        "displayName": "Icon Graphite",
+        "canonical": "oklch(56.7% 0.012 297.4)",
+        "tonalRamp": [
+          "oklch(15% 0.012 297.4)",
+          "oklch(26% 0.012 297.4)",
+          "oklch(37% 0.012 297.4)",
+          "oklch(48% 0.012 297.4)",
+          "oklch(59% 0.012 297.4)",
+          "oklch(70% 0.012 297.4)",
+          "oklch(82% 0.012 297.4)",
+          "oklch(95% 0.012 297.4)"
+        ]
+      },
+      "placeholder-grey": {
+        "role": "neutral",
+        "displayName": "Placeholder Grey",
+        "canonical": "oklch(80.6% 0.003 308.4)",
+        "tonalRamp": [
+          "oklch(15% 0.003 308.4)",
+          "oklch(26% 0.003 308.4)",
+          "oklch(37% 0.003 308.4)",
+          "oklch(48% 0.003 308.4)",
+          "oklch(59% 0.003 308.4)",
+          "oklch(70% 0.003 308.4)",
+          "oklch(82% 0.003 308.4)",
+          "oklch(95% 0.003 308.4)"
+        ]
+      },
+      "quote-bar-grey": {
+        "role": "neutral",
+        "displayName": "Quote Bar Grey",
+        "canonical": "oklch(81.3% 0.006 297.7)",
+        "tonalRamp": [
+          "oklch(15% 0.006 297.7)",
+          "oklch(26% 0.006 297.7)",
+          "oklch(37% 0.006 297.7)",
+          "oklch(48% 0.006 297.7)",
+          "oklch(59% 0.006 297.7)",
+          "oklch(70% 0.006 297.7)",
+          "oklch(82% 0.006 297.7)",
+          "oklch(95% 0.006 297.7)"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "oklch(15% 0.000 89.9)",
+          "oklch(26% 0.000 89.9)",
+          "oklch(37% 0.000 89.9)",
+          "oklch(48% 0.000 89.9)",
+          "oklch(59% 0.000 89.9)",
+          "oklch(70% 0.000 89.9)",
+          "oklch(82% 0.000 89.9)",
+          "oklch(95% 0.000 89.9)"
+        ]
+      },
+      "overlay-paper": {
+        "role": "neutral",
+        "displayName": "Overlay Paper",
+        "canonical": "oklch(98.8% 0.001 286.4)",
+        "tonalRamp": [
+          "oklch(15% 0.001 286.4)",
+          "oklch(26% 0.001 286.4)",
+          "oklch(37% 0.001 286.4)",
+          "oklch(48% 0.001 286.4)",
+          "oklch(59% 0.001 286.4)",
+          "oklch(70% 0.001 286.4)",
+          "oklch(82% 0.001 286.4)",
+          "oklch(95% 0.001 286.4)"
+        ]
+      },
+      "surface-secondary": {
+        "role": "neutral",
+        "displayName": "Surface Secondary",
+        "canonical": "oklch(96.7% 0.001 286.4)",
+        "tonalRamp": [
+          "oklch(15% 0.001 286.4)",
+          "oklch(26% 0.001 286.4)",
+          "oklch(37% 0.001 286.4)",
+          "oklch(48% 0.001 286.4)",
+          "oklch(59% 0.001 286.4)",
+          "oklch(70% 0.001 286.4)",
+          "oklch(82% 0.001 286.4)",
+          "oklch(95% 0.001 286.4)"
+        ]
+      },
+      "surface-tertiary": {
+        "role": "neutral",
+        "displayName": "Surface Tertiary",
+        "canonical": "oklch(94.9% 0.000 89.9)",
+        "tonalRamp": [
+          "oklch(15% 0.000 89.9)",
+          "oklch(26% 0.000 89.9)",
+          "oklch(37% 0.000 89.9)",
+          "oklch(48% 0.000 89.9)",
+          "oklch(59% 0.000 89.9)",
+          "oklch(70% 0.000 89.9)",
+          "oklch(82% 0.000 89.9)",
+          "oklch(95% 0.000 89.9)"
+        ]
+      },
+      "code-surface": {
+        "role": "neutral",
+        "displayName": "Code Surface",
+        "canonical": "oklch(97.9% 0.003 264.5)",
+        "tonalRamp": [
+          "oklch(15% 0.003 264.5)",
+          "oklch(26% 0.003 264.5)",
+          "oklch(37% 0.003 264.5)",
+          "oklch(48% 0.003 264.5)",
+          "oklch(59% 0.003 264.5)",
+          "oklch(70% 0.003 264.5)",
+          "oklch(82% 0.003 264.5)",
+          "oklch(95% 0.003 264.5)"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(91.4% 0.003 308.4)",
+        "tonalRamp": [
+          "oklch(15% 0.003 308.4)",
+          "oklch(26% 0.003 308.4)",
+          "oklch(37% 0.003 308.4)",
+          "oklch(48% 0.003 308.4)",
+          "oklch(59% 0.003 308.4)",
+          "oklch(70% 0.003 308.4)",
+          "oklch(82% 0.003 308.4)",
+          "oklch(95% 0.003 308.4)"
+        ]
+      },
+      "canvas-grid": {
+        "role": "neutral",
+        "displayName": "Canvas Grid",
+        "canonical": "oklch(92.5% 0.000 89.9)",
+        "tonalRamp": [
+          "oklch(15% 0.000 89.9)",
+          "oklch(26% 0.000 89.9)",
+          "oklch(37% 0.000 89.9)",
+          "oklch(48% 0.000 89.9)",
+          "oklch(59% 0.000 89.9)",
+          "oklch(70% 0.000 89.9)",
+          "oklch(82% 0.000 89.9)",
+          "oklch(95% 0.000 89.9)"
+        ]
+      },
+      "hover-veil": {
+        "role": "neutral",
+        "displayName": "Hover Veil"
+      },
+      "tooltip-black": {
+        "role": "neutral",
+        "displayName": "Tooltip Black",
+        "canonical": "oklch(0.0% 0.000 0.0)",
+        "tonalRamp": [
+          "oklch(15% 0.000 0.0)",
+          "oklch(26% 0.000 0.0)",
+          "oklch(37% 0.000 0.0)",
+          "oklch(48% 0.000 0.0)",
+          "oklch(59% 0.000 0.0)",
+          "oklch(70% 0.000 0.0)",
+          "oklch(82% 0.000 0.0)",
+          "oklch(95% 0.000 0.0)"
+        ]
+      },
+      "notation-ink": {
+        "role": "notation",
+        "displayName": "Notation Ink",
+        "canonical": "oklch(25.4% 0.011 254.0)",
+        "tonalRamp": [
+          "oklch(15% 0.011 254.0)",
+          "oklch(26% 0.011 254.0)",
+          "oklch(37% 0.011 254.0)",
+          "oklch(48% 0.011 254.0)",
+          "oklch(59% 0.011 254.0)",
+          "oklch(70% 0.011 254.0)",
+          "oklch(82% 0.011 254.0)",
+          "oklch(95% 0.011 254.0)"
+        ]
+      },
+      "notation-divider": {
+        "role": "notation",
+        "displayName": "Notation Divider",
+        "canonical": "oklch(70.3% 0.011 248.0)",
+        "tonalRamp": [
+          "oklch(15% 0.011 248.0)",
+          "oklch(26% 0.011 248.0)",
+          "oklch(37% 0.011 248.0)",
+          "oklch(48% 0.011 248.0)",
+          "oklch(59% 0.011 248.0)",
+          "oklch(70% 0.011 248.0)",
+          "oklch(82% 0.011 248.0)",
+          "oklch(95% 0.011 248.0)"
+        ]
+      },
+      "notation-card-border": {
+        "role": "notation",
+        "displayName": "Notation Card Border",
+        "canonical": "oklch(91.4% 0.003 308.4)",
+        "tonalRamp": [
+          "oklch(15% 0.003 308.4)",
+          "oklch(26% 0.003 308.4)",
+          "oklch(37% 0.003 308.4)",
+          "oklch(48% 0.003 308.4)",
+          "oklch(59% 0.003 308.4)",
+          "oklch(70% 0.003 308.4)",
+          "oklch(82% 0.003 308.4)",
+          "oklch(95% 0.003 308.4)"
+        ]
+      },
+      "notation-legend-border": {
+        "role": "notation",
+        "displayName": "Notation Legend Border",
+        "canonical": "oklch(86.3% 0.006 255.5)",
+        "tonalRamp": [
+          "oklch(15% 0.006 255.5)",
+          "oklch(26% 0.006 255.5)",
+          "oklch(37% 0.006 255.5)",
+          "oklch(48% 0.006 255.5)",
+          "oklch(59% 0.006 255.5)",
+          "oklch(70% 0.006 255.5)",
+          "oklch(82% 0.006 255.5)",
+          "oklch(95% 0.006 255.5)"
+        ]
+      },
+      "notation-band": {
+        "role": "notation",
+        "displayName": "Notation Band",
+        "canonical": "oklch(98.4% 0.007 260.7)",
+        "tonalRamp": [
+          "oklch(15% 0.007 260.7)",
+          "oklch(26% 0.007 260.7)",
+          "oklch(37% 0.007 260.7)",
+          "oklch(48% 0.007 260.7)",
+          "oklch(59% 0.007 260.7)",
+          "oklch(70% 0.007 260.7)",
+          "oklch(82% 0.007 260.7)",
+          "oklch(95% 0.007 260.7)"
+        ]
+      },
+      "edgy-identity": {
+        "role": "notation",
+        "displayName": "EDGY Identity",
+        "canonical": "oklch(81.5% 0.249 146.0)",
+        "tonalRamp": [
+          "oklch(15% 0.200 146.0)",
+          "oklch(26% 0.200 146.0)",
+          "oklch(37% 0.200 146.0)",
+          "oklch(48% 0.200 146.0)",
+          "oklch(59% 0.200 146.0)",
+          "oklch(70% 0.200 146.0)",
+          "oklch(82% 0.200 146.0)",
+          "oklch(95% 0.200 146.0)"
+        ]
+      },
+      "edgy-architecture": {
+        "role": "notation",
+        "displayName": "EDGY Architecture",
+        "canonical": "oklch(50.2% 0.249 263.0)",
+        "tonalRamp": [
+          "oklch(15% 0.200 263.0)",
+          "oklch(26% 0.200 263.0)",
+          "oklch(37% 0.200 263.0)",
+          "oklch(48% 0.200 263.0)",
+          "oklch(59% 0.200 263.0)",
+          "oklch(70% 0.200 263.0)",
+          "oklch(82% 0.200 263.0)",
+          "oklch(95% 0.200 263.0)"
+        ]
+      },
+      "edgy-experience": {
+        "role": "notation",
+        "displayName": "EDGY Experience",
+        "canonical": "oklch(63.6% 0.254 15.2)",
+        "tonalRamp": [
+          "oklch(15% 0.200 15.2)",
+          "oklch(26% 0.200 15.2)",
+          "oklch(37% 0.200 15.2)",
+          "oklch(48% 0.200 15.2)",
+          "oklch(59% 0.200 15.2)",
+          "oklch(70% 0.200 15.2)",
+          "oklch(82% 0.200 15.2)",
+          "oklch(95% 0.200 15.2)"
+        ]
+      },
+      "edgy-organisation": {
+        "role": "notation",
+        "displayName": "EDGY Organisation",
+        "canonical": "oklch(77.6% 0.141 220.0)",
+        "tonalRamp": [
+          "oklch(15% 0.141 220.0)",
+          "oklch(26% 0.141 220.0)",
+          "oklch(37% 0.141 220.0)",
+          "oklch(48% 0.141 220.0)",
+          "oklch(59% 0.141 220.0)",
+          "oklch(70% 0.141 220.0)",
+          "oklch(82% 0.141 220.0)",
+          "oklch(95% 0.141 220.0)"
+        ]
+      },
+      "edgy-brand": {
+        "role": "notation",
+        "displayName": "EDGY Brand",
+        "canonical": "oklch(79.3% 0.171 70.7)",
+        "tonalRamp": [
+          "oklch(15% 0.171 70.7)",
+          "oklch(26% 0.171 70.7)",
+          "oklch(37% 0.171 70.7)",
+          "oklch(48% 0.171 70.7)",
+          "oklch(59% 0.171 70.7)",
+          "oklch(70% 0.171 70.7)",
+          "oklch(82% 0.171 70.7)",
+          "oklch(95% 0.171 70.7)"
+        ]
+      },
+      "edgy-product": {
+        "role": "notation",
+        "displayName": "EDGY Product",
+        "canonical": "oklch(63.2% 0.308 317.2)",
+        "tonalRamp": [
+          "oklch(15% 0.200 317.2)",
+          "oklch(26% 0.200 317.2)",
+          "oklch(37% 0.200 317.2)",
+          "oklch(48% 0.200 317.2)",
+          "oklch(59% 0.200 317.2)",
+          "oklch(70% 0.200 317.2)",
+          "oklch(82% 0.200 317.2)",
+          "oklch(95% 0.200 317.2)"
+        ]
+      },
+      "c4-person": {
+        "role": "notation",
+        "displayName": "C4 Person",
+        "canonical": "oklch(37.9% 0.111 253.4)",
+        "tonalRamp": [
+          "oklch(15% 0.111 253.4)",
+          "oklch(26% 0.111 253.4)",
+          "oklch(37% 0.111 253.4)",
+          "oklch(48% 0.111 253.4)",
+          "oklch(59% 0.111 253.4)",
+          "oklch(70% 0.111 253.4)",
+          "oklch(82% 0.111 253.4)",
+          "oklch(95% 0.111 253.4)"
+        ]
+      },
+      "c4-system": {
+        "role": "notation",
+        "displayName": "C4 System",
+        "canonical": "oklch(51.7% 0.154 253.5)",
+        "tonalRamp": [
+          "oklch(15% 0.154 253.5)",
+          "oklch(26% 0.154 253.5)",
+          "oklch(37% 0.154 253.5)",
+          "oklch(48% 0.154 253.5)",
+          "oklch(59% 0.154 253.5)",
+          "oklch(70% 0.154 253.5)",
+          "oklch(82% 0.154 253.5)",
+          "oklch(95% 0.154 253.5)"
+        ]
+      },
+      "c4-container": {
+        "role": "notation",
+        "displayName": "C4 Container",
+        "canonical": "oklch(62.9% 0.132 250.2)",
+        "tonalRamp": [
+          "oklch(15% 0.132 250.2)",
+          "oklch(26% 0.132 250.2)",
+          "oklch(37% 0.132 250.2)",
+          "oklch(48% 0.132 250.2)",
+          "oklch(59% 0.132 250.2)",
+          "oklch(70% 0.132 250.2)",
+          "oklch(82% 0.132 250.2)",
+          "oklch(95% 0.132 250.2)"
+        ]
+      },
+      "c4-component": {
+        "role": "notation",
+        "displayName": "C4 Component",
+        "canonical": "oklch(77.5% 0.095 248.7)",
+        "tonalRamp": [
+          "oklch(15% 0.095 248.7)",
+          "oklch(26% 0.095 248.7)",
+          "oklch(37% 0.095 248.7)",
+          "oklch(48% 0.095 248.7)",
+          "oklch(59% 0.095 248.7)",
+          "oklch(70% 0.095 248.7)",
+          "oklch(82% 0.095 248.7)",
+          "oklch(95% 0.095 248.7)"
+        ]
+      },
+      "c4-boundary": {
+        "role": "notation",
+        "displayName": "C4 Boundary",
+        "canonical": "oklch(38.7% 0.000 89.9)",
+        "tonalRamp": [
+          "oklch(15% 0.000 89.9)",
+          "oklch(26% 0.000 89.9)",
+          "oklch(37% 0.000 89.9)",
+          "oklch(48% 0.000 89.9)",
+          "oklch(59% 0.000 89.9)",
+          "oklch(70% 0.000 89.9)",
+          "oklch(82% 0.000 89.9)",
+          "oklch(95% 0.000 89.9)"
+        ]
+      },
+      "bpmn-event-start": {
+        "role": "notation",
+        "displayName": "BPMN Event Start",
+        "canonical": "oklch(63.6% 0.120 155.6)",
+        "tonalRamp": [
+          "oklch(15% 0.120 155.6)",
+          "oklch(26% 0.120 155.6)",
+          "oklch(37% 0.120 155.6)",
+          "oklch(48% 0.120 155.6)",
+          "oklch(59% 0.120 155.6)",
+          "oklch(70% 0.120 155.6)",
+          "oklch(82% 0.120 155.6)",
+          "oklch(95% 0.120 155.6)"
+        ]
+      },
+      "bpmn-event-end": {
+        "role": "notation",
+        "displayName": "BPMN Event End",
+        "canonical": "oklch(60.7% 0.156 29.1)",
+        "tonalRamp": [
+          "oklch(15% 0.156 29.1)",
+          "oklch(26% 0.156 29.1)",
+          "oklch(37% 0.156 29.1)",
+          "oklch(48% 0.156 29.1)",
+          "oklch(59% 0.156 29.1)",
+          "oklch(70% 0.156 29.1)",
+          "oklch(82% 0.156 29.1)",
+          "oklch(95% 0.156 29.1)"
+        ]
+      },
+      "notation-frame-ink": {
+        "role": "notation",
+        "displayName": "Notation Frame Ink",
+        "canonical": "oklch(36.0% 0.009 268.4)",
+        "tonalRamp": [
+          "oklch(15% 0.009 268.4)",
+          "oklch(26% 0.009 268.4)",
+          "oklch(37% 0.009 268.4)",
+          "oklch(48% 0.009 268.4)",
+          "oklch(59% 0.009 268.4)",
+          "oklch(70% 0.009 268.4)",
+          "oklch(82% 0.009 268.4)",
+          "oklch(95% 0.009 268.4)"
+        ]
+      },
+      "notation-label": {
+        "role": "notation",
+        "displayName": "Notation Label",
+        "canonical": "oklch(55.1% 0.023 264.4)",
+        "tonalRamp": [
+          "oklch(15% 0.023 264.4)",
+          "oklch(26% 0.023 264.4)",
+          "oklch(37% 0.023 264.4)",
+          "oklch(48% 0.023 264.4)",
+          "oklch(59% 0.023 264.4)",
+          "oklch(70% 0.023 264.4)",
+          "oklch(82% 0.023 264.4)",
+          "oklch(95% 0.023 264.4)"
+        ]
+      },
+      "canvas-highlighter": {
+        "role": "notation",
+        "displayName": "Canvas Highlighter",
+        "canonical": "oklch(82.3% 0.101 237.8)",
+        "tonalRamp": [
+          "oklch(15% 0.101 237.8)",
+          "oklch(26% 0.101 237.8)",
+          "oklch(37% 0.101 237.8)",
+          "oklch(48% 0.101 237.8)",
+          "oklch(59% 0.101 237.8)",
+          "oklch(70% 0.101 237.8)",
+          "oklch(82% 0.101 237.8)",
+          "oklch(95% 0.101 237.8)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline-1": {
+        "displayName": "Headline 1",
+        "purpose": "First heading level in a document (H1); 18px space above."
+      },
+      "headline-2": {
+        "displayName": "Headline 2",
+        "purpose": "Section headings (H2); 14px space above."
+      },
+      "headline-3": {
+        "displayName": "Headline 3",
+        "purpose": "Section headings (H3, 20px); 12px space above."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Minor headings H4-H6 (18 / 16 / 15px, weight 600)."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Prose and list items in the 944px page column."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Toolbar labels, menu items, panel text."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Icon-button sub-labels, shortcuts, metadata."
+      },
+      "code": {
+        "displayName": "Code",
+        "purpose": "Code blocks and inline code."
+      },
+      "numeric": {
+        "displayName": "Numeric",
+        "purpose": "Tabular numbers."
+      }
+    },
+    "shadows": [
+      {
+        "name": "overlay",
+        "value": "0px 1px 6px 0px rgba(0,0,0,.16), 0px 8px 14px 0px rgba(0,0,0,.08)",
+        "purpose": "Editor toolbar and floating panels (--affine-overlay-shadow / --affine-overlay-panel-shadow)."
+      },
+      {
+        "name": "menu",
+        "value": "0px 10px 18px rgba(0,0,0,.14), 0px -1px 12px rgba(0,0,0,.08)",
+        "purpose": "Dropdown menus (--affine-menu-shadow)."
+      },
+      {
+        "name": "button",
+        "value": "0px 0px 1px 0px rgba(0,0,0,.12), 0px 1px 5px 0px rgba(0,0,0,.12)",
+        "purpose": "Small raised controls on the canvas (--affine-button-shadow)."
+      },
+      {
+        "name": "popover",
+        "value": "0px 0px 30px rgba(75,75,75,.2), 0px 0px 4px rgba(75,75,75,.3)",
+        "purpose": "Larger popovers (--affine-popover-shadow)."
+      },
+      {
+        "name": "shadow-1",
+        "value": "0px 0px 4px 0px rgba(66,65,73,.14)",
+        "purpose": "Upstream ambient step 1."
+      },
+      {
+        "name": "shadow-2",
+        "value": "0px 0px 12px 0px rgba(66,65,73,.18)",
+        "purpose": "Upstream ambient step 2."
+      },
+      {
+        "name": "shadow-3",
+        "value": "0px 0px 20px 0px rgba(66,65,73,.22)",
+        "purpose": "Upstream ambient step 3."
+      },
+      {
+        "name": "active-ring",
+        "value": "0px 0px 0px 2px rgba(30,150,235,.3)",
+        "purpose": "Focus/active ring on inputs (--affine-active-shadow)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "fade",
+        "value": "opacity 0.2s ease-in-out",
+        "purpose": "Most common transition: showing/hiding hover affordances and overlays."
+      },
+      {
+        "name": "slide",
+        "value": "transform 0.3s ease-in-out",
+        "purpose": "Panel and indicator movement."
+      }
+    ],
+    "breakpoints": []
+  },
+  "components": [
+    {
+      "name": "Icon Button",
+      "kind": "button",
+      "refersTo": "icon-button",
+      "description": "The main control: transparent at rest, 4% black wash on hover.",
+      "html": "<button class=\"ds-icon-btn\" aria-label=\"Bold\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 5h6a3.5 3.5 0 0 1 0 7H7z\"/><path d=\"M7 12h7a3.5 3.5 0 0 1 0 7H7z\"/></svg></button>",
+      "css": ".ds-icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 4px; border: none; border-radius: 4px; background: transparent; color: var(--affine-icon-color, #77757D); cursor: pointer; } @media (hover: hover) { .ds-icon-btn:hover { background: var(--affine-hover-color, rgba(0,0,0,.04)); } } .ds-icon-btn:focus-visible { outline: none; box-shadow: var(--affine-active-shadow, 0 0 0 2px rgba(30,150,235,.3)); } .ds-icon-btn:disabled { color: var(--affine-text-disable-color, #A9A9AD); background: transparent; cursor: default; }"
+    },
+    {
+      "name": "Icon Button (active)",
+      "kind": "button",
+      "refersTo": "icon-button-active",
+      "description": "Toggled state: the glyph turns the accent colour; the background stays transparent.",
+      "html": "<button class=\"ds-icon-btn-active\" aria-pressed=\"true\" aria-label=\"Italic\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M19 4h-9M14 20H5M15 4 9 20\"/></svg></button>",
+      "css": ".ds-icon-btn-active { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 4px; border: none; border-radius: 4px; background: transparent; color: var(--affine-v2-icon-activated, #1E96EB); cursor: pointer; } @media (hover: hover) { .ds-icon-btn-active:hover { background: var(--affine-hover-color, rgba(0,0,0,.04)); } } .ds-icon-btn-active:focus-visible { outline: none; box-shadow: var(--affine-active-shadow, 0 0 0 2px rgba(30,150,235,.3)); }"
+    },
+    {
+      "name": "Editor Toolbar",
+      "kind": "nav",
+      "refersTo": "editor-toolbar",
+      "description": "Floating selection toolbar: exactly one 36px row, 8px corners, 0.5px inside border, overlay shadow.",
+      "html": "<div class=\"ds-toolbar\" role=\"toolbar\"><button class=\"ds-tb-btn\" aria-label=\"Bold\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M7 5h6a3.5 3.5 0 0 1 0 7H7zM7 12h7a3.5 3.5 0 0 1 0 7H7z\"/></svg></button><button class=\"ds-tb-btn\" aria-label=\"Link\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1\"/><path d=\"M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1\"/></svg></button><span class=\"ds-tb-sep\"></span><button class=\"ds-tb-btn ds-tb-label\">Text<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"m6 9 6 6 6-6\"/></svg></button><button class=\"ds-tb-btn\" aria-label=\"More\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><circle cx=\"12\" cy=\"5\" r=\"1.6\"/><circle cx=\"12\" cy=\"12\" r=\"1.6\"/><circle cx=\"12\" cy=\"19\" r=\"1.6\"/></svg></button></div>",
+      "css": ".ds-toolbar { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 6px; border-radius: 8px; border: 0.5px solid var(--affine-v2-layer-insideBorder-border, #E6E6E6); background: var(--affine-v2-layer-background-overlayPanel, #FFFFFF); box-shadow: var(--affine-overlay-shadow, 0px 1px 6px 0px rgba(0,0,0,.16), 0px 8px 14px 0px rgba(0,0,0,.08)); color: var(--affine-text-primary-color, #121212); font: 400 14px/22px Inter, system-ui, sans-serif; } .ds-tb-btn { display: inline-flex; align-items: center; gap: 2px; height: 28px; min-width: 28px; justify-content: center; padding: 4px; border: none; border-radius: 4px; background: transparent; color: inherit; font: inherit; cursor: pointer; flex-shrink: 0; } .ds-tb-label { padding: 4px 6px; } @media (hover: hover) { .ds-tb-btn:hover { background: var(--affine-hover-color, rgba(0,0,0,.04)); } } .ds-tb-btn:focus-visible { outline: none; box-shadow: var(--affine-active-shadow, 0 0 0 2px rgba(30,150,235,.3)); } .ds-tb-sep { width: 0.5px; height: 20px; background: var(--affine-divider-color, #E3E2E4); }"
+    },
+    {
+      "name": "Menu",
+      "kind": "custom",
+      "refersTo": "menu-panel",
+      "description": "Dropdown/context menu: overlay paper, 4px corners, 8px padding, 180px min width.",
+      "html": "<div class=\"ds-menu\" role=\"menu\"><button class=\"ds-menu-item\" role=\"menuitem\">Duplicate<span class=\"ds-menu-kbd\">Ctrl D</span></button><button class=\"ds-menu-item\" role=\"menuitem\">Copy link to block</button><div class=\"ds-menu-div\"></div><button class=\"ds-menu-item ds-menu-danger\" role=\"menuitem\">Delete</button></div>",
+      "css": ".ds-menu { display: flex; flex-direction: column; min-width: 180px; padding: 8px; border-radius: 4px; background: var(--affine-background-overlay-panel-color, #FBFBFC); box-shadow: var(--affine-overlay-panel-shadow, 0px 1px 6px rgba(0,0,0,.16), 0px 8px 14px rgba(0,0,0,.08)); font: 400 14px/22px Inter, system-ui, sans-serif; } .ds-menu-item { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 4px; border: none; border-radius: 4px; background: transparent; color: var(--affine-text-primary-color, #121212); font: inherit; text-align: left; cursor: pointer; } .ds-menu-item:hover { background: var(--affine-hover-color, rgba(0,0,0,.04)); } .ds-menu-item:focus-visible { outline: none; background: var(--affine-hover-color, rgba(0,0,0,.04)); } .ds-menu-kbd { font-size: 12px; color: var(--affine-text-secondary-color, #8E8D91); } .ds-menu-div { height: 0.5px; margin: 4px 0; background: var(--affine-divider-color, #E3E2E4); } .ds-menu-danger { color: var(--affine-error-color, #EB4335); } .ds-menu-danger:hover { background: var(--affine-background-error-color, #FDECEB); }"
+    },
+    {
+      "name": "Menu Input",
+      "kind": "input",
+      "refersTo": "menu-input",
+      "description": "Text field inside menus: 4px corners, hairline border, 2px accent ring at 30% on focus.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Search\" aria-label=\"Search\" />",
+      "css": ".ds-input { width: 180px; padding: 4px 6px; border: 1px solid var(--affine-border-color, #E3E2E4); border-radius: 4px; background: var(--affine-background-primary-color, #FFFFFF); color: var(--affine-text-primary-color, #121212); font: 400 14px/22px Inter, system-ui, sans-serif; outline: none; transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out; } .ds-input::placeholder { color: var(--affine-placeholder-color, #C0BFC1); } .ds-input:focus, .ds-input:focus-visible { border-color: var(--affine-primary-color, #1E96EB); box-shadow: 0px 0px 0px 2px rgba(28,158,228,.3); }"
+    },
+    {
+      "name": "Framework Board",
+      "kind": "card",
+      "refersTo": "framework-board-card",
+      "description": "Signature: the white card that frames a framework canvas; notation colours are drawn on it and never follow the app theme.",
+      "html": "<div class=\"ds-board\"><div class=\"ds-board-title\">Context — C4 level 1</div><div class=\"ds-board-band\"><span class=\"ds-c4 ds-c4-person\">Architect</span><span class=\"ds-c4-rel\"></span><span class=\"ds-c4 ds-c4-system\">Labre</span><span class=\"ds-c4-rel\"></span><span class=\"ds-c4 ds-c4-component\">Renderer</span></div></div>",
+      "css": ".ds-board { width: 440px; padding: 16px; border: 1px solid #E3E2E4; border-radius: 4px; background: #FFFFFF; font: 400 14px/1.4 Inter, system-ui, sans-serif; } .ds-board-title { margin-bottom: 12px; color: #3B3D42; font-weight: 600; } .ds-board-band { display: flex; align-items: center; gap: 0; padding: 16px 12px; background: #F7FAFF; } .ds-c4 { display: inline-flex; align-items: center; justify-content: center; min-width: 88px; height: 52px; padding: 0 8px; border-radius: 4px; font-size: 13px; font-weight: 600; } .ds-c4-person { background: #08427B; border: 1px solid #073B6F; color: #FFFFFF; } .ds-c4-system { background: #1168BD; border: 1px solid #1864AD; color: #FFFFFF; } .ds-c4-component { background: #85BBF0; border: 1px solid #78A8D8; color: #000000; } .ds-c4-rel { flex: 1; height: 0; border-top: 1.5px dashed #444444; }"
+    },
+    {
+      "name": "EDGY Facet Swatches",
+      "kind": "custom",
+      "refersTo": "edgy-identity",
+      "description": "The six EDGY facet hues from the standard, with white pictos. Fixed in every theme.",
+      "html": "<div class=\"ds-edgy\"><span style=\"background:#00EA4E\">Identity</span><span style=\"background:#034CEE\">Architecture</span><span style=\"background:#FF0056\">Experience</span><span style=\"background:#00CAF4\">Organisation</span><span style=\"background:#FFA500\">Brand</span><span style=\"background:#CF00FF\">Product</span></div>",
+      "css": ".ds-edgy { display: grid; grid-template-columns: repeat(3, 120px); gap: 4px; font: 600 12px/1 Inter, system-ui, sans-serif; } .ds-edgy span { display: flex; align-items: flex-end; height: 56px; padding: 8px; border-radius: 4px; color: #FFFFFF; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Quiet Chrome, Loud Notation",
+    "overview": "The editor has two layers. The chrome (toolbars, menus, icon buttons, popovers, the page itself) is AFFiNE's visual system as it stands, delivered by @toeverything/theme 1.1.15 with no Labre overrides. It is neutral grey on white, 4px corners, Inter at 15px, and one borrowed blue for interaction. It follows the app theme (data-theme=\"light\" | \"dark\") and stays out of the way: controls appear on selection, sit in a single 36px row, and hold back when nothing is selected.\n\nThe notation (EDGY, C4, BPMN, Wardley, Event Storming, DDD, Cynefin) is where the colour lives. Each framework paints with the colours of its own standard or stencil, fixed in model units and fixed in both themes. A C4 container is #438DD5 on every screen and in every export, because a diagram is a document that has to read the same in a slide deck as it does in the editor.\n\nLabre's identity is the frameworks themselves. The chrome is deliberately not where Labre sets itself apart. What it offers is the set of framework notations it draws faithfully and lets you combine on one canvas. Design effort goes into the notations, and the chrome only has to stay out of their way.\n\nThis file describes the system as it is. It records the incumbent implementation; it is not a target. The chrome's accent is inherited from upstream and is expected to be replaced (see The Borrowed Blue Rule).",
+    "keyCharacteristics": [
+      "Neutral, low-contrast chrome: greys and hairlines, with the accent kept to selection, focus and active states.",
+      "Framework notations keep the colours of their standard and ignore the app theme.",
+      "Compact, fixed-height controls (36px toolbar, 4px-padded icon buttons, 4px corners).",
+      "Flat document surfaces; shadows only on floating panels.",
+      "Light/dark switching comes from the upstream theme's CSS variables, never from per-component colour logic."
+    ],
+    "rules": [
+      {
+        "name": "The Borrowed Blue Rule",
+        "body": "The accent #1E96EB is AFFiNE's, not Labre's, and it is due to be replaced. Always reach it through a token (cssVarV2('button/primary'), var(--affine-primary-color)), never as a literal hex, so the re-skin is a token change. Don't give it any new brand meaning in the meantime.",
+        "section": "colors"
+      },
+      {
+        "name": "The Standard-Fidelity Rule",
+        "body": "A framework's notation hues, and any neutral its standard or stencil prescribes, match that source exactly and never follow the app theme, dark mode included. A diagram looks the same in every theme, export and host. If a prescribed colour differs from the published standard, that is a bug.",
+        "section": "colors"
+      },
+      {
+        "name": "The Wardley Neutrals Rule",
+        "body": "Every neutral a standard doesn't prescribe (inks, greys, borders, card fills, bands) comes from NOTATION_NEUTRALS, whose reference is the Wardley map. Don't write a neutral hex in a framework module. A new framework picks its neutrals from the scale and brings only its hues.",
+        "section": "colors"
+      },
+      {
+        "name": "The Untouched Data Rule",
+        "body": "Changing a neutral never rewrites a document. Backgrounds (boards, axes, frames, bands) are painted at render time and follow the scale immediately. Colours stored on user elements (nodes, connectors, legends, inserted templates) are user data: they keep their stored value, and only new elements take the new default. Code that recognises an element by its colour must keep accepting the old value.",
+        "section": "colors"
+      },
+      {
+        "name": "The Coexisting Palettes Rule",
+        "body": "The base canvas palette and every framework palette are available together. No framework hides or replaces the base palette, and a framework palette is never trimmed to fit another. Each palette keeps its own hues. Only the neutrals are shared (see The Wardley Neutrals Rule).",
+        "section": "colors"
+      },
+      {
+        "name": "The Distinct Accent Rule",
+        "body": "The chrome accent is reserved for interaction (selection, focus, active states) and has to stay recognisable against every notation hue. Chrome never borrows a notation hue, and a notation never borrows the accent. Known conflict: today's Borrowed Blue (#1E96EB, hue about 246°) sits in the same hue family as the C4 blue ladder (#1168BD, #438DD5) and the base palette's medium blue (#84CFFF), so a selection on a C4 diagram reads weakly. The replacement accent must come from a hue family that no notation palette uses, and a new framework palette must not settle next to the accent's hue.",
+        "section": "colors"
+      },
+      {
+        "name": "The Title-Ratio Rule",
+        "body": "From the doc title down to H3, each level is about 1.25 times smaller than the one above (40 → 32 → 26 → 20). H1 must always stay clearly below the title. Change the scale only in HEADING_SCALE, never in a consumer.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Family Rule",
+        "body": "Inter for all chrome and prose. Mono families are only for code and numerals. Don't bring in a display face.",
+        "section": "typography"
+      },
+      {
+        "name": "The Model-Unit Rule",
+        "body": "Text drawn on the canvas as part of a notation is sized in fixed model units, not in the chrome's CSS scale, so it zooms with the diagram and exports at the same proportions.",
+        "section": "typography"
+      },
+      {
+        "name": "The One-Row Rule",
+        "body": "The editor toolbar is always exactly one 36px row. When space runs out, entries drop to icon-only and then move into the \"⋮\" overflow menu. The toolbar never wraps onto a second row, so it never shifts under the cursor.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat-Page Rule",
+        "body": "Anything that belongs to the document (blocks, notes, framework cards) stays flat. Only chrome that floats above the document gets a shadow.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do reach every chrome colour, radius, shadow and font through the upstream tokens (cssVar, cssVarV2, unsafeCSSVar(V2), var(--affine-*)). The library has no design tokens of its own yet.",
+      "Do use Hover Veil (rgba(0,0,0,.04)) as the only hover treatment on transparent controls, gated by @media (hover: hover).",
+      "Do keep controls at 4px corners and 4px padding, and panels at 8px gaps.",
+      "Do copy notation hues (and any neutral the standard prescribes) from the published standard or stencil into the module's consts.ts, and cite the source in a comment, as C4 and EDGY already do.",
+      "Do take every other neutral from NOTATION_NEUTRALS (Wardley reference): ink, frame ink, label grey, divider, card, card border, legend border, band.",
+      "Do size canvas labels in fixed model units, so the notation zooms and exports faithfully.",
+      "Do keep document surfaces flat and keep shadows for floating chrome."
+    ],
+    "donts": [
+      "Don't hardcode #1E96EB (or any chrome hex). The accent is inherited and due to be replaced, and a literal would block the re-skin.",
+      "Don't make a framework notation follow the app theme or dark mode. Standard fidelity comes first.",
+      "Don't use a notation hue (EDGY green, C4 blue, BPMN red) in the chrome, and don't use the chrome accent inside a notation.",
+      "Don't let the editor toolbar wrap onto a second row or squeeze entries. Overflow goes into the \"⋮\" menu.",
+      "Don't add a display typeface or a second sans. Inter plus the two mono families is the full set.",
+      "Don't add coloured or tinted shadows.",
+      "Don't write a neutral hex in a framework module, and don't migrate colours stored on user elements when the scale changes.",
+      "Don't change heading sizes anywhere but HEADING_SCALE."
+    ]
+  }
+}
