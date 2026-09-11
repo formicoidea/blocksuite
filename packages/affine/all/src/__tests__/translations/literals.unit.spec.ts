@@ -106,6 +106,9 @@ const TOAST_MESSAGE =
 // Normalisation and covered-by-manifest
 // ---------------------------------------------------------------------------
 
+/** A file that resolves wordings: a `translateKey` call, a wording, a key. */
+const SEAM_USE = /translateKey|Wording|com\.labre\./;
+
 /** Undo the one level of backslash-escaping a quoted literal can carry. */
 function unescapeQuoted(raw: string): string {
   return raw.replace(/\\(.)/g, '$1');
@@ -512,7 +515,18 @@ describe('literal translation guard', () => {
     const hitsByFile = new Map<string, string[]>();
     for (const file of files) {
       const src = readFileSync(file, 'utf8');
-      const hits = findHits(src).filter(hit => !coveredFallbacks.has(hit));
+      // A literal equal to a fallback is covered only in a file that goes
+      // through the seam itself: the English identity kept beside its
+      // `…Wording` (`name: 'Today'` + `nameWording`). Matching fallbacks
+      // repo-wide would let the key minted for the slash menu's "Today"
+      // silently cover the untranslated "Today" of every other surface.
+      // ponytail: per file, not per literal — an unkeyed "Copy" in a file that
+      // also keys one passes. Upgrade path: pair each literal with its sibling
+      // wording once an AST walk is worth it.
+      const usesSeam = SEAM_USE.test(src);
+      const hits = findHits(src).filter(
+        hit => !(usesSeam && coveredFallbacks.has(hit))
+      );
       if (hits.length > 0) {
         hitsByFile.set(toRepoRelative(file), hits);
       }

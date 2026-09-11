@@ -12,6 +12,7 @@
       "Make a list for building preview."
     ],
     "packages/affine/blocks/data-view/src/data-view-block.ts": [
+      "Copy",
       "Delete Database",
       "Untitled"
     ],
@@ -74,6 +75,7 @@
     "packages/affine/blocks/database/src/properties/created-time/define.ts": [
       "Created Time"
     ],
+    "packages/affine/blocks/database/src/properties/link/define.ts": ["Link"],
     "packages/affine/blocks/database/src/properties/rich-text/define.ts": [
       "Text"
     ],
@@ -168,9 +170,14 @@
       "Clear contents",
       "Clear row contents",
       "Clear row style",
+      "Copy",
       "Default",
       "Default",
       "Default",
+      "Delete",
+      "Delete",
+      "Duplicate",
+      "Duplicate",
       "Insert Above",
       "Insert Below",
       "Insert Left",
@@ -202,6 +209,7 @@
     "packages/affine/data-view/src/core/component/tags/multi-tag-select.ts": [
       "Create",
       "Create",
+      "Delete",
       "Select tag or create one",
       "Type here...",
       "Type here..."
@@ -211,6 +219,8 @@
       "Add property"
     ],
     "packages/affine/data-view/src/core/detail/field.ts": [
+      "Delete",
+      "Duplicate",
       "Empty",
       "Move Down",
       "Move Up",
@@ -267,6 +277,7 @@
     ],
     "packages/affine/data-view/src/core/group-by/setting.ts": [
       "Day",
+      "Group",
       "Group By",
       "Group By",
       "Group by",
@@ -359,6 +370,7 @@
       "Delete Cards",
       "Ungroup"
     ],
+    "packages/affine/data-view/src/view-presets/kanban/pc/header.ts": ["Group"],
     "packages/affine/data-view/src/view-presets/kanban/pc/menu.ts": [
       "Delete Card",
       "Expand Card",
@@ -367,6 +379,8 @@
       "Move To"
     ],
     "packages/affine/data-view/src/view-presets/table/mobile/column-header.ts": [
+      "Delete",
+      "Duplicate",
       "Hide In View",
       "Insert Left Column",
       "Insert Right Column",
@@ -411,6 +425,8 @@
       "increase decimal places"
     ],
     "packages/affine/data-view/src/view-presets/table/pc-virtual/group/top/header/single-column-header.ts": [
+      "Delete",
+      "Duplicate",
       "Filter",
       "Hide In View",
       "Insert Left Column",
@@ -422,6 +438,7 @@
       "Sort Descending"
     ],
     "packages/affine/data-view/src/view-presets/table/pc-virtual/row/menu.ts": [
+      "Copy",
       "Delete Row",
       "Delete Rows",
       "Expand Row",
@@ -441,6 +458,8 @@
       "Ungroup"
     ],
     "packages/affine/data-view/src/view-presets/table/pc/header/database-header-column.ts": [
+      "Delete",
+      "Duplicate",
       "Filter",
       "Hide In View",
       "Insert Left Column",
@@ -457,6 +476,7 @@
       "increase decimal places"
     ],
     "packages/affine/data-view/src/view-presets/table/pc/menu.ts": [
+      "Copy",
       "Delete Row",
       "Delete Rows",
       "Expand Row",
@@ -469,10 +489,16 @@
     "packages/affine/data-view/src/view-presets/table/stats/column-stats-column.ts": [
       "None"
     ],
+    "packages/affine/data-view/src/widget-presets/quick-setting-bar/filter/condition-view.ts": [
+      "Delete"
+    ],
     "packages/affine/data-view/src/widget-presets/quick-setting-bar/filter/group-panel-view.ts": [
       "Add filter",
       "Add filter group",
       "And",
+      "Delete",
+      "Delete",
+      "Duplicate",
       "Filter group",
       "Or"
     ],
@@ -481,10 +507,13 @@
     ],
     "packages/affine/data-view/src/widget-presets/quick-setting-bar/filter/root-panel-view.ts": [
       "Add",
+      "Delete",
+      "Duplicate",
       "Filters"
     ],
     "packages/affine/data-view/src/widget-presets/quick-setting-bar/sort/root-panel.ts": [
-      "Add sort"
+      "Add sort",
+      "Delete"
     ],
     "packages/affine/data-view/src/widget-presets/tools/presets/search/search.ts": [
       "Esc",
@@ -497,7 +526,10 @@
     ],
     "packages/affine/data-view/src/widget-presets/tools/presets/view-options/view-options.ts": [
       "${} shown",
+      "Delete",
+      "Duplicate",
       "Filter",
+      "Group",
       "Layout",
       "Layout",
       "Properties",
@@ -511,6 +543,8 @@
     "packages/affine/data-view/src/widget-presets/views-bar/views-view.ts": [
       "${} More",
       "Create ${}",
+      "Delete",
+      "Duplicate",
       "Edit View",
       "Move Left",
       "Move Right",
@@ -520,15 +554,12 @@
       "Attachment",
       "Attachment",
       "Background",
-      "Basic",
       "Bold",
       "BulletedList",
       "CheckBox",
       "CodeBlock",
       "CollapseTab",
       "Color",
-      "Content & Media",
-      "Date",
       "Default Color",
       "Default Color",
       "Divider",
@@ -552,21 +583,16 @@
       "List",
       "Loom",
       "NewPage",
-      "Now",
       "NumberedList",
-      "Page",
       "Quote",
       "Redo",
       "RightTab",
       "StrikeThrough",
       "Table view",
       "Text",
-      "Today",
-      "Tomorrow",
       "Turn into",
       "UnderLine",
       "Undo",
-      "Yesterday",
       "Youtube"
     ]
   },
@@ -609,7 +635,9 @@
       "icon"
     ],
     "packages/affine/blocks/bookmark/src/configs/slash-menu.ts": [
-      "Add a bookmark for reference."
+      "Add a bookmark for reference.",
+      "Link",
+      "Link"
     ],
     "packages/affine/blocks/bookmark/src/configs/toolbar.ts": [
       "Caption",
@@ -649,17 +677,24 @@
       "Copied failed, something went wrong",
       "Plain Text"
     ],
+    "packages/affine/blocks/code/src/code-toolbar/components/code-toolbar.ts": [
+      "More",
+      "More"
+    ],
     "packages/affine/blocks/code/src/code-toolbar/components/lang-button.ts": [
       "Search for a language"
     ],
     "packages/affine/blocks/code/src/code-toolbar/components/preview-button.ts": [
+      "Code",
       "Preview"
     ],
     "packages/affine/blocks/code/src/code-toolbar/config.ts": [
       "Caption",
       "Comment",
       "Comment",
-      "Copy code"
+      "Copy code",
+      "Delete",
+      "Duplicate"
     ],
     "packages/affine/blocks/edgeless-text/src/edgeless-toolbar/config.ts": [
       "Font size"
@@ -763,6 +798,7 @@
       "AFFiNE",
       "Change theme following phone case color",
       "Embed a X post (tweet).",
+      "High",
       "Insert a Linear issue.",
       "To Shape, Not to Adapt.",
       "Work in Progress &#xb7;",
@@ -782,6 +818,9 @@
     ],
     "packages/affine/blocks/embed/src/embed-iframe-block/components/embed-iframe-idle-card.ts": [
       "Embed anything (Google Drive, Google Docs, Spotify, Miro…)"
+    ],
+    "packages/affine/blocks/embed/src/embed-iframe-block/components/embed-iframe-link-edit-popup.ts": [
+      "Link"
     ],
     "packages/affine/blocks/embed/src/embed-iframe-block/components/embed-iframe-link-input-base.ts": [
       "Error in embed iframe creation",
@@ -1077,11 +1116,13 @@
       "Create a blank frame in Edgeless",
       "Create a mind map in Edgeless",
       "Frame",
+      "Group",
       "Mind Map"
     ],
     "packages/affine/blocks/surface-ref/src/utils.ts": [
       "Edgeless content",
       "Frame",
+      "Group",
       "Mind map"
     ],
     "packages/affine/blocks/surface/src/extensions/interchange-import.ts": [
@@ -1120,6 +1161,7 @@
       "Fill color"
     ],
     "packages/affine/components/src/embed-card-modal/embed-card-create-modal.ts": [
+      "Confirm",
       "Input in https://...",
       "Invalid link"
     ],
@@ -1142,6 +1184,7 @@
       "No icon found"
     ],
     "packages/affine/components/src/icon-picker/emoji-data.ts": [
+      "Activity",
       "Animals & Nature",
       "Flags",
       "Food & Drink",
@@ -1173,7 +1216,10 @@
       "Retry"
     ],
     "packages/affine/components/src/toast/toast.ts": ["Hello World"],
-    "packages/affine/components/src/toolbar/tooltip.ts": ["* Content *"],
+    "packages/affine/components/src/toolbar/tooltip.ts": [
+      "* Content *",
+      "Content"
+    ],
     "packages/affine/fragments/adapter-panel/src/config.ts": [
       "HTML",
       "Markdown",
@@ -1238,10 +1284,16 @@
       "This file declares ${} root",
       "Two elements in this file share the id \"${}\", which BPMN"
     ],
+    "packages/affine/gfx/bpmn/src/templates/index.ts": ["BPMN"],
     "packages/affine/gfx/brush/src/toolbar/configs/brush.ts": ["Color"],
     "packages/affine/gfx/brush/src/toolbar/configs/highlighter.ts": ["Color"],
     "packages/affine/gfx/brush/src/toolbar/senior-tool.ts": ["Pen"],
-    "packages/affine/gfx/c4/src/legend.ts": ["Legend"],
+    "packages/affine/gfx/c4/src/legend.ts": [
+      "Elements",
+      "Frames",
+      "Legend",
+      "Relations"
+    ],
     "packages/affine/gfx/c4/src/templates.ts": ["C4"],
     "packages/affine/gfx/connector/src/text/edgeless-connector-label-editor.ts": [
       "Add text"
@@ -1251,6 +1303,7 @@
       "Connector shape",
       "End point style",
       "Flip direction",
+      "Reverse direction",
       "Shape",
       "Start point style",
       "Stroke style",
@@ -1287,26 +1340,69 @@
     ],
     "packages/affine/gfx/ddd-context-map/src/legend.ts": [
       "${} — ${}",
+      "Boundaries",
       "Legend",
       "Relationships"
     ],
+    "packages/affine/gfx/ddd-context-map/src/templates.ts": ["Context Map"],
     "packages/affine/gfx/ddd-core-domain/src/core-domain/legend.ts": [
       "Legend",
       "Movement",
       "Sub-domains",
       "Team interaction modes"
     ],
-    "packages/affine/gfx/ddd-event-storming/src/legend.ts": ["Legend"],
+    "packages/affine/gfx/ddd-core-domain/src/templates.ts": [
+      "Core Domain Chart"
+    ],
+    "packages/affine/gfx/ddd-event-storming/src/legend.ts": [
+      "Flow",
+      "Legend",
+      "Stickies"
+    ],
+    "packages/affine/gfx/ddd-event-storming/src/templates.ts": [
+      "Event Storming"
+    ],
+    "packages/affine/gfx/ddd-shared/src/shared/consts.ts": [
+      "Actor",
+      "Aggregate",
+      "Anticorruption Layer",
+      "Big Ball of Mud",
+      "Big-bet sub-domain",
+      "Bounded context",
+      "Collaboration",
+      "Command",
+      "Conformist",
+      "Constraint",
+      "Customer / Supplier",
+      "Domain event",
+      "External system",
+      "Facilitating",
+      "Future position",
+      "Hotspot",
+      "Open Host Service",
+      "Outsourced / purchased",
+      "Partnership",
+      "Platform sub-domain",
+      "Policy",
+      "Published Language",
+      "Read model",
+      "Separate Ways",
+      "Shared Kernel",
+      "X-as-a-Service"
+    ],
     "packages/affine/gfx/edgy/src/legend.ts": [
       "Base elements",
       "Intersections",
-      "Legend"
+      "Legend",
+      "Relations"
     ],
     "packages/affine/gfx/edgy/src/templates/index.ts": [
       "Admission Form",
       "Channel ${}",
       "Confirmation",
+      "EDGY",
       "Journey step ${}",
+      "Task",
       "Task ${}"
     ],
     "packages/affine/gfx/group/src/command/group-api.ts": ["Group ${}"],
@@ -1412,7 +1508,8 @@
     "packages/affine/gfx/template/src/builtin/other.ts": [
       "CATEGORY",
       "Card",
-      "Effect"
+      "Effect",
+      "Other"
     ],
     "packages/affine/gfx/template/src/toolbar/senior-tool.ts": ["Template"],
     "packages/affine/gfx/template/src/toolbar/template-panel.ts": [
@@ -1443,9 +1540,12 @@
     ],
     "packages/affine/gfx/wardley/src/natures.ts": [
       "A way of doing — a method, a convention, an operating model.",
+      "Activity",
       "Competition",
+      "Data",
       "Established players competing against one another on a market that exists.",
       "Knowledge",
+      "Nature",
       "Practice",
       "Pressure on a newcomer trying to get into a market.",
       "Pressure on a player to stay in a market it is already in.",
@@ -1478,6 +1578,7 @@
     ],
     "packages/affine/inlines/link/src/link-node/link-popup/link-popup.ts": [
       "Enter text",
+      "Link",
       "Paste or type a link",
       "Paste or type a link",
       "Text"
@@ -1489,7 +1590,9 @@
     ],
     "packages/affine/inlines/preset/src/command/config.ts": [
       "Bold",
+      "Code",
       "Italic",
+      "Link",
       "Strikethrough",
       "Underline"
     ],
@@ -1606,19 +1709,6 @@
       "Notion",
       "Provide feedback."
     ],
-    "packages/affine/widgets/slash-menu/src/config.ts": [
-      "Copy this line to clipboard.",
-      "Create a duplicate of this line.",
-      "Move Down",
-      "Move Up",
-      "Now",
-      "Remove this line permanently.",
-      "Shift this line down.",
-      "Shift this line up.",
-      "Today",
-      "Tomorrow",
-      "Yesterday"
-    ],
     "packages/affine/widgets/slash-menu/src/tooltips/copy.ts": [
       "Any user may have a different perspective on what data they",
       "For example, one user&#x2019;s edits to a document might be on",
@@ -1642,15 +1732,6 @@
       "other users.&#10;",
       "their laptop on an airplane; when the plane lands and the",
       "those changes to their version of the document."
-    ],
-    "packages/affine/widgets/slash-menu/src/tooltips/index.ts": [
-      "Copy / Duplicate",
-      "Move Down",
-      "Move Up",
-      "Now",
-      "Today",
-      "Tomorrow",
-      "Yesterday"
     ],
     "packages/affine/widgets/slash-menu/src/tooltips/move-down.ts": [
       "Any user may have a different perspective on what data they",
