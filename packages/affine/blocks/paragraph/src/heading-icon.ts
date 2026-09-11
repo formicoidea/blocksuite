@@ -7,6 +7,7 @@ import {
   Heading6Icon,
 } from '@labre/affine-components/icons';
 import type { ParagraphBlockModel } from '@labre/affine-model';
+import { HEADING_LEVELS, headingLineBox } from '@labre/affine-shared/consts';
 import { SignalWatcher, WithDisposable } from '@labre/global/lit';
 import { ShadowlessElement } from '@labre/std';
 import { cssVarV2 } from '@toeverything/theme/v2';
@@ -32,6 +33,30 @@ function HeadingIcon(i: number) {
   }
 }
 
+/** The icon button's box: a 20px glyph inside 2px of padding. */
+const ICON_SIZE = 20;
+const ICON_PADDING = 2;
+const ICON_BOX = ICON_SIZE + 2 * ICON_PADDING;
+
+/**
+ * Centres the icon on the heading's FIRST line, at every level.
+ *
+ * The icon is absolutely positioned at the top of the heading's wrapper
+ * (`.h1`…`.h6`, where the first line box starts), so its top offset is half the
+ * line box (`HEADING_SCALE`: size + line-height extra) minus half its own box.
+ * One `em` offset cannot do that — the line box is not proportional to the font
+ * size — and the `0.3em` it replaces set the icon 1.6px (H1) to 5px (H6) low.
+ */
+const headingIconOffsets = unsafeCSS(
+  HEADING_LEVELS.map(
+    level => `
+  .${level} affine-paragraph-heading-icon .heading-icon {
+    margin-top: ${headingLineBox(level) / 2 - ICON_BOX / 2}px;
+  }
+`
+  ).join('')
+);
+
 export class ParagraphHeadingIcon extends SignalWatcher(
   WithDisposable(ShadowlessElement)
 ) {
@@ -39,12 +64,12 @@ export class ParagraphHeadingIcon extends SignalWatcher(
     affine-paragraph-heading-icon .heading-icon {
       display: flex;
       align-items: start;
-      margin-top: 0.3em;
+      margin-top: 0;
       position: absolute;
       left: 0;
       transform: translateX(-64px);
       border-radius: 4px;
-      padding: 2px;
+      padding: ${ICON_PADDING}px;
       cursor: pointer;
       opacity: 0;
       transition: opacity 0.2s ease-in-out;
@@ -60,6 +85,8 @@ export class ParagraphHeadingIcon extends SignalWatcher(
           var(--Shadow-buttonShadow-2-blur, 5px) 0px
           var(--Shadow-buttonShadow-2-color, rgba(0, 0, 0, 0.12));
     }
+
+    ${headingIconOffsets}
 
     .with-drag-handle .heading-icon {
       opacity: 1;

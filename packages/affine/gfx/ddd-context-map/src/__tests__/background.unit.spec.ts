@@ -1,5 +1,7 @@
 import { backgroundSize } from '@labre/affine-block-surface';
+import { CLOUD } from '@labre/affine-gfx-ddd-shared';
 import { ContextMapBoardElementModel } from '@labre/affine-model';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import { describe, expect, it } from 'vitest';
 
 import { CONTEXT_MAP_BACKGROUND } from '../background';
@@ -81,5 +83,20 @@ describe('the palette entry that creates it', () => {
       // recette, 27/08/2026) — not because a value was renamed. The board's
       // contextual auto-legend emits `FrameworkLegendCreated`, unchanged.
     ]);
+  });
+});
+
+describe('the neutrals the board is dressed in', () => {
+  it('reads its card and border from the shared notation scale', () => {
+    const palette = CONTEXT_MAP_BACKGROUND.chrome?.palette ?? {};
+    expect(palette.card).toBe(NOTATION_NEUTRALS.cardFill);
+    expect(palette.cardBorder).toBe(NOTATION_NEUTRALS.cardBorder);
+  });
+
+  it("keeps the cloud's own lilac and outlines it in the scale's grey", () => {
+    const palette = CONTEXT_MAP_BACKGROUND.chrome?.palette ?? {};
+    expect(palette.cloud).toBe('#f0eef6');
+    expect(palette.cloudBorder).toBe(CLOUD.stroke);
+    expect(CLOUD.stroke).toBe(NOTATION_NEUTRALS.label);
   });
 });

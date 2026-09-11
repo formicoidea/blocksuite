@@ -1,3 +1,4 @@
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import { html, svg } from 'lit';
 
 /**
@@ -43,7 +44,7 @@ export const eventStormingToolbarIcon = svg`<svg width="100%" height="100%" view
 export const coreDomainToolbarIcon = svg`<svg width="100%" height="100%" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect x="10" y="8" width="38" height="38" fill="#4d9900" fill-opacity="0.55"/>
   <rect x="10" y="8" width="14" height="38" fill="#9933ff" fill-opacity="0.55"/>
-  <path d="M10 46 V8 M10 46 H48" stroke="#1f2328" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M10 46 V8 M10 46 H48" stroke="${NOTATION_NEUTRALS.frameInk}" stroke-width="2.4" stroke-linecap="round"/>
   <circle cx="38" cy="18" r="4" fill="#9933ff"/>
 </svg>`;
 
@@ -51,5 +52,5 @@ export const coreDomainToolbarIcon = svg`<svg width="100%" height="100%" viewBox
 export const contextMapToolbarIcon = svg`<svg width="100%" height="100%" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect x="6" y="10" width="22" height="14" rx="7" fill="#e6f0fa" stroke="#2f6fb0" stroke-width="1.6"/>
   <rect x="28" y="32" width="22" height="14" rx="7" fill="#e6f0fa" stroke="#2f6fb0" stroke-width="1.6"/>
-  <path d="M20 24 L34 32" stroke="#1f2328" stroke-width="1.8"/>
+  <path d="M20 24 L34 32" stroke="${NOTATION_NEUTRALS.ink}" stroke-width="1.8"/>
 </svg>`;

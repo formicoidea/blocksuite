@@ -1,13 +1,24 @@
 import type { EdgyNodeKind } from '@labre/affine-model';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 
 /**
  * Visual constants for the four EDGY base-element nodes. Each node is a NATIVE
  * shape (ShapeElementModel-derived) so its stroke / fill / inner text are
  * editable via the shape toolbar; these are just the pre-formatted defaults at
  * creation.
+ *
+ * The fill is the shared notation scale's card. The stroke is NOT the scale's
+ * ink: it is the official EDGY stencil ink, sourced from the pictograms this
+ * package ships (`pictograms/Shape-Activity.svg`, `Shape-Object.svg`,
+ * `Shape-Outcome.svg`, every `Small-Shape-*.svg`, `Icon-People.svg`,
+ * `Tag-Black.svg` all draw `stroke:#262626` at `stroke-width:2`). A neutral a
+ * notation borrows from its official source is content of the notation, like
+ * the C4 stencil's `#444444`, and stays a literal.
  */
-export const NODE_FILL = '#ffffff';
+export const NODE_FILL = NOTATION_NEUTRALS.cardFill;
+/** The EDGY stencil ink (`stroke:#262626` in the official pictograms). */
 export const NODE_STROKE = '#262626';
+/** The EDGY stencil stroke weight (`stroke-width:2` in the pictograms). */
 export const NODE_STROKE_WIDTH = 2;
 
 /** Outcome corner radius (absolute px — a lightly rounded rectangle). */

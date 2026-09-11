@@ -4,6 +4,7 @@ import {
 } from '@labre/affine-block-surface';
 import { ES_STICKIES } from '@labre/affine-gfx-ddd-shared';
 import { EventStormingBoardElementModel } from '@labre/affine-model';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import { describe, expect, it } from 'vitest';
 
 import { EVENT_STORMING_BACKGROUND } from '../background';
@@ -163,5 +164,14 @@ describe('the palette entries that changed in WS5', () => {
       'sticky:hotspot',
       'flow',
     ]);
+  });
+});
+
+describe('the neutrals the board is dressed in', () => {
+  it('reads its card, border and axis ink from the shared notation scale', () => {
+    const palette = EVENT_STORMING_BACKGROUND.chrome?.palette ?? {};
+    expect(palette.card).toBe(NOTATION_NEUTRALS.cardFill);
+    expect(palette.cardBorder).toBe(NOTATION_NEUTRALS.cardBorder);
+    expect(palette.axis).toBe(NOTATION_NEUTRALS.frameInk);
   });
 });

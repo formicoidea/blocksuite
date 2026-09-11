@@ -1,8 +1,16 @@
 import type { C4NodeKind } from '@labre/affine-model';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import { describe, expect, it } from 'vitest';
 
 import {
+  BOARD_BAND_FILL,
+  BOARD_CARD_BORDER,
+  BOARD_CARD_FILL,
+  BOARD_TITLE_COLOR,
   BOUNDARY_LABEL,
+  BOUNDARY_NAME_COLOR,
+  BOUNDARY_STROKE,
+  RELATIONSHIP_STROKE,
   DESCRIPTION_FONT_SIZE,
   NODE_BOX,
   NODE_LABEL,
@@ -238,5 +246,25 @@ describe('the derived type line', () => {
     expect(c4TypeLine('container', '  Spring   Boot \n 3 ')).toBe(
       '[Container: Spring Boot 3]'
     );
+  });
+});
+
+/**
+ * Two sources of neutrals, kept apart on purpose: the board is Labre's
+ * furniture and wears the shared notation scale, the boundary and the
+ * relationship are the stencil's and keep the stencil's own greys.
+ */
+describe('the C4 neutrals', () => {
+  it('dresses the board in the shared notation scale', () => {
+    expect(BOARD_CARD_FILL).toBe(NOTATION_NEUTRALS.cardFill);
+    expect(BOARD_CARD_BORDER).toBe(NOTATION_NEUTRALS.cardBorder);
+    expect(BOARD_TITLE_COLOR).toBe(NOTATION_NEUTRALS.frameInk);
+    expect(BOARD_BAND_FILL).toBe(NOTATION_NEUTRALS.band);
+  });
+
+  it("keeps the stencil's own greys where the stencil draws them", () => {
+    expect(BOUNDARY_STROKE).toBe('#444444');
+    expect(RELATIONSHIP_STROKE).toBe('#444444');
+    expect(BOUNDARY_NAME_COLOR).toBe('#000000');
   });
 });

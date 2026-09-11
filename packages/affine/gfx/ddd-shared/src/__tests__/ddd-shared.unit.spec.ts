@@ -1,13 +1,16 @@
 import { TextFitMode } from '@labre/affine-model';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import type { BlockStdScope } from '@labre/std';
 import { describe, expect, it, vi } from 'vitest';
 import * as Y from 'yjs';
 
 import {
   CD_SUBDOMAINS,
+  CLOUD,
   CM_RELATIONSHIPS,
   ES_HOTSPOT,
   ES_STICKIES,
+  LABEL_COLOR,
 } from '../shared/consts';
 import {
   addBubble,
@@ -225,5 +228,14 @@ describe('prefabs stamp a role only when asked', () => {
     addDot(surface, stdStub(), 0, 0, '#9933ff');
     addMarker(surface, stdStub(), 0, 0, { fill: '#99ff99', letter: 'C' });
     for (const props of added) expect(props.role).toBeUndefined();
+  });
+});
+
+describe('the DDD neutrals', () => {
+  it('writes labels in the shared notation ink and outlines the cloud in its grey', () => {
+    expect(LABEL_COLOR).toBe(NOTATION_NEUTRALS.ink);
+    expect(CLOUD.stroke).toBe(NOTATION_NEUTRALS.label);
+    // The fill is the notation's own lilac, a hue rather than a neutral.
+    expect(CLOUD.fill).toBe('#f0eef6');
   });
 });

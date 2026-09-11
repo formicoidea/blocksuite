@@ -1,5 +1,7 @@
 import { svg } from 'lit';
 
+import { NODE_FILL, NODE_STROKE } from '../node/consts';
+
 /** Colored Wardley glyph (mockup proposal B) for the main toolbar button. */
 export const wardleyToolbarIcon = svg`<svg width="100%" height="100%" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -40,12 +42,12 @@ const GREEN = '#1f9e4d';
 
 /** Component node (validated COMP-C2): single circle. */
 export const wardleyComponentIcon = svg`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="12" cy="12" r="6.3" fill="#fff" stroke="currentColor" stroke-width="1.5"/>
+  <circle cx="12" cy="12" r="6.3" fill="${NODE_FILL}" stroke="currentColor" stroke-width="1.5"/>
 </svg>`;
 
 /** Anchor (validated ANCH-B): person glyph inscribed in a circle. */
 export const wardleyAnchorIcon = svg`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="12" cy="12" r="6" fill="#fff" stroke="currentColor" stroke-width="1.6"/>
+  <circle cx="12" cy="12" r="6" fill="${NODE_FILL}" stroke="currentColor" stroke-width="1.6"/>
   <circle cx="12" cy="9.4" r="1.8" fill="none" stroke="currentColor" stroke-width="1.3"/>
   <path d="M7.4 15.9 C 8.2 12.1, 15.8 12.1, 16.6 15.9" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
 </svg>`;
@@ -53,8 +55,8 @@ export const wardleyAnchorIcon = svg`<svg width="24" height="24" viewBox="0 0 24
 /** Dependency link (validated LINK-A3): two outline nodes joined by a line. */
 export const wardleyLinkIcon = svg`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <line x1="5.5" y1="16" x2="18.5" y2="8" stroke="currentColor" stroke-width="1.8"/>
-  <circle cx="5.5" cy="16" r="2.2" fill="#fff" stroke="currentColor" stroke-width="1.5"/>
-  <circle cx="18.5" cy="8" r="2.2" fill="#fff" stroke="currentColor" stroke-width="1.5"/>
+  <circle cx="5.5" cy="16" r="2.2" fill="${NODE_FILL}" stroke="currentColor" stroke-width="1.5"/>
+  <circle cx="18.5" cy="8" r="2.2" fill="${NODE_FILL}" stroke="currentColor" stroke-width="1.5"/>
 </svg>`;
 
 /** Evolution arrow (validated ARR-B): red dashed arrow. */
@@ -72,23 +74,23 @@ export const wardleyInertiaIcon = svg`<svg width="24" height="24" viewBox="0 0 2
 
 /** Pipeline (validated PIPE-D): wide thin rect + square handle astride the top edge, thin borders. */
 export const wardleyPipelineIcon = svg`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="3.5" y="11" width="17" height="7" rx="1" fill="#fff" stroke="currentColor" stroke-width="1.2"/>
-  <rect x="10" y="9" width="4" height="4" rx="0.6" fill="#fff" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="3.5" y="11" width="17" height="7" rx="1" fill="${NODE_FILL}" stroke="currentColor" stroke-width="1.2"/>
+  <rect x="10" y="9" width="4" height="4" rx="0.6" fill="${NODE_FILL}" stroke="currentColor" stroke-width="1.2"/>
 </svg>`;
 
 /** Market (validated MKT-B): thin outer circle + 3 thick-bordered nodes wired in a triangle. */
 export const wardleyMarketIcon = svg`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="12" cy="12" r="9.6" fill="#fff" stroke="currentColor" stroke-width="1.2"/>
+  <circle cx="12" cy="12" r="9.6" fill="${NODE_FILL}" stroke="currentColor" stroke-width="1.2"/>
   <path d="M12 6.6 L7.3 14.7 H16.7 Z" fill="none" stroke="currentColor" stroke-width="1.1"/>
-  <circle cx="12" cy="6.6" r="2.3" fill="#fff" stroke="currentColor" stroke-width="2.1"/>
-  <circle cx="7.3" cy="14.7" r="2.3" fill="#fff" stroke="currentColor" stroke-width="2.1"/>
-  <circle cx="16.7" cy="14.7" r="2.3" fill="#fff" stroke="currentColor" stroke-width="2.1"/>
+  <circle cx="12" cy="6.6" r="2.3" fill="${NODE_FILL}" stroke="currentColor" stroke-width="2.1"/>
+  <circle cx="7.3" cy="14.7" r="2.3" fill="${NODE_FILL}" stroke="currentColor" stroke-width="2.1"/>
+  <circle cx="16.7" cy="14.7" r="2.3" fill="${NODE_FILL}" stroke="currentColor" stroke-width="2.1"/>
 </svg>`;
 
 /** Ecosystem (validated ECO-A): double border at the rim + hatching confined to the inner donut + hollow center. */
 export const wardleyEcosystemIcon = svg`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs><clipPath id="ecoHatch"><path d="M12 3.8 a8.2 8.2 0 1 0 0.001 0 Z M12 7.8 a4.2 4.2 0 1 1 -0.001 0 Z" clip-rule="evenodd"/></clipPath></defs>
-  <circle cx="12" cy="12" r="9.8" fill="#fff" stroke="currentColor" stroke-width="1.2"/>
+  <circle cx="12" cy="12" r="9.8" fill="${NODE_FILL}" stroke="currentColor" stroke-width="1.2"/>
   <g clip-path="url(#ecoHatch)" stroke="currentColor" stroke-width="0.6">
     <line x1="2" y1="-8" x2="22" y2="12"/>
     <line x1="2" y1="-6" x2="22" y2="14"/>
@@ -102,13 +104,13 @@ export const wardleyEcosystemIcon = svg`<svg width="24" height="24" viewBox="0 0
     <line x1="2" y1="10" x2="22" y2="30"/>
   </g>
   <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="0.8"/>
-  <circle cx="12" cy="12" r="4.2" fill="#fff" stroke="currentColor" stroke-width="1"/>
+  <circle cx="12" cy="12" r="4.2" fill="${NODE_FILL}" stroke="currentColor" stroke-width="1"/>
 </svg>`;
 
 /** Component + method (validated METH-A): component inscribed in a colored outer circle (default grey). */
 export const wardleyMethodIcon = svg`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="12" cy="12" r="9.6" fill="#d9d9d9" stroke="#1f2328" stroke-width="1.2"/>
-  <circle cx="12" cy="12" r="4.6" fill="#fff" stroke="#1f2328" stroke-width="1.2"/>
+  <circle cx="12" cy="12" r="9.6" fill="#d9d9d9" stroke="${NODE_STROKE}" stroke-width="1.2"/>
+  <circle cx="12" cy="12" r="4.6" fill="${NODE_FILL}" stroke="${NODE_STROKE}" stroke-width="1.2"/>
 </svg>`;
 
 /**
@@ -121,7 +123,7 @@ export const wardleyMethodIcon = svg`<svg width="24" height="24" viewBox="0 0 24
  * 24 pixels. The circle keeps `currentColor` like every other artefact glyph.
  */
 export const wardleyPorterIcon = svg`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="12" cy="12" r="5.4" fill="#fff" stroke="currentColor" stroke-width="1.3"/>
+  <circle cx="12" cy="12" r="5.4" fill="${NODE_FILL}" stroke="currentColor" stroke-width="1.3"/>
   <g stroke="${RED}" stroke-width="1.4" stroke-linecap="round">
     <line x1="12" y1="6" x2="12" y2="3.4"/>
     <line x1="18" y1="12" x2="20.6" y2="12"/>

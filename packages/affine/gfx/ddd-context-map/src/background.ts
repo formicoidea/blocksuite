@@ -1,5 +1,6 @@
 import type { FrameworkBackgroundDef } from '@labre/affine-block-surface';
 import { CLOUD, CM_BUBBLE, FONT_FAMILY } from '@labre/affine-gfx-ddd-shared';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 
 import { CONTEXT_MAP_ROLE } from './roles';
 
@@ -37,8 +38,9 @@ export const CONTEXT_MAP_BACKGROUND: FrameworkBackgroundDef = {
   chrome: {
     fontFamily: FONT_FAMILY,
     palette: {
-      card: '#ffffff',
-      cardBorder: '#d5d9e0',
+      /** The card: the shared notation scale's, painted at render time. */
+      card: NOTATION_NEUTRALS.cardFill,
+      cardBorder: NOTATION_NEUTRALS.cardBorder,
       /** The bounded-context pill: the map's own blue. */
       context: CM_BUBBLE.fill,
       contextBorder: CM_BUBBLE.stroke,

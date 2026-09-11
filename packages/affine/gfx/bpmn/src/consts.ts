@@ -1,20 +1,26 @@
 import type { BpmnNodeKind } from '@labre/affine-model';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 
 /**
  * Visual constants for the BPMN basics. Style "C" (hybrid): spec-accurate
  * shapes and line weights, with accent colour only on the event rings — the
  * task and gateway stay neutral. All of these are just the creation-time
  * defaults; every value is an editable shape property afterwards.
+ *
+ * The neutrals come from the shared notation scale (`NOTATION_NEUTRALS`);
+ * only the event hues are BPMN's own. A node, flow or group created before the
+ * scale was adopted keeps the `#262626` / `#8e8d91` it was written with — a
+ * creation default is copied into the element, never re-read from here.
  */
 
 /** Accent stroke for the start event (thin green ring). */
 export const EVENT_START = '#43a06b';
 /** Accent stroke for the end event (thick red ring). */
 export const EVENT_END = '#cf5648';
-/** Neutral stroke for task / gateway (matches the EDGY base shapes). */
-export const NEUTRAL_STROKE = '#262626';
+/** Neutral stroke for task / gateway — the shared artefact ink. */
+export const NEUTRAL_STROKE = NOTATION_NEUTRALS.ink;
 /** Default fill for events / task / gateway. */
-export const NODE_FILL = '#ffffff';
+export const NODE_FILL = NOTATION_NEUTRALS.cardFill;
 
 /** BPMN line weights: thin start ring, thick end ring, regular elsewhere. */
 export const START_WIDTH = 2;
@@ -47,9 +53,9 @@ export const GROUP_RADIUS = 20;
  * several others. At the neutral stroke it out-shouts everything it encloses,
  * which is the exact opposite of what a lasso is for. Every tool that draws
  * BPMN makes the same call; the spec prescribes the dash and says nothing about
- * the colour.
+ * the colour. The shared scale's divider grey is exactly that role.
  */
-export const GROUP_STROKE = '#8e8d91';
+export const GROUP_STROKE = NOTATION_NEUTRALS.divider;
 
 /** Inner-text font for the task label. */
 export const INNER_FONT_SIZE = 18;
@@ -186,18 +192,22 @@ export const nodeLabelKey = (kind: BpmnNodeKind) =>
  * Pool (background container) defaults — read by the `BPMN_POOL_BACKGROUND`
  * declaration (`background.ts`), which is the only thing that draws a pool.
  */
-export const POOL_FRAME_COLOR = '#262626';
+export const POOL_FRAME_COLOR = NOTATION_NEUTRALS.frameInk;
 /**
  * The card. The same white every framework background paints — it is what
  * `DEFAULT_BACKGROUND_SURFACE` gives a declaration that names no fill, and what
  * the Wardley map, the Core Domain Chart and the Context Map board all declare.
  */
-export const POOL_CARD_FILL = '#ffffff';
-export const POOL_BAND_FILL = '#f4f4f5';
+export const POOL_CARD_FILL = NOTATION_NEUTRALS.cardFill;
+/**
+ * The participant and lane title bands: the shared scale's band tint, painted
+ * at render time (a pool stores no colour of its own).
+ */
+export const POOL_BAND_FILL = NOTATION_NEUTRALS.band;
 export const POOL_FRAME_WIDTH = 1.5;
 export const POOL_CORNER_RADIUS = 6;
 export const POOL_NAME_FONT_SIZE = 15;
-export const POOL_NAME_COLOR = '#262626';
+export const POOL_NAME_COLOR = NOTATION_NEUTRALS.frameInk;
 export const POOL_FONT_FAMILY = 'Inter, sans-serif';
 
 /**
@@ -261,7 +271,7 @@ export const POOL_REF_WIDTH = 560;
 export const POOL_REF_HEIGHT = 200;
 
 /** Sequence-flow connector preset. */
-export const SEQUENCE_STROKE = '#262626';
+export const SEQUENCE_STROKE = NOTATION_NEUTRALS.ink;
 export const SEQUENCE_WIDTH = 2;
 
 /**
@@ -271,7 +281,7 @@ export const SEQUENCE_WIDTH = 2;
  * the DASH and the endpoints (an open circle where the message leaves, an open
  * arrowhead where it lands), which is exactly the distinction BPMN draws.
  */
-export const MESSAGE_STROKE = '#262626';
+export const MESSAGE_STROKE = NOTATION_NEUTRALS.ink;
 export const MESSAGE_WIDTH = 2;
 
 /**
@@ -294,5 +304,5 @@ export const MESSAGE_WIDTH = 2;
  * dot pattern, it is one the notation itself means — an association has no
  * direction to point in. A rule reads the `role`, which is exact either way.
  */
-export const ASSOCIATION_STROKE = '#262626';
+export const ASSOCIATION_STROKE = NOTATION_NEUTRALS.ink;
 export const ASSOCIATION_WIDTH = 2;

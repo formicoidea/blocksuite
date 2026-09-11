@@ -3,9 +3,12 @@ import {
   backgroundSize,
   hitTestBackgroundLabel,
 } from '@labre/affine-block-surface';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import { describe, expect, it } from 'vitest';
 
 import { WARDLEY_BACKGROUND, WARDLEY_LABEL_PROPS } from '../background';
+import { COLORS } from '../consts';
+import { NODE_FILL, NODE_STROKE } from '../node/consts';
 import { wardley } from '../element-renderer';
 import { recordingCtx, stubMatrix } from './canvas-stub';
 
@@ -471,3 +474,31 @@ function t(
 ) {
   return { text, x, y, font, align, color, vertical };
 }
+
+/**
+ * Wardley is the REFERENCE of the shared notation scale: its neutrals are read
+ * from the scale and must equal the hexes it always painted. The literals are
+ * the pin; the scale reference is the source.
+ */
+describe('the Wardley neutrals', () => {
+  it('reads them from the shared notation scale, at the values it always had', () => {
+    expect(COLORS.card).toBe(NOTATION_NEUTRALS.cardFill);
+    expect(COLORS.cardBorder).toBe(NOTATION_NEUTRALS.cardBorder);
+    expect(COLORS.axis).toBe(NOTATION_NEUTRALS.frameInk);
+    expect(COLORS.divider).toBe(NOTATION_NEUTRALS.divider);
+    expect(COLORS.label).toBe(NOTATION_NEUTRALS.label);
+    expect(COLORS.band[0]).toBe(NOTATION_NEUTRALS.band);
+    expect(NODE_STROKE).toBe(NOTATION_NEUTRALS.ink);
+    expect(NODE_FILL).toBe(NOTATION_NEUTRALS.cardFill);
+
+    expect(COLORS).toEqual({
+      card: '#ffffff',
+      cardBorder: '#e3e2e4',
+      axis: '#3b3d42',
+      divider: '#9aa0a6',
+      label: '#6b7280',
+      band: ['#f7faff', '#eef4fb', '#e6eef8', '#dde8f4'],
+    });
+    expect(NODE_STROKE).toBe('#1f2328');
+  });
+});

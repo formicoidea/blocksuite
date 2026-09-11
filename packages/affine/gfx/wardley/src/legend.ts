@@ -10,6 +10,7 @@ import {
   type WardleyBackgroundElementModel,
   WardleyNodeElementModel,
 } from '@labre/affine-model';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import { Bound } from '@labre/global/gfx';
 import type { BlockStdScope } from '@labre/std';
 import { GfxControllerIdentifier } from '@labre/std/gfx';
@@ -111,7 +112,7 @@ const LEGEND_GRADIENT: Record<
   'evolution-gradient': {
     caption:
       "Gradient representing the growth of Wardley's evolution function.",
-    swatch: ['#9aa0a6', '#cfd2d6'],
+    swatch: [NOTATION_NEUTRALS.divider, NOTATION_NEUTRALS.legendBorder],
   },
 };
 
@@ -139,7 +140,7 @@ const PORTER_PANEL = {
   captionFs: 13,
   captionH: 21,
   backing: '#e5e7eb',
-  backingStroke: '#9aa0a6',
+  backingStroke: NOTATION_NEUTRALS.divider,
 } as const;
 
 /** The four forces the boxes name, north first and then clockwise. */
@@ -620,8 +621,8 @@ export function createWardleyLegend(
       type: 'shape',
       shapeType: 'rect',
       filled: true,
-      fillColor: '#ffffff',
-      strokeColor: '#cfd2d6',
+      fillColor: NOTATION_NEUTRALS.cardFill,
+      strokeColor: NOTATION_NEUTRALS.legendBorder,
       strokeWidth: 1,
       shapeStyle: ShapeStyle.General,
       roughness: 0,
@@ -661,8 +662,8 @@ export function createWardleyLegend(
         type: 'shape',
         shapeType: 'rect',
         filled: true,
-        fillColor: '#cfd2d6',
-        strokeColor: '#cfd2d6',
+        fillColor: NOTATION_NEUTRALS.legendBorder,
+        strokeColor: NOTATION_NEUTRALS.legendBorder,
         strokeWidth: 0,
         shapeStyle: ShapeStyle.General,
         roughness: 0,
@@ -681,7 +682,7 @@ export function createWardleyLegend(
           shapeType: 'rect',
           filled: true,
           fillColor: col,
-          strokeColor: '#cfd2d6',
+          strokeColor: NOTATION_NEUTRALS.legendBorder,
           strokeWidth: 0.5,
           shapeStyle: ShapeStyle.General,
           roughness: 0,
@@ -788,7 +789,7 @@ export function createWardleyLegend(
           type: 'shape',
           shapeType: 'rect',
           filled: true,
-          fillColor: '#ffffff',
+          fillColor: NODE_FILL,
           strokeColor: NODE_STROKE,
           strokeWidth: 1,
           shapeStyle: ShapeStyle.General,

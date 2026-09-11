@@ -3,6 +3,7 @@ import {
   type TemplateCategory,
   templateFromCommand,
 } from '@labre/affine-gfx-template';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import type { CommandDescriptor } from '@labre/std';
 
 import { eventStormingCommands } from './commands';
@@ -42,7 +43,7 @@ const dia = (c: string) =>
   `<svg ${ATTRS}><rect x="48" y="20" width="40" height="40" transform="rotate(45 68 40)" fill="${c}"/></svg>`;
 
 /** The roll, in miniature: a white card, a few stickies, and the one axis. */
-const BOARD_PREVIEW = `<svg ${ATTRS} fill="none"><rect x="4" y="6" width="127" height="68" rx="6" fill="#ffffff" stroke="#d5d9e0" stroke-width="1.5"/><rect x="14" y="18" width="18" height="18" rx="3" fill="${ES_STICKIES[0].fill}"/><rect x="38" y="18" width="18" height="18" rx="3" fill="${ES_STICKIES[1].fill}"/><rect x="62" y="18" width="18" height="18" rx="3" fill="${ES_STICKIES[2].fill}"/><rect x="86" y="18" width="18" height="18" rx="3" fill="${ES_STICKIES[3].fill}"/><path d="M12 58 H114" stroke="#6d6e71" stroke-width="3"/><path d="M112 53 L122 58 L112 63 Z" fill="#6d6e71"/></svg>`;
+const BOARD_PREVIEW = `<svg ${ATTRS} fill="none"><rect x="4" y="6" width="127" height="68" rx="6" fill="${NOTATION_NEUTRALS.cardFill}" stroke="${NOTATION_NEUTRALS.cardBorder}" stroke-width="1.5"/><rect x="14" y="18" width="18" height="18" rx="3" fill="${ES_STICKIES[0].fill}"/><rect x="38" y="18" width="18" height="18" rx="3" fill="${ES_STICKIES[1].fill}"/><rect x="62" y="18" width="18" height="18" rx="3" fill="${ES_STICKIES[2].fill}"/><rect x="86" y="18" width="18" height="18" rx="3" fill="${ES_STICKIES[3].fill}"/><path d="M12 58 H114" stroke="${NOTATION_NEUTRALS.frameInk}" stroke-width="3"/><path d="M112 53 L122 58 L112 63 Z" fill="${NOTATION_NEUTRALS.frameInk}"/></svg>`;
 
 export const eventStormingTemplateCategory: TemplateCategory = {
   name: 'Event Storming',

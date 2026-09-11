@@ -3,6 +3,7 @@ import {
   type TemplateCategory,
 } from '@labre/affine-gfx-template';
 import { TextFitMode } from '@labre/affine-model';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import type { CommandInvocation } from '@labre/std';
 import { describe, expect, it } from 'vitest';
 
@@ -44,6 +45,7 @@ type RawElement = {
   shapeType?: string;
   xywh?: string;
   textFitMode?: string;
+  color?: string;
 };
 
 /**
@@ -217,4 +219,23 @@ describe('Constraint map is composed of the same presets', () => {
     expect(drawn).toHaveLength(1);
     expect(boxOf(composed[0]).slice(2)).toEqual(boxOf(drawn[0]).slice(2));
   });
+});
+
+/**
+ * R33: the text the two hand-authored compositions write (the sorting board's
+ * sticky notes, the constraint map's names) is nobody's artefact, so it is the
+ * shared notation scale's ink and not a near-black of this module's own.
+ */
+describe('the hand-authored templates write their text in the shared ink', () => {
+  for (const name of HAND_AUTHORED) {
+    it(name, () => {
+      const inked = Object.values(mapNamed(name)).filter(
+        element => element.color !== undefined
+      );
+      expect(inked.length).toBeGreaterThan(0);
+      for (const element of inked) {
+        expect(element.color).toBe(NOTATION_NEUTRALS.ink);
+      }
+    });
+  }
 });

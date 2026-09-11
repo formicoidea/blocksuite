@@ -10,8 +10,10 @@ import {
   BOARD_BAND_FILL,
   BOARD_CARD_BORDER,
   BOARD_CARD_FILL,
+  BOARD_TITLE_COLOR,
   BOUNDARY_STROKE,
   NODE_PALETTE,
+  RELATIONSHIP_STROKE,
 } from './consts';
 
 /**
@@ -72,7 +74,7 @@ export const c4TemplateCategory: TemplateCategory = {
   templates: [
     templateFromCommand(
       byId('c4.addBoard'),
-      `<svg ${ATTRS} fill="none"><rect x="10" y="10" width="115" height="60" rx="6" fill="${BOARD_CARD_FILL}" stroke="${BOARD_CARD_BORDER}" stroke-width="1.5"/><path d="M10 26 H125" stroke="${BOARD_CARD_BORDER}" stroke-width="1.5"/><rect x="11" y="11" width="113" height="15" fill="${BOARD_BAND_FILL}"/><rect x="20" y="15" width="40" height="6" rx="3" fill="#262626" opacity="0.55"/><rect x="22" y="36" width="34" height="20" rx="2" fill="${NODE_PALETTE.system.fill}"/><rect x="79" y="36" width="34" height="20" rx="2" fill="${CONTAINER.fill}"/><path d="M58 46 H75" stroke="#444444" stroke-width="1.6" stroke-dasharray="4 3"/></svg>`
+      `<svg ${ATTRS} fill="none"><rect x="10" y="10" width="115" height="60" rx="6" fill="${BOARD_CARD_FILL}" stroke="${BOARD_CARD_BORDER}" stroke-width="1.5"/><path d="M10 26 H125" stroke="${BOARD_CARD_BORDER}" stroke-width="1.5"/><rect x="11" y="11" width="113" height="15" fill="${BOARD_BAND_FILL}"/><rect x="20" y="15" width="40" height="6" rx="3" fill="${BOARD_TITLE_COLOR}" opacity="0.55"/><rect x="22" y="36" width="34" height="20" rx="2" fill="${NODE_PALETTE.system.fill}"/><rect x="79" y="36" width="34" height="20" rx="2" fill="${CONTAINER.fill}"/><path d="M58 46 H75" stroke="${RELATIONSHIP_STROKE}" stroke-width="1.6" stroke-dasharray="4 3"/></svg>`
     ),
     templateFromCommand(byId('c4.addPerson'), personPreview('person')),
     templateFromCommand(byId('c4.addPersonExt'), personPreview('person-ext')),

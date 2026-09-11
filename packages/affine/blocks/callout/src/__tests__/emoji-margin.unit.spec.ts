@@ -52,13 +52,15 @@ function calloutStartingWith(first?: { flavour: string; type?: string }) {
 }
 
 describe('getCalloutEmojiMarginTop', () => {
+  // marginTop + lineBox / 2 - 12 (half the 24px emoji), from HEADING_SCALE;
+  // H1 sits 1px higher as an optical correction.
   it.each([
-    ['h1', '23px'],
+    ['h1', '25px'],
     ['h2', '20px'],
-    ['h3', '16px'],
-    ['h4', '15px'],
-    ['h5', '14px'],
-    ['h6', '13px'],
+    ['h3', '14px'],
+    ['h4', '13px'],
+    ['h5', '12px'],
+    ['h6', '11.5px'],
   ])('drops the emoji onto the baseline of an %s', (type, expected) => {
     const callout = calloutStartingWith({
       flavour: 'affine:paragraph',

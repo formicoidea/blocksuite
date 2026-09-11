@@ -1,3 +1,5 @@
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
+
 /**
  * Visual constants for Wardley nodes (component + anchor) and the connector /
  * inertia presets created from the Wardley menu.
@@ -10,8 +12,9 @@
 
 /** Default node diameter (= the map label font size, 18). White fill, thin border. */
 export const NODE_SIZE = 18;
-export const NODE_FILL = '#ffffff';
-export const NODE_STROKE = '#1f2328';
+/** The shared notation scale's card fill and ink — Wardley is its reference. */
+export const NODE_FILL = NOTATION_NEUTRALS.cardFill;
+export const NODE_STROKE = NOTATION_NEUTRALS.ink;
 /** Thin border, matching the link / silhouette line weight. */
 export const NODE_STROKE_WIDTH = 1;
 
@@ -56,11 +59,33 @@ export const PIPELINE_LABEL = 'Pipeline';
  */
 export const LINK_STROKE_WIDTH = 2;
 
-/** Wardley red ("future"/evolution) — matches the validated arrow icon. */
+/**
+ * Wardley red ("future"/evolution) — matches the validated arrow icon.
+ *
+ * An IDENTITY colour: the legend recognises a stored evolution link by it
+ * (`legend.ts`, `el.stroke === WARDLEY_RED`). It stays a literal and must never
+ * be derived from `NOTATION_NEUTRALS` or any other scale — a change of value
+ * would orphan every link already drawn with it.
+ */
 export const WARDLEY_RED = '#d6455d';
-/** Dependency link grey. */
+/**
+ * Dependency link grey.
+ *
+ * An IDENTITY colour: the legend recognises a stored dependency link by it
+ * (`legend.ts`, `el.stroke === LINK_GREY`). It stays a literal and must never
+ * be derived from `NOTATION_NEUTRALS` — a change of value would orphan every
+ * link already drawn with it.
+ */
 export const LINK_GREY = '#666666';
-/** Inertia bar color + size. */
+/**
+ * Inertia bar color + size.
+ *
+ * An IDENTITY colour: the legend recognises a stored inertia bar by it
+ * (`legend.ts`, `el.fillColor === INERTIA_COLOR`). It happens to equal the
+ * scale's ink today, but it stays a literal and must never be derived from
+ * `NOTATION_NEUTRALS`: a change of the shared ink would orphan every inertia bar
+ * already on a map.
+ */
 export const INERTIA_COLOR = '#1f2328';
 export const INERTIA_SIZE = { w: 8, h: 44 };
 

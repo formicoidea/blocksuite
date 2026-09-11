@@ -6,6 +6,7 @@ import {
   TextAlign,
   TextVerticalAlign,
 } from '@labre/affine-model';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 import { groupCommandsByCategory } from '@labre/affine-widget-edgeless-toolbar';
 import {
   type BlockStdScope,
@@ -30,6 +31,7 @@ import {
   MESSAGE_STROKE,
   MESSAGE_WIDTH,
   NEUTRAL_STROKE,
+  NODE_FILL,
   NODE_LABEL,
   NODE_SIZE,
   START_WIDTH,
@@ -247,7 +249,10 @@ describe('bpmn style-C constants', () => {
     expect(EVENT_START).not.toBe(EVENT_END);
     // End ring is heavier than the start ring (BPMN line weights).
     expect(END_WIDTH).toBeGreaterThan(START_WIDTH);
-    expect(NEUTRAL_STROKE).toBe('#262626');
+    // The neutral is the shared notation scale's artefact ink, not BPMN's own.
+    expect(NEUTRAL_STROKE).toBe(NOTATION_NEUTRALS.ink);
+    expect(GROUP_STROKE).toBe(NOTATION_NEUTRALS.divider);
+    expect(NODE_FILL).toBe(NOTATION_NEUTRALS.cardFill);
   });
 });
 

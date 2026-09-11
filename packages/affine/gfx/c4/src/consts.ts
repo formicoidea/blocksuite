@@ -1,4 +1,5 @@
 import type { C4BoundaryVariant, C4NodeKind } from '@labre/affine-model';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 
 /**
  * Visual constants for the C4 pack.
@@ -326,24 +327,29 @@ export const NODE_LABEL: Record<C4NodeKind, string> = {
 
 export const FONT_FAMILY = 'Inter, sans-serif';
 
-/** The card — the same white every framework background paints. */
-export const BOARD_CARD_FILL = '#ffffff';
-export const BOARD_CARD_BORDER = '#d5d9e0';
+/**
+ * The card — the same white every framework background paints, framed and
+ * titled in the shared notation scale. The board is Labre's furniture, not
+ * the stencil's, so its neutrals are the scale's; the stencil greys are kept
+ * where the stencil draws them (the boundary, the relationship).
+ */
+export const BOARD_CARD_FILL = NOTATION_NEUTRALS.cardFill;
+export const BOARD_CARD_BORDER = NOTATION_NEUTRALS.cardBorder;
 export const BOARD_BORDER_WIDTH = 1.5;
 export const BOARD_CORNER_RADIUS = 12;
 export const BOARD_TITLE_FONT_SIZE = 20;
-export const BOARD_TITLE_COLOR = '#262626';
+export const BOARD_TITLE_COLOR = NOTATION_NEUTRALS.frameInk;
 
 /**
  * The header strip's own tint — a shade of the card, not a colour of its own.
  *
- * Sober on purpose, and the same intent as the pool's participant band
- * (`POOL_BAND_FILL`, `#f4f4f5`): the band has to be SEEN, because a strip a user
- * cannot see is a target they cannot aim at, and it must not read as a second
- * object sitting on the sheet. A hair lighter than the pool's, which is what it
- * takes to stay quiet under a 20-unit title rather than under a 13-unit one.
+ * Sober on purpose, and the same tint as the pool's participant band
+ * (`POOL_BAND_FILL`): the band has to be SEEN, because a strip a user cannot
+ * see is a target they cannot aim at, and it must not read as a second object
+ * sitting on the sheet. Both are the shared notation scale's band tint, painted
+ * at render time.
  */
-export const BOARD_BAND_FILL = '#f7f8fa';
+export const BOARD_BAND_FILL = NOTATION_NEUTRALS.band;
 
 /**
  * The size a fresh board is created at, and the room its furniture takes.

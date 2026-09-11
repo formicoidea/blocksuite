@@ -4,6 +4,7 @@ import type {
   FrameworkBackgroundDef,
 } from '@labre/affine-block-surface';
 import { CD_SUBDOMAINS, FONT_FAMILY } from '@labre/affine-gfx-ddd-shared';
+import { NOTATION_NEUTRALS } from '@labre/affine-shared/consts';
 
 import { CORE_DOMAIN_ROLE } from '../roles';
 
@@ -67,13 +68,14 @@ const rh = (h: number) => h / PLOT.height;
  * verbatim, so eight-digit hex is how a translucent band is declared.
  */
 const PALETTE = {
-  axis: '#000000',
-  title: '#000000',
-  tick: '#777777',
+  /** The frame, its titles and its ticks: the shared notation scale's. */
+  axis: NOTATION_NEUTRALS.frameInk,
+  title: NOTATION_NEUTRALS.frameInk,
+  tick: NOTATION_NEUTRALS.label,
   /** Zone names of the classic reading: white, over saturated bands. */
   zoneLabel: '#ffffff',
   /** Zone names of the migration reading: ink, over pale tints. */
-  zoneLabelDark: '#1f2328',
+  zoneLabelDark: NOTATION_NEUTRALS.ink,
   zoneGeneric: '#b3b3b399',
   zoneSupporting: '#9933ff99',
   zoneCore: '#4d990099',

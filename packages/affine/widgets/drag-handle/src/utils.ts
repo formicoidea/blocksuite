@@ -10,6 +10,11 @@ import {
   ListBlockModel,
   ParagraphBlockModel,
 } from '@labre/affine-model';
+import {
+  HEADING_LEVELS,
+  type HeadingLevel,
+  headingLineBox,
+} from '@labre/affine-shared/consts';
 import { DocModeProvider } from '@labre/affine-shared/services';
 import {
   calcDropTarget,
@@ -36,14 +41,25 @@ import {
   NOTE_CONTAINER_PADDING,
 } from './config.js';
 
+/**
+ * Hand tunings carried over from upstream, px added to a heading's line box:
+ * the grabber is centred on this height, so +N drops it by N/2. H1 (+4) and
+ * H4 (+2) were set this way against the old scale and kept as-is.
+ */
+const HEADING_GRABBER_OFFSET: Partial<Record<HeadingLevel, number>> = {
+  h1: 4,
+  h4: 2,
+};
+
+/** The height the grabber is centred on: the first line of the block. */
 const heightMap: Record<string, number> = {
   text: 23,
-  h1: 40,
-  h2: 36,
-  h3: 32,
-  h4: 32,
-  h5: 28,
-  h6: 26,
+  ...Object.fromEntries(
+    HEADING_LEVELS.map(level => [
+      level,
+      headingLineBox(level) + (HEADING_GRABBER_OFFSET[level] ?? 0),
+    ])
+  ),
   quote: 46,
   list: 24,
   database: 28,
