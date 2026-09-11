@@ -1,0 +1,1716 @@
+{
+  "kept": {
+    "packages/affine/gfx/text/src/toolbar/actions.ts": ["Aa"]
+  },
+  "deferred": {
+    "packages/affine/blocks/data-view/src/configs/slash-menu.ts": [
+      "To-do List",
+      "Todo"
+    ],
+    "packages/affine/blocks/data-view/src/configs/tooltips.ts": [
+      "Here is an example of todo list.",
+      "Make a list for building preview."
+    ],
+    "packages/affine/blocks/data-view/src/data-view-block.ts": [
+      "Delete Database",
+      "Untitled"
+    ],
+    "packages/affine/blocks/database/src/adapters/notion-html.ts": [
+      "Table View"
+    ],
+    "packages/affine/blocks/database/src/components/title/index.ts": [
+      "Untitled",
+      "Untitled",
+      "true"
+    ],
+    "packages/affine/blocks/database/src/configs/slash-menu.ts": [
+      "Calendar View",
+      "Display items by date in a calendar.",
+      "Display items in a table format.",
+      "Kanban View",
+      "Kanban View",
+      "Table View",
+      "Table View",
+      "Visualize data in a dashboard."
+    ],
+    "packages/affine/blocks/database/src/configs/tooltips.ts": [
+      "Display items in a table format.",
+      "Done",
+      "Done",
+      "Done",
+      "Here is an example of todo list.",
+      "In Progress",
+      "In Progress",
+      "In Progress",
+      "Make a list for building preview.",
+      "Status",
+      "Task 1",
+      "Task 1",
+      "Task 2",
+      "Task 3",
+      "Task 4",
+      "Task 5",
+      "Title",
+      "Todo",
+      "Ungroups",
+      "Untitled Kanban",
+      "Untitled Table",
+      "Visualize data in a dashboard."
+    ],
+    "packages/affine/blocks/database/src/database-block.ts": [
+      "Comment",
+      "Database title",
+      "Delete Database"
+    ],
+    "packages/affine/blocks/database/src/database-dnd-preview-block.ts": [
+      "Database Block"
+    ],
+    "packages/affine/blocks/database/src/detail-panel/block-renderer.ts": [
+      "Untitled"
+    ],
+    "packages/affine/blocks/database/src/detail-panel/note-renderer.ts": [
+      "Click to create a linked doc in center peek."
+    ],
+    "packages/affine/blocks/database/src/properties/created-time/define.ts": [
+      "Created Time"
+    ],
+    "packages/affine/blocks/database/src/properties/rich-text/define.ts": [
+      "Text"
+    ],
+    "packages/affine/blocks/database/src/properties/title/define.ts": ["Title"],
+    "packages/affine/blocks/embed/src/embed-figma-block/configs/slash-menu.ts": [
+      "Embed a Figma document.",
+      "Figma",
+      "Figma"
+    ],
+    "packages/affine/blocks/embed/src/embed-figma-block/configs/tooltips.ts": [
+      "AFFiNE Design System - Jul 2077",
+      "Edited just now",
+      "Embed a Figma document."
+    ],
+    "packages/affine/blocks/embed/src/embed-figma-block/embed-figma-block.ts": [
+      "Figma"
+    ],
+    "packages/affine/blocks/embed/src/embed-github-block/configs/slash-menu.ts": [
+      "GitHub",
+      "GitHub Repo",
+      "Link to a GitHub repository."
+    ],
+    "packages/affine/blocks/embed/src/embed-github-block/configs/tooltips.ts": [
+      "AFFiNE",
+      "Link to a GitHub repository.",
+      "Write, Draw and Plan All at Once.",
+      "toeverything/"
+    ],
+    "packages/affine/blocks/embed/src/embed-github-block/embed-github-block.ts": [
+      "Assignees",
+      "No one",
+      "banner"
+    ],
+    "packages/affine/blocks/embed/src/embed-loom-block/configs/slash-menu.ts": [
+      "Embed a Loom video.",
+      "Loom"
+    ],
+    "packages/affine/blocks/embed/src/embed-loom-block/configs/tooltips.ts": [
+      "1 min",
+      "AFFiNE Team",
+      "Embed a loom video."
+    ],
+    "packages/affine/blocks/embed/src/embed-loom-block/embed-loom-block.ts": [
+      "banner"
+    ],
+    "packages/affine/blocks/embed/src/embed-youtube-block/configs/slash-menu.ts": [
+      "Embed a YouTube video.",
+      "YouTube",
+      "YouTube Video"
+    ],
+    "packages/affine/blocks/embed/src/embed-youtube-block/configs/tooltips.ts": [
+      "Embed a YouTube video."
+    ],
+    "packages/affine/blocks/embed/src/embed-youtube-block/embed-youtube-block.ts": [
+      "YouTube Video",
+      "banner",
+      "creator"
+    ],
+    "packages/affine/blocks/table/src/color.ts": [
+      "Blue",
+      "Green",
+      "Grey",
+      "Orange",
+      "Purple",
+      "Red",
+      "Teal",
+      "Yellow"
+    ],
+    "packages/affine/blocks/table/src/configs/slash-menu.ts": [
+      "Create a simple table.",
+      "Table",
+      "Table"
+    ],
+    "packages/affine/blocks/table/src/configs/tooltips.ts": [
+      "&#x1f947; First",
+      "&#x1f948; Second",
+      "&#x1f949; Third",
+      "China",
+      "Country",
+      "Insert editable tabular data.",
+      "Japan",
+      "Ranking",
+      "USA",
+      "Weekly Overtime (Hrs)"
+    ],
+    "packages/affine/blocks/table/src/table-cell.ts": [
+      "Background color",
+      "Background color",
+      "Background color",
+      "Clear column contents",
+      "Clear column style",
+      "Clear contents",
+      "Clear row contents",
+      "Clear row style",
+      "Default",
+      "Default",
+      "Default",
+      "Insert Above",
+      "Insert Below",
+      "Insert Left",
+      "Insert Right",
+      "Move Down",
+      "Move Left",
+      "Move Right",
+      "Move Up",
+      "Paste"
+    ],
+    "packages/affine/data-view/src/core/common/properties.ts": ["Properties"],
+    "packages/affine/data-view/src/core/common/property-menu.ts": [
+      "Property name",
+      "Property type",
+      "Type"
+    ],
+    "packages/affine/data-view/src/core/component/tags/colors.ts": [
+      "Blue",
+      "Green",
+      "Grey",
+      "Magenta",
+      "Orange",
+      "Purple",
+      "Red",
+      "Teal",
+      "White",
+      "Yellow"
+    ],
+    "packages/affine/data-view/src/core/component/tags/multi-tag-select.ts": [
+      "Create",
+      "Create",
+      "Select tag or create one",
+      "Type here...",
+      "Type here..."
+    ],
+    "packages/affine/data-view/src/core/detail/detail.ts": [
+      "Add Property",
+      "Add property"
+    ],
+    "packages/affine/data-view/src/core/detail/field.ts": [
+      "Empty",
+      "Move Down",
+      "Move Up",
+      "Property settings"
+    ],
+    "packages/affine/data-view/src/core/filter/add-filter.ts": [
+      "Add filter group",
+      "New filter"
+    ],
+    "packages/affine/data-view/src/core/filter/filter-fn/boolean.ts": [
+      "Is checked",
+      "Is unchecked"
+    ],
+    "packages/affine/data-view/src/core/filter/filter-fn/date.ts": [
+      "After",
+      "Before"
+    ],
+    "packages/affine/data-view/src/core/filter/filter-fn/multi-tag.ts": [
+      "Contains all",
+      "Contains one of",
+      "Does not contains all",
+      "Does not contains one of"
+    ],
+    "packages/affine/data-view/src/core/filter/filter-fn/string.ts": [
+      "Contains",
+      "Does no contains",
+      "Ends with",
+      "Is",
+      "Is not",
+      "Starts with"
+    ],
+    "packages/affine/data-view/src/core/filter/filter-fn/tag.ts": [
+      "Is not one of",
+      "Is one of"
+    ],
+    "packages/affine/data-view/src/core/filter/filter-fn/unknown.ts": [
+      "Is empty",
+      "Is not empty"
+    ],
+    "packages/affine/data-view/src/core/filter/literal/define.ts": [
+      "Checked",
+      "Type a value...",
+      "Type a value...",
+      "Unchecked"
+    ],
+    "packages/affine/data-view/src/core/group-by/renderer/number-group.ts": [
+      "Ungroups"
+    ],
+    "packages/affine/data-view/src/core/group-by/renderer/select-group.ts": [
+      "Ungroups"
+    ],
+    "packages/affine/data-view/src/core/group-by/renderer/string-group.ts": [
+      "Ungroups"
+    ],
+    "packages/affine/data-view/src/core/group-by/setting.ts": [
+      "Day",
+      "Group By",
+      "Group By",
+      "Group by",
+      "Group dates by",
+      "Group dates by",
+      "Groups",
+      "Month",
+      "Newest first",
+      "Oldest first",
+      "Order",
+      "Order",
+      "Relative",
+      "Remove Grouping",
+      "Remove grouping",
+      "Week (starts Monday)",
+      "Week (starts Sunday)",
+      "Year"
+    ],
+    "packages/affine/data-view/src/core/sort/add-sort.ts": ["New sort"],
+    "packages/affine/data-view/src/property-presets/checkbox/define.ts": [
+      "Checkbox"
+    ],
+    "packages/affine/data-view/src/property-presets/date/define.ts": ["Date"],
+    "packages/affine/data-view/src/property-presets/multi-select/define.ts": [
+      "Multi-select"
+    ],
+    "packages/affine/data-view/src/property-presets/number/define.ts": [
+      "Number"
+    ],
+    "packages/affine/data-view/src/property-presets/number/utils/formats.ts": [
+      "British Pound",
+      "Chinese Yuan",
+      "Euro",
+      "Indian Rupee",
+      "Japanese Yen",
+      "Number",
+      "Number With Commas",
+      "Percent",
+      "US Dollar"
+    ],
+    "packages/affine/data-view/src/property-presets/progress/define.ts": [
+      "Progress"
+    ],
+    "packages/affine/data-view/src/property-presets/select/define.ts": [
+      "Select"
+    ],
+    "packages/affine/data-view/src/property-presets/text/define.ts": [
+      "Plain-Text"
+    ],
+    "packages/affine/data-view/src/view-presets/calendar/calendar-view-manager.ts": [
+      "Date",
+      "End Date"
+    ],
+    "packages/affine/data-view/src/view-presets/calendar/pc/view.ts": [
+      "${} ${}",
+      "+ New row",
+      "Add a row to any date, it'll appear here on the calendar.",
+      "Calendar by",
+      "Connect calendar",
+      "Create date property",
+      "Date range",
+      "Dismiss",
+      "End date",
+      "External calendars",
+      "Failed to load calendar entries",
+      "New row",
+      "New row",
+      "Next month",
+      "None",
+      "Nothing here yet",
+      "Previous month",
+      "Select or create date property",
+      "Show all workspace calendars",
+      "Today"
+    ],
+    "packages/affine/data-view/src/view-presets/kanban/mobile/group.ts": [
+      "Add",
+      "Delete Cards",
+      "Ungroup"
+    ],
+    "packages/affine/data-view/src/view-presets/kanban/mobile/menu.ts": [
+      "Delete Card",
+      "Expand Card",
+      "Insert After",
+      "Insert Before",
+      "Move To"
+    ],
+    "packages/affine/data-view/src/view-presets/kanban/pc/group.ts": [
+      "Add",
+      "Delete Cards",
+      "Ungroup"
+    ],
+    "packages/affine/data-view/src/view-presets/kanban/pc/menu.ts": [
+      "Delete Card",
+      "Expand Card",
+      "Insert After",
+      "Insert Before",
+      "Move To"
+    ],
+    "packages/affine/data-view/src/view-presets/table/mobile/column-header.ts": [
+      "Hide In View",
+      "Insert Left Column",
+      "Insert Right Column",
+      "Move Left",
+      "Move Right",
+      "Number Format",
+      "Number Format",
+      "Property settings"
+    ],
+    "packages/affine/data-view/src/view-presets/table/mobile/group.ts": [
+      "Delete Cards",
+      "New Record",
+      "Ungroup"
+    ],
+    "packages/affine/data-view/src/view-presets/table/mobile/menu.ts": [
+      "Delete Row",
+      "Expand Row"
+    ],
+    "packages/affine/data-view/src/view-presets/table/mobile/table-view-ui-logic.ts": [
+      "New Group"
+    ],
+    "packages/affine/data-view/src/view-presets/table/pc-virtual/controller/clipboard.ts": [
+      "${} cell${} copied to clipboard",
+      "${} row${} copied to clipboard"
+    ],
+    "packages/affine/data-view/src/view-presets/table/pc-virtual/group/bottom/group-footer.ts": [
+      "New Record"
+    ],
+    "packages/affine/data-view/src/view-presets/table/pc-virtual/group/bottom/stats/column-stats-column.ts": [
+      "None"
+    ],
+    "packages/affine/data-view/src/view-presets/table/pc-virtual/group/top/group-header.ts": [
+      "Delete Cards",
+      "Ungroup"
+    ],
+    "packages/affine/data-view/src/view-presets/table/pc-virtual/group/top/header/column-header.ts": [
+      "Property type"
+    ],
+    "packages/affine/data-view/src/view-presets/table/pc-virtual/group/top/header/number-format-bar.ts": [
+      "&lpar;&nbsp;${}&nbsp;&rpar;",
+      "decrease decimal places",
+      "increase decimal places"
+    ],
+    "packages/affine/data-view/src/view-presets/table/pc-virtual/group/top/header/single-column-header.ts": [
+      "Filter",
+      "Hide In View",
+      "Insert Left Column",
+      "Insert Right Column",
+      "Move Left",
+      "Move Right",
+      "Number Format",
+      "Sort Ascending",
+      "Sort Descending"
+    ],
+    "packages/affine/data-view/src/view-presets/table/pc-virtual/row/menu.ts": [
+      "Delete Row",
+      "Delete Rows",
+      "Expand Row",
+      "Insert After",
+      "Insert Before"
+    ],
+    "packages/affine/data-view/src/view-presets/table/pc-virtual/table-view-ui-logic.ts": [
+      "New Group"
+    ],
+    "packages/affine/data-view/src/view-presets/table/pc/controller/clipboard.ts": [
+      "${} cell${} copied to clipboard",
+      "${} row${} copied to clipboard"
+    ],
+    "packages/affine/data-view/src/view-presets/table/pc/group.ts": [
+      "Delete Cards",
+      "New Record",
+      "Ungroup"
+    ],
+    "packages/affine/data-view/src/view-presets/table/pc/header/database-header-column.ts": [
+      "Filter",
+      "Hide In View",
+      "Insert Left Column",
+      "Insert Right Column",
+      "Move Left",
+      "Move Right",
+      "Number Format",
+      "Sort Ascending",
+      "Sort Descending"
+    ],
+    "packages/affine/data-view/src/view-presets/table/pc/header/number-format-bar.ts": [
+      "&lpar;&nbsp;${}&nbsp;&rpar;",
+      "decrease decimal places",
+      "increase decimal places"
+    ],
+    "packages/affine/data-view/src/view-presets/table/pc/menu.ts": [
+      "Delete Row",
+      "Delete Rows",
+      "Expand Row",
+      "Insert After",
+      "Insert Before"
+    ],
+    "packages/affine/data-view/src/view-presets/table/pc/table-view-ui-logic.ts": [
+      "New Group"
+    ],
+    "packages/affine/data-view/src/view-presets/table/stats/column-stats-column.ts": [
+      "None"
+    ],
+    "packages/affine/data-view/src/widget-presets/quick-setting-bar/filter/group-panel-view.ts": [
+      "Add filter",
+      "Add filter group",
+      "And",
+      "Filter group",
+      "Or"
+    ],
+    "packages/affine/data-view/src/widget-presets/quick-setting-bar/filter/list-view.ts": [
+      "${} Add filter"
+    ],
+    "packages/affine/data-view/src/widget-presets/quick-setting-bar/filter/root-panel-view.ts": [
+      "Add",
+      "Filters"
+    ],
+    "packages/affine/data-view/src/widget-presets/quick-setting-bar/sort/root-panel.ts": [
+      "Add sort"
+    ],
+    "packages/affine/data-view/src/widget-presets/tools/presets/search/search.ts": [
+      "Esc",
+      "Search...",
+      "to clear all"
+    ],
+    "packages/affine/data-view/src/widget-presets/tools/presets/table-add-row/add-row.ts": [
+      "New",
+      "New Record"
+    ],
+    "packages/affine/data-view/src/widget-presets/tools/presets/view-options/view-options.ts": [
+      "${} shown",
+      "Filter",
+      "Layout",
+      "Layout",
+      "Properties",
+      "Show Vertical lines",
+      "Show block icon",
+      "Sort",
+      "Sort",
+      "View name",
+      "View settings"
+    ],
+    "packages/affine/data-view/src/widget-presets/views-bar/views-view.ts": [
+      "${} More",
+      "Create ${}",
+      "Edit View",
+      "Move Left",
+      "Move Right",
+      "View name"
+    ],
+    "packages/affine/widgets/keyboard-toolbar/src/config.ts": [
+      "Attachment",
+      "Attachment",
+      "Background",
+      "Basic",
+      "Bold",
+      "BulletedList",
+      "CheckBox",
+      "CodeBlock",
+      "CollapseTab",
+      "Color",
+      "Content & Media",
+      "Date",
+      "Default Color",
+      "Default Color",
+      "Divider",
+      "Document Group&Frame",
+      "Embed",
+      "Embeds",
+      "Equation",
+      "Equation",
+      "Figma",
+      "Frame:",
+      "Github",
+      "Group:",
+      "Heading ${}",
+      "Image",
+      "Image",
+      "Inline equation",
+      "InlineTex",
+      "Italic",
+      "Kanban view",
+      "LinkedPage",
+      "List",
+      "Loom",
+      "NewPage",
+      "Now",
+      "NumberedList",
+      "Page",
+      "Quote",
+      "Redo",
+      "RightTab",
+      "StrikeThrough",
+      "Table view",
+      "Text",
+      "Today",
+      "Tomorrow",
+      "Turn into",
+      "UnderLine",
+      "Undo",
+      "Yesterday",
+      "Youtube"
+    ]
+  },
+  "pending": {
+    "packages/affine/blocks/attachment/src/components/rename-model.ts": [
+      "File name cannot be empty"
+    ],
+    "packages/affine/blocks/attachment/src/configs/slash-menu.ts": [
+      "Attach a file to document.",
+      "Attachment",
+      "Attachment",
+      "PDF",
+      "PDF",
+      "Upload a PDF to document."
+    ],
+    "packages/affine/blocks/attachment/src/configs/toolbar.ts": [
+      "Caption",
+      "Download",
+      "Horizontal style",
+      "Reload",
+      "Rename",
+      "Rename",
+      "Replace attachment",
+      "Vertical style"
+    ],
+    "packages/affine/blocks/attachment/src/configs/tooltips.ts": [
+      "Attach a file.",
+      "Rickroll.mp3",
+      "Rickroll.pdf",
+      "Upload a pdf to document."
+    ],
+    "packages/affine/blocks/attachment/src/utils.ts": [
+      "Download in progress...",
+      "Downloading ${}",
+      "Failed to download ${}!",
+      "You can only upload files less than ${}"
+    ],
+    "packages/affine/blocks/bookmark/src/components/bookmark-card.ts": [
+      "banner",
+      "icon"
+    ],
+    "packages/affine/blocks/bookmark/src/configs/slash-menu.ts": [
+      "Add a bookmark for reference."
+    ],
+    "packages/affine/blocks/bookmark/src/configs/toolbar.ts": [
+      "Caption",
+      "Large horizontal style",
+      "Large horizontal style",
+      "Large vertical style",
+      "Reload",
+      "Small horizontal style",
+      "Small horizontal style",
+      "Small vertical style"
+    ],
+    "packages/affine/blocks/bookmark/src/configs/tooltips.ts": [
+      "Any user may have a different perspective on what data they",
+      "For example, one user&#x2019;s edits to a document might be on",
+      "In a decentralized system, we can have a kaleidoscopic",
+      "Learn about AFFiNE",
+      "Other users might choose to accept all, some, or none of",
+      "complexity to our data.&#10;",
+      "computer reconnects, those changes are distributed to",
+      "either have, choose to share, or accept.&#10;",
+      "other users.&#10;",
+      "their laptop on an airplane; when the plane lands and the",
+      "those changes to their version of the document."
+    ],
+    "packages/affine/blocks/callout/src/configs/slash-menu.ts": [
+      "Callout",
+      "Callout",
+      "Let your words stand out."
+    ],
+    "packages/affine/blocks/callout/src/configs/tooltips.ts": [
+      "A storyboard is a visual representation of a story, typically presented in the form of sequential",
+      "Highlight important notes.",
+      "panels. Each panel features illustrations or images accompanied by notes describing key",
+      "scenes or shots, including details of action and dialogue."
+    ],
+    "packages/affine/blocks/code/src/code-block.ts": [
+      "Copied failed, something went wrong",
+      "Plain Text"
+    ],
+    "packages/affine/blocks/code/src/code-toolbar/components/lang-button.ts": [
+      "Search for a language"
+    ],
+    "packages/affine/blocks/code/src/code-toolbar/components/preview-button.ts": [
+      "Preview"
+    ],
+    "packages/affine/blocks/code/src/code-toolbar/config.ts": [
+      "Caption",
+      "Comment",
+      "Comment",
+      "Copy code"
+    ],
+    "packages/affine/blocks/edgeless-text/src/edgeless-toolbar/config.ts": [
+      "Font size"
+    ],
+    "packages/affine/blocks/embed-doc/src/embed-linked-doc-block/adapters/html.ts": [
+      "+ o.node.props.pageId) ??"
+    ],
+    "packages/affine/blocks/embed-doc/src/embed-linked-doc-block/adapters/markdown.ts": [
+      "+ o.node.props.pageId) ??"
+    ],
+    "packages/affine/blocks/embed-doc/src/embed-linked-doc-block/adapters/plain-text.ts": [
+      "+ o.node.props.pageId) ??"
+    ],
+    "packages/affine/blocks/embed-doc/src/embed-linked-doc-block/configs/slash-menu.ts": [
+      "Link Doc",
+      "Link to another document.",
+      "Linked Doc",
+      "New Doc",
+      "New Doc",
+      "Start a new document."
+    ],
+    "packages/affine/blocks/embed-doc/src/embed-linked-doc-block/configs/toolbar.ts": [
+      "Caption",
+      "Large horizontal style",
+      "Large horizontal style",
+      "Large vertical style",
+      "Open doc",
+      "Open doc",
+      "Open this doc",
+      "Small horizontal style",
+      "Small horizontal style",
+      "Small vertical style"
+    ],
+    "packages/affine/blocks/embed-doc/src/embed-linked-doc-block/configs/tooltips.ts": [
+      "Any user may have a different perspective on what data they",
+      "For example, one user&#x2019;s edits to a document might be on",
+      "In a decentralized system, we can have a kaleidoscopic",
+      "Other users might choose to accept all, some, or none of",
+      "Title",
+      "Type &#39;/&#39; for commands",
+      "What&#x2019;s AFFiNE?",
+      "complexity to our data.&#10;",
+      "computer reconnects, those changes are distributed to",
+      "either have, choose to share, or accept.&#10;",
+      "other users.&#10;",
+      "their laptop on an airplane; when the plane lands and the",
+      "those changes to their version of the document."
+    ],
+    "packages/affine/blocks/embed-doc/src/embed-linked-doc-block/embed-linked-doc-block.ts": [
+      "Reload",
+      "Updated"
+    ],
+    "packages/affine/blocks/embed-doc/src/embed-synced-doc-block/components/embed-synced-doc-card.ts": [
+      "Reload",
+      "Updated"
+    ],
+    "packages/affine/blocks/embed-doc/src/embed-synced-doc-block/configs/toolbar.ts": [
+      "Caption",
+      "Duplicate as note",
+      "Duplicate as note to create an editable copy, the original remains unchanged.",
+      "Insert to page",
+      "Insert to page",
+      "Open doc",
+      "Open doc",
+      "Open this doc"
+    ],
+    "packages/affine/blocks/embed-doc/src/embed-synced-doc-block/embed-edgeless-synced-doc-block.ts": [
+      "This is a linked doc, you can add content here."
+    ],
+    "packages/affine/blocks/embed-doc/src/embed-synced-doc-block/embed-synced-doc-block.ts": [
+      "This is a linked doc, you can add content here."
+    ],
+    "packages/affine/blocks/embed/src/common/render-linked-doc.ts": [
+      "Enter a title for the new doc.",
+      "Untitled",
+      "You can click undo to recovery block content"
+    ],
+    "packages/affine/blocks/embed/src/configs/toolbar.ts": [
+      "Caption",
+      "Caption",
+      "Large horizontal style",
+      "Large horizontal style",
+      "Large vertical style",
+      "Reload",
+      "Small horizontal style",
+      "Small horizontal style",
+      "Small vertical style"
+    ],
+    "packages/affine/blocks/embed/src/embed-html-block/components/fullscreen-toolbar.ts": [
+      "Hide toolbar",
+      "Settings"
+    ],
+    "packages/affine/blocks/embed/src/embed-html-block/configs/toolbar.ts": [
+      "Caption",
+      "Large horizontal style",
+      "Open this doc",
+      "Small horizontal style"
+    ],
+    "packages/affine/blocks/embed/src/embed-html-block/configs/tooltips.ts": [
+      "@AFFiNEOfficial",
+      "AFFiNE",
+      "Change theme following phone case color",
+      "Embed a X post (tweet).",
+      "Insert a Linear issue.",
+      "To Shape, Not to Adapt.",
+      "Work in Progress &#xb7;",
+      "qpomelo",
+      "qpomelo",
+      "re-assigned to",
+      "re-assigned to",
+      "tsiheng",
+      "tsiheng"
+    ],
+    "packages/affine/blocks/embed/src/embed-html-block/embed-html-block.ts": [
+      "Empty"
+    ],
+    "packages/affine/blocks/embed/src/embed-iframe-block/components/embed-iframe-error-card.ts": [
+      "Edit",
+      "This link couldn’t be loaded."
+    ],
+    "packages/affine/blocks/embed/src/embed-iframe-block/components/embed-iframe-idle-card.ts": [
+      "Embed anything (Google Drive, Google Docs, Spotify, Miro…)"
+    ],
+    "packages/affine/blocks/embed/src/embed-iframe-block/components/embed-iframe-link-input-base.ts": [
+      "Error in embed iframe creation",
+      "Invalid URL",
+      "Please enter a valid URL",
+      "Please try again"
+    ],
+    "packages/affine/blocks/embed/src/embed-iframe-block/components/embed-iframe-link-input-popup.ts": [
+      "Embed Link",
+      "Paste the Embed link...",
+      "Works with links of Google Drive, Spotify…"
+    ],
+    "packages/affine/blocks/embed/src/embed-iframe-block/components/embed-iframe-loading-card.ts": [
+      "Loading..."
+    ],
+    "packages/affine/blocks/embed/src/embed-iframe-block/configs/slash-menu/slash-menu.ts": [
+      "Embed",
+      "Embed",
+      "For Google Drive, and more."
+    ],
+    "packages/affine/blocks/embed/src/embed-iframe-block/configs/toolbar.ts": [
+      "Caption",
+      "Create Linked Doc",
+      "Original",
+      "Reload"
+    ],
+    "packages/affine/blocks/embed/src/embed-iframe-block/embed-iframe-block.ts": [
+      "Please set a link to the block"
+    ],
+    "packages/affine/blocks/frame/src/edgeless-toolbar/frame-dense-menu.ts": [
+      "Custom",
+      "Frame",
+      "Slide ${}"
+    ],
+    "packages/affine/blocks/frame/src/edgeless-toolbar/frame-menu.ts": [
+      "Custom"
+    ],
+    "packages/affine/blocks/frame/src/edgeless-toolbar/presentation-toolbar.ts": [
+      "Next",
+      "Previous",
+      "The presentation requires at least 1 frame. You can firstly create a frame.",
+      "You have reached the first frame",
+      "You have reached the last frame"
+    ],
+    "packages/affine/blocks/frame/src/frame-toolbar.ts": [
+      "Background",
+      "Frame has been inserted into doc",
+      "Frame has been inserted into doc",
+      "Insert into Page",
+      "Insert into Page",
+      "Rename",
+      "Ungroup"
+    ],
+    "packages/affine/blocks/frame/src/present/navigator-setting-button.ts": [
+      "Black background",
+      "Frame Order",
+      "Hide toolbar",
+      "Playback Settings"
+    ],
+    "packages/affine/blocks/frame/src/present/present-button.ts": ["Present"],
+    "packages/affine/blocks/image/src/configs/slash-menu.ts": [
+      "Image",
+      "Insert an image.",
+      "Photo"
+    ],
+    "packages/affine/blocks/image/src/configs/toolbar.ts": [
+      "Caption",
+      "Caption",
+      "Download",
+      "Download",
+      "Turn into card view"
+    ],
+    "packages/affine/blocks/image/src/configs/tooltips.ts": ["Insert a photo."],
+    "packages/affine/blocks/image/src/image-block.ts": ["Image"],
+    "packages/affine/blocks/image/src/image-edgeless-block.ts": ["Image"],
+    "packages/affine/blocks/image/src/preview-image/page.ts": ["Image Block"],
+    "packages/affine/blocks/image/src/utils.ts": [
+      "Copied image to clipboard",
+      "Download in progress...",
+      "Downloading image...",
+      "Failed to download image!",
+      "Failed to read image size, please try another image",
+      "You can only upload files less than ${}"
+    ],
+    "packages/affine/blocks/latex/src/configs/slash-menu.ts": [
+      "Create a equation block.",
+      "Create a inline equation.",
+      "Equation",
+      "Equation",
+      "Inline equation",
+      "Inline equation"
+    ],
+    "packages/affine/blocks/latex/src/latex-block.ts": [
+      "Equation",
+      "Error equation"
+    ],
+    "packages/affine/blocks/list/src/turbo/list-layout-handler.ts": ["true"],
+    "packages/affine/blocks/note/src/components/edgeless-note-border-dropdown-menu.ts": [
+      "Border style",
+      "Border style"
+    ],
+    "packages/affine/blocks/note/src/components/edgeless-note-display-mode-dropdown-menu.ts": [
+      "Display mode",
+      "Mode",
+      "Show in"
+    ],
+    "packages/affine/blocks/note/src/components/edgeless-note-shadow-menu.ts": [
+      "Box shadow",
+      "Film shadow",
+      "Floating shadow",
+      "No shadow",
+      "Paper shadow",
+      "Sticker shadow"
+    ],
+    "packages/affine/blocks/note/src/components/edgeless-note-style-panel.ts": [
+      "Back",
+      "Border",
+      "Corner Radius",
+      "Custom color",
+      "Fill color",
+      "Note Style",
+      "Note Style",
+      "Shadow"
+    ],
+    "packages/affine/blocks/note/src/configs/slash-menu.ts": ["Other Headings"],
+    "packages/affine/blocks/note/src/configs/toolbar.ts": [
+      "${} Find it in the TOC for quick navigation.",
+      "Auto height",
+      "Content added to your page.",
+      "Content removed from your page.",
+      "Customized height",
+      "Note displayed in Page Mode",
+      "Size",
+      "Slicer",
+      "This note is part of Page Mode. Click to remove it from the page.",
+      "View in Toc"
+    ],
+    "packages/affine/blocks/note/src/configs/tooltips.ts": [
+      "&#34;Hello",
+      "&#34;World&#34;&#10;",
+      "@State",
+      "Any user may have a different perspective",
+      "Any user may have a different perspective on what data they",
+      "Any user may have a different perspective on what data they",
+      "Any user may have a different perspective on what data they",
+      "Any user may have a different perspective on what data they",
+      "Any user may have a different perspective on what data they",
+      "Bold Text",
+      "Bulleted List",
+      "Code Block",
+      "ContentView",
+      "Divider",
+      "For example, one user&#x2019;s edits to a",
+      "For example, one user&#x2019;s edits to a document might be on",
+      "For example, one user&#x2019;s edits to a document might be on",
+      "For example, one user&#x2019;s edits to a document might be on",
+      "For example, one user&#x2019;s edits to a document might be on",
+      "For example, one user&#x2019;s edits to a document might be on",
+      "Heading #1",
+      "Heading #2",
+      "Heading #3",
+      "Heading #4",
+      "Heading #5",
+      "Heading #6",
+      "Heading ${}",
+      "Here is an example of todo list.",
+      "Here&#39;s an example of a bulleted list.",
+      "Here&#39;s an example of a numbered list.",
+      "In a decentralized system, we can have a",
+      "In a decentralized system, we can have a",
+      "In a decentralized system, we can have a kaleidoscopic",
+      "In a decentralized system, we can have a kaleidoscopic",
+      "In a decentralized system, we can have a kaleidoscopic",
+      "In a decentralized system, we can have a kaleidoscopic",
+      "In a decentralized system, we can have a kaleidoscopic",
+      "Italic",
+      "Make a list for building preview.",
+      "Numbered List",
+      "Other users might choose to accept all,",
+      "Other users might choose to accept all, some, or none of",
+      "Other users might choose to accept all, some, or none of",
+      "Other users might choose to accept all, some, or none of",
+      "Other users might choose to accept all, some, or none of",
+      "Other users might choose to accept all, some, or none of",
+      "Quote",
+      "Strikethrough",
+      "Text",
+      "Text",
+      "To-do List",
+      "Underline",
+      "View",
+      "View",
+      "You can list your plans such as this",
+      "You can list your plans such as this",
+      "airplane; when the plane lands and the",
+      "body:",
+      "complexity to our data.&#10;",
+      "complexity to our data.&#10;",
+      "complexity to our data.&#10;",
+      "complexity to our data.&#10;",
+      "complexity to our data.&#10;",
+      "computer reconnects, those changes are",
+      "computer reconnects, those changes are distributed to",
+      "computer reconnects, those changes are distributed to",
+      "computer reconnects, those changes are distributed to",
+      "computer reconnects, those changes are distributed to",
+      "computer reconnects, those changes are distributed to",
+      "distributed to other users.&#10;",
+      "document might be on their laptop on an",
+      "either have, choose to share, or accept.&#10;",
+      "either have, choose to share, or accept.&#10;",
+      "either have, choose to share, or accept.&#10;",
+      "either have, choose to share, or accept.&#10;",
+      "either have, choose to share, or accept.&#10;",
+      "helloTo",
+      "helloTo)!&#34;",
+      "kaleidoscopic complexity to our data.&#10;",
+      "kaleidoscopic complexity to our data.&#10;…",
+      "on what data they either have, choose to",
+      "other users.&#10;",
+      "other users.&#10;",
+      "other users.&#10;",
+      "other users.&#10;",
+      "other users.&#10;",
+      "share, or accept.&#10;",
+      "some",
+      "some, or none of those changes to their",
+      "struct",
+      "their laptop on an airplane; when the plane lands and the",
+      "their laptop on an airplane; when the plane lands and the",
+      "their laptop on an airplane; when the plane lands and the",
+      "their laptop on an airplane; when the plane lands and the",
+      "their laptop on an airplane; when the plane lands and the",
+      "those changes to their version of the document.",
+      "those changes to their version of the document.",
+      "those changes to their version of the document.",
+      "those changes to their version of the document.",
+      "those changes to their version of the document.",
+      "var",
+      "var",
+      "version of the document."
+    ],
+    "packages/affine/blocks/note/src/move-block.ts": ["Move Down", "Move Up"],
+    "packages/affine/blocks/paragraph/src/turbo/paragraph-layout-handler.ts": [
+      "true"
+    ],
+    "packages/affine/blocks/paragraph/src/view.ts": ["Type '/' for commands"],
+    "packages/affine/blocks/root/src/configs/toolbar.ts": [
+      "Conversions",
+      "Create Linked Doc",
+      "Create Table",
+      "Turn into"
+    ],
+    "packages/affine/blocks/root/src/edgeless/configs/toolbar/alignment.ts": [
+      "alignment-menu"
+    ],
+    "packages/affine/blocks/root/src/edgeless/configs/toolbar/misc.ts": [
+      "Align objects",
+      "Align objects",
+      "Click to unlock",
+      "Frame",
+      "Frame",
+      "Release from group"
+    ],
+    "packages/affine/blocks/root/src/edgeless/configs/toolbar/more.ts": [
+      "Bring Forward",
+      "Edit link",
+      "Frame section",
+      "Group section",
+      "Reload",
+      "Remove link",
+      "Send Backward",
+      "Turn into linked doc"
+    ],
+    "packages/affine/blocks/root/src/edgeless/edgeless-keyboard.ts": [
+      "Zoom to selection"
+    ],
+    "packages/affine/blocks/surface-ref/src/configs/slash-menu.ts": [
+      "Edgeless",
+      "Edgeless",
+      "Edgeless",
+      "Frame",
+      "Frame",
+      "Frame:",
+      "Group:",
+      "Insert a blank frame",
+      "Insert a mind map",
+      "Mind Map",
+      "Mind Map",
+      "Text"
+    ],
+    "packages/affine/blocks/surface-ref/src/configs/tooltips.ts": [
+      "Create a blank frame in Edgeless",
+      "Create a mind map in Edgeless",
+      "Frame",
+      "Mind Map"
+    ],
+    "packages/affine/blocks/surface-ref/src/utils.ts": [
+      "Edgeless content",
+      "Frame",
+      "Mind map"
+    ],
+    "packages/affine/blocks/surface/src/extensions/interchange-import.ts": [
+      "${} ${}"
+    ],
+    "packages/affine/components/src/caption/block-caption.ts": [
+      "Write a caption"
+    ],
+    "packages/affine/components/src/card-style-dropdown-menu/dropdown-menu.ts": [
+      "Card style",
+      "Card style"
+    ],
+    "packages/affine/components/src/citation/citation.ts": ["favicon"],
+    "packages/affine/components/src/color-picker/color-picker.ts": [
+      "Colors",
+      "Custom",
+      "Dark",
+      "Light",
+      "Normal"
+    ],
+    "packages/affine/components/src/context-menu/menu-renderer.ts": [
+      "No Results"
+    ],
+    "packages/affine/components/src/date-picker/date-picker.ts": [
+      "Clear",
+      "TODAY",
+      "clear",
+      "next month",
+      "previous month",
+      "today"
+    ],
+    "packages/affine/components/src/edgeless-shape-color-picker/color-picker.ts": [
+      "Border color",
+      "Color",
+      "Color",
+      "Fill color"
+    ],
+    "packages/affine/components/src/embed-card-modal/embed-card-create-modal.ts": [
+      "Input in https://...",
+      "Invalid link"
+    ],
+    "packages/affine/components/src/embed-card-modal/embed-card-edit-modal.ts": [
+      "Add description alias (empty to inherit document content)",
+      "Add title alias",
+      "Cancel",
+      "Reset",
+      "Title can not be empty",
+      "Write a description...",
+      "Write a title"
+    ],
+    "packages/affine/components/src/highlight-dropdown-menu/dropdown-menu.ts": [
+      "Highlight",
+      "highlight"
+    ],
+    "packages/affine/components/src/icon-button/index.ts": ["HTML"],
+    "packages/affine/components/src/icon-picker/affine-icon-picker-panel.ts": [
+      "Filter...",
+      "No icon found"
+    ],
+    "packages/affine/components/src/icon-picker/emoji-data.ts": [
+      "Animals & Nature",
+      "Flags",
+      "Food & Drink",
+      "Objects",
+      "Smileys & People",
+      "Symbols",
+      "Travel & Places"
+    ],
+    "packages/affine/components/src/icon-picker/emoji-picker-panel.ts": [
+      "Filter...",
+      "No emoji found"
+    ],
+    "packages/affine/components/src/icon-picker/icon-picker.ts": [
+      "Emoji",
+      "Icons",
+      "Remove"
+    ],
+    "packages/affine/components/src/linked-doc-title/doc-title.ts": [
+      "Doc title"
+    ],
+    "packages/affine/components/src/open-doc-dropdown-menu/dropdown-menu.ts": [
+      "Open",
+      "Open doc menu",
+      "Open doc with"
+    ],
+    "packages/affine/components/src/resource/status.ts": [
+      "${} failed",
+      "Reload",
+      "Retry"
+    ],
+    "packages/affine/components/src/toast/toast.ts": ["Hello World"],
+    "packages/affine/components/src/toolbar/tooltip.ts": ["* Content *"],
+    "packages/affine/fragments/adapter-panel/src/config.ts": [
+      "HTML",
+      "Markdown",
+      "PlainText",
+      "Snapshot"
+    ],
+    "packages/affine/fragments/doc-title/src/doc-title.ts": ["Title", "true"],
+    "packages/affine/fragments/frame-panel/src/body/frame-panel-body.ts": [
+      "Add frames to organize and present your Edgeless"
+    ],
+    "packages/affine/fragments/frame-panel/src/header/frame-panel-header.ts": [
+      "All frames",
+      "Presentation"
+    ],
+    "packages/affine/fragments/frame-panel/src/header/frames-setting-menu.ts": [
+      "Dark background",
+      "Fill Screen",
+      "Hide toolbar",
+      "Playback Settings",
+      "Preview Settings"
+    ],
+    "packages/affine/fragments/outline/src/body/outline-notice.ts": [
+      "Click here or",
+      "SOME CONTENTS HIDDEN",
+      "Some contents are not visible on edgeless.",
+      "to organize content."
+    ],
+    "packages/affine/fragments/outline/src/body/outline-panel-body.ts": [
+      "Hidden Contents",
+      "Use headings to create a table of contents."
+    ],
+    "packages/affine/fragments/outline/src/card/outline-preview.ts": [
+      "Untitled"
+    ],
+    "packages/affine/fragments/outline/src/config.ts": ["Text Block"],
+    "packages/affine/fragments/outline/src/header/outline-panel-header.ts": [
+      "Table of Contents",
+      "Visibility and sort"
+    ],
+    "packages/affine/fragments/outline/src/header/outline-setting-menu.ts": [
+      "Settings",
+      "Show type icon"
+    ],
+    "packages/affine/fragments/outline/src/outline-viewer.ts": [
+      "Open in sidebar"
+    ],
+    "packages/affine/gfx/bpmn/src/actions.ts": ["Lane ${}"],
+    "packages/affine/gfx/bpmn/src/export.ts": [
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>n${}n"
+    ],
+    "packages/affine/gfx/bpmn/src/import.ts": [
+      "${bands.length === 1 ? 'This lane' :",
+      "${} ${}",
+      "<${}> arrived with no diagram, so Labre placed it beside the",
+      "<${}> has no Labre artefact, so it is kept verbatim on",
+      "<${}> names its trigger by reference to",
+      "<${}> names only one of its two ends, so there is no arrow",
+      "<${}> runs to ${dangling.map(end =>",
+      "The diagram draws \"${}\", which the file does not declare.",
+      "The file lists this artefact in the lane \"${}\" and",
+      "The participant \"${}\" arrived with no",
+      "This file declares ${} root",
+      "Two elements in this file share the id \"${}\", which BPMN"
+    ],
+    "packages/affine/gfx/brush/src/toolbar/configs/brush.ts": ["Color"],
+    "packages/affine/gfx/brush/src/toolbar/configs/highlighter.ts": ["Color"],
+    "packages/affine/gfx/brush/src/toolbar/senior-tool.ts": ["Pen"],
+    "packages/affine/gfx/c4/src/legend.ts": ["Legend"],
+    "packages/affine/gfx/c4/src/templates.ts": ["C4"],
+    "packages/affine/gfx/connector/src/text/edgeless-connector-label-editor.ts": [
+      "Add text"
+    ],
+    "packages/affine/gfx/connector/src/toolbar/config.ts": [
+      "Add text",
+      "Connector shape",
+      "End point style",
+      "Flip direction",
+      "Shape",
+      "Start point style",
+      "Stroke style",
+      "Style"
+    ],
+    "packages/affine/gfx/connector/src/toolbar/connector-dense-menu.ts": [
+      "Connector",
+      "Curve",
+      "Elbowed",
+      "Straight"
+    ],
+    "packages/affine/gfx/connector/src/toolbar/connector-menu.ts": [
+      "Curve",
+      "Elbowed",
+      "Straight"
+    ],
+    "packages/affine/gfx/cynefin-estuarine/src/cynefin/consts.ts": [
+      "Aporia",
+      "Confusion",
+      "prepare to exit"
+    ],
+    "packages/affine/gfx/cynefin-estuarine/src/estuarine/consts.ts": [
+      "COUNTER FACTUAL",
+      "LIMINAL",
+      "VOLATILE"
+    ],
+    "packages/affine/gfx/cynefin-estuarine/src/templates/index.ts": [
+      "Cynefin",
+      "Estuarine"
+    ],
+    "packages/affine/gfx/ddd-aggregate/src/templates.ts": [
+      "Aggregate Design Canvas",
+      "Aggregate Design Canvas"
+    ],
+    "packages/affine/gfx/ddd-context-map/src/legend.ts": [
+      "${} — ${}",
+      "Legend",
+      "Relationships"
+    ],
+    "packages/affine/gfx/ddd-core-domain/src/core-domain/legend.ts": [
+      "Legend",
+      "Movement",
+      "Sub-domains",
+      "Team interaction modes"
+    ],
+    "packages/affine/gfx/ddd-event-storming/src/legend.ts": ["Legend"],
+    "packages/affine/gfx/edgy/src/legend.ts": [
+      "Base elements",
+      "Intersections",
+      "Legend"
+    ],
+    "packages/affine/gfx/edgy/src/templates/index.ts": [
+      "Admission Form",
+      "Channel ${}",
+      "Confirmation",
+      "Journey step ${}",
+      "Task ${}"
+    ],
+    "packages/affine/gfx/group/src/command/group-api.ts": ["Group ${}"],
+    "packages/affine/gfx/group/src/toolbar/config.ts": [
+      "Group has been inserted into doc",
+      "Insert into Page",
+      "Insert into Page",
+      "Rename",
+      "Ungroup"
+    ],
+    "packages/affine/gfx/link/src/toolbar/undo-dense-menu.ts": ["Undo"],
+    "packages/affine/gfx/link/src/toolbar/undo-tool-button.ts": ["Undo"],
+    "packages/affine/gfx/mindmap/src/templates/index.ts": ["Mind Map"],
+    "packages/affine/gfx/mindmap/src/toolbar/basket-elements.ts": [
+      "Mind Map",
+      "Text"
+    ],
+    "packages/affine/gfx/mindmap/src/toolbar/config.ts": ["Layout", "Style"],
+    "packages/affine/gfx/mindmap/src/toolbar/mindmap-importing-placeholder.ts": [
+      "Importing mind map..."
+    ],
+    "packages/affine/gfx/mindmap/src/toolbar/mindmap-menu.ts": [
+      "Import failed, please try again"
+    ],
+    "packages/affine/gfx/mindmap/src/toolbar/senior-tool.ts": [
+      "Add file",
+      "Mind Map",
+      "Text"
+    ],
+    "packages/affine/gfx/note/src/components/note-shadow-panel.ts": [
+      "Box shadow",
+      "Film shadow",
+      "Floation shadow",
+      "No shadow",
+      "Paper shadow",
+      "Sticker shadow"
+    ],
+    "packages/affine/gfx/note/src/toolbar/note-menu-config.ts": [
+      "A list with numbering.",
+      "A simple bulleted list.",
+      "A visual divider",
+      "A visual divider.",
+      "Bulleted List",
+      "Capture a code snippet.",
+      "Capture a quote.",
+      "Code Block",
+      "Divider",
+      "Drag/Click to insert Bulleted List",
+      "Drag/Click to insert Code Block",
+      "Drag/Click to insert Heading 1",
+      "Drag/Click to insert Heading 2",
+      "Drag/Click to insert Heading 3",
+      "Drag/Click to insert Heading 4",
+      "Drag/Click to insert Heading 5",
+      "Drag/Click to insert Heading 6",
+      "Drag/Click to insert Numbered List",
+      "Drag/Click to insert Quote",
+      "Drag/Click to insert Text block",
+      "Drag/Click to insert To-do List",
+      "Heading 1",
+      "Heading 2",
+      "Heading 3",
+      "Heading 4",
+      "Heading 5",
+      "Heading 6",
+      "Heading in the 4th font size.",
+      "Heading in the 5th font size.",
+      "Heading in the 6th font size.",
+      "Headings in the 2nd font size.",
+      "Headings in the 3rd font size.",
+      "Headings in the largest font.",
+      "Numbered List",
+      "Quote",
+      "Start typing with plain text.",
+      "Text",
+      "To-do List",
+      "Track tasks with a to-do list."
+    ],
+    "packages/affine/gfx/note/src/toolbar/note-menu.ts": ["File", "Image"],
+    "packages/affine/gfx/note/src/toolbar/senior-tool.ts": ["Note"],
+    "packages/affine/gfx/shape/src/draggable/shape-menu.ts": [
+      "General",
+      "Scribbled"
+    ],
+    "packages/affine/gfx/shape/src/toolbar/config.ts": [
+      "Add text",
+      "Contained text",
+      "Edit vertices",
+      "Grow shape",
+      "Overflow text",
+      "Style",
+      "Switch shape type"
+    ],
+    "packages/affine/gfx/shape/src/toolbar/senior-tool.ts": ["Shape"],
+    "packages/affine/gfx/shape/src/toolbar/shape-menu-config.ts": [
+      "Diamond",
+      "Ellipse",
+      "Polygon",
+      "Rounded rectangle",
+      "Square",
+      "Triangle"
+    ],
+    "packages/affine/gfx/template/src/builtin/other.ts": [
+      "CATEGORY",
+      "Card",
+      "Effect"
+    ],
+    "packages/affine/gfx/template/src/toolbar/senior-tool.ts": ["Template"],
+    "packages/affine/gfx/template/src/toolbar/template-panel.ts": [
+      "Add",
+      "Search file or anything..."
+    ],
+    "packages/affine/gfx/text/src/edgeless-text-editor.ts": ["Type from here"],
+    "packages/affine/gfx/text/src/toolbar/actions.ts": [
+      "Alignment",
+      "Font",
+      "Font",
+      "Font size",
+      "Font style",
+      "Font style",
+      "Text color"
+    ],
+    "packages/affine/gfx/wardley/src/import.ts": [
+      "${} `${}` line${} kept verbatim on the map and written back on the next export. Nothing on this canvas draws ${}.",
+      "a link names nothing on one of its ends, so the arrow it asks for runs to no artefact and is invisible on the canvas.",
+      "a link names this, and no statement in the file declares it. The arrow is in the document and runs to no artefact, so it is invisible on the canvas.",
+      "line ${} declares coordinates this reader cannot make a number of, so they were not used.",
+      "this name is declared more than once. Both artefacts are on the map, and every link naming it means the first — OWM identifies a component by its name."
+    ],
+    "packages/affine/gfx/wardley/src/legend.ts": [
+      "Gradient representing the growth of Wardley's evolution function.",
+      "Gradient: investment (red) then benefit (green).",
+      "Opportunity gradient: differential value (green) vs operational value (red)."
+    ],
+    "packages/affine/gfx/wardley/src/natures.ts": [
+      "A way of doing — a method, a convention, an operating model.",
+      "Competition",
+      "Established players competing against one another on a market that exists.",
+      "Knowledge",
+      "Practice",
+      "Pressure on a newcomer trying to get into a market.",
+      "Pressure on a player to stay in a market it is already in.",
+      "Relative competition (R)",
+      "Something that is DONE — a step, a service, a process.",
+      "Something that is KNOWN — a model, a theory, a rule.",
+      "Something that is RECORDED — a dataset, a register.",
+      "Struggle for survival (L)",
+      "Struggle to establish (E)",
+      "Wardley",
+      "What kind of thing this component is: an activity, data, a practice or knowledge.",
+      "Which of Porter's forces this glyph marks: relative competition, a struggle for survival, or a struggle to establish."
+    ],
+    "packages/affine/gfx/wardley/src/templates/index.ts": ["Wardley"],
+    "packages/affine/inlines/footnote/src/footnote-node/footnote-popup.ts": [
+      "favicon"
+    ],
+    "packages/affine/inlines/latex/src/latex-node/latex-editor-menu.ts": [
+      "Shift Enter to line break"
+    ],
+    "packages/affine/inlines/latex/src/latex-node/latex-node.ts": [
+      "Equation",
+      "Error equation"
+    ],
+    "packages/affine/inlines/link/src/link-node/configs/toolbar.ts": [
+      "Copied link to clipboard",
+      "Copy link",
+      "Edit",
+      "Remove link"
+    ],
+    "packages/affine/inlines/link/src/link-node/link-popup/link-popup.ts": [
+      "Enter text",
+      "Paste or type a link",
+      "Paste or type a link",
+      "Text"
+    ],
+    "packages/affine/inlines/mention/src/affine-mention.ts": [
+      "@Inactive Member",
+      "@Unknown Member",
+      "@loading"
+    ],
+    "packages/affine/inlines/preset/src/command/config.ts": [
+      "Bold",
+      "Italic",
+      "Strikethrough",
+      "Underline"
+    ],
+    "packages/affine/inlines/reference/src/reference-node/reference-popup/reference-popup.ts": [
+      "Add a custom title",
+      "Reset",
+      "Reset",
+      "Save",
+      "Save"
+    ],
+    "packages/affine/rich-text/src/conversion.ts": [
+      "Add a blockquote for emphasis.",
+      "Add tasks to a to-do list.",
+      "Bulleted List",
+      "Code Block",
+      "Code snippet with formatting.",
+      "Create a bulleted list.",
+      "Create a numbered list.",
+      "Divider",
+      "Heading 1",
+      "Heading 2",
+      "Heading 3",
+      "Heading 4",
+      "Heading 5",
+      "Heading 6",
+      "Headings in the 2nd font size.",
+      "Headings in the 3rd font size.",
+      "Headings in the 4th font size.",
+      "Headings in the 5th font size.",
+      "Headings in the 6th font size.",
+      "Headings in the largest font.",
+      "Numbered List",
+      "Quote",
+      "Start typing with plain text.",
+      "Text",
+      "To-do List",
+      "Visually separate content."
+    ],
+    "packages/affine/shared/src/adapters/markdown/markdown.ts": ["Untitled"],
+    "packages/affine/shared/src/adapters/mix-text.ts": ["Untitled"],
+    "packages/affine/shared/src/adapters/plain-text/plain-text.ts": [
+      "Untitled"
+    ],
+    "packages/affine/shared/src/consts/bracket-pairs.ts": [
+      "corner bracket",
+      "curly bracket",
+      "double quote",
+      "fullwidth angle bracket",
+      "fullwidth double quote",
+      "fullwidth parenthesis",
+      "fullwidth single quote",
+      "fullwidth square bracket",
+      "single quote",
+      "square bracket",
+      "white corner bracket"
+    ],
+    "packages/affine/shared/src/services/comment-service/utils.ts": ["Comment"],
+    "packages/affine/shared/src/services/notification-service.ts": ["Undo"],
+    "packages/affine/shared/src/services/open-doc-config.ts": [
+      "Open in center peek",
+      "Open this doc"
+    ],
+    "packages/affine/shared/src/utils/file/filesys.ts": [
+      "Audios",
+      "Html",
+      "Images",
+      "Markdown",
+      "MindMap",
+      "Videos",
+      "Zip"
+    ],
+    "packages/affine/widgets/drag-handle/src/components/edgeless-preview/preview.ts": [
+      "Edgeless content",
+      "Edgeless shape",
+      "Embed block",
+      "Frame block",
+      "Image block",
+      "Note block"
+    ],
+    "packages/affine/widgets/edgeless-selected-rect/src/auto-complete-panel.ts": [
+      "Add a same object",
+      "Frame",
+      "Note",
+      "Text"
+    ],
+    "packages/affine/widgets/edgeless-toolbar/src/panel/font-weight-and-style-panel.ts": [
+      "${} Italic ${}"
+    ],
+    "packages/affine/widgets/edgeless-zoom-toolbar/src/zoom-bar-toggle-button.ts": [
+      "Toggle Zoom Tool Bar"
+    ],
+    "packages/affine/widgets/edgeless-zoom-toolbar/src/zoom-toolbar.ts": [
+      "Fit to screen",
+      "Zoom in",
+      "Zoom out"
+    ],
+    "packages/affine/widgets/linked-doc/src/config.ts": [
+      "Create \"${}\" doc",
+      "Import",
+      "Link to Doc",
+      "New Doc",
+      "Successfully imported ${} Doc${}."
+    ],
+    "packages/affine/widgets/linked-doc/src/import-doc/import-doc.ts": [
+      "AFFiNE will gradually support more file formats for import.",
+      "Coming soon...",
+      "HTML",
+      "Import",
+      "Import",
+      "Importing the file may take some time. It depends on document size and complexity.",
+      "Learn how to Import your Notion pages into AFFiNE.",
+      "Markdown",
+      "Migrate from other versions of AFFiNE?",
+      "Notion",
+      "Provide feedback."
+    ],
+    "packages/affine/widgets/slash-menu/src/config.ts": [
+      "Copy this line to clipboard.",
+      "Create a duplicate of this line.",
+      "Move Down",
+      "Move Up",
+      "Now",
+      "Remove this line permanently.",
+      "Shift this line down.",
+      "Shift this line up.",
+      "Today",
+      "Tomorrow",
+      "Yesterday"
+    ],
+    "packages/affine/widgets/slash-menu/src/tooltips/copy.ts": [
+      "Any user may have a different perspective on what data they",
+      "For example, one user&#x2019;s edits to a document might be on",
+      "In a decentralized system, we can have a kaleidoscopic",
+      "Other users might choose to accept all, some, or none of",
+      "complexity to our data.&#10;",
+      "computer reconnects, those changes are distributed to",
+      "either have, choose to share, or accept.&#10;",
+      "other users.&#10;",
+      "their laptop on an airplane; when the plane lands and the",
+      "those changes to their version of the document."
+    ],
+    "packages/affine/widgets/slash-menu/src/tooltips/delete.ts": [
+      "Any user may have a different perspective on what data they",
+      "For example, one user&#x2019;s edits to a document might be on",
+      "In a decentralized system, we can have a kaleidoscopic",
+      "Other users might choose to accept all, some, or none of",
+      "complexity to our data.&#10;",
+      "computer reconnects, those changes are distributed to",
+      "either have, choose to share, or accept.&#10;",
+      "other users.&#10;",
+      "their laptop on an airplane; when the plane lands and the",
+      "those changes to their version of the document."
+    ],
+    "packages/affine/widgets/slash-menu/src/tooltips/index.ts": [
+      "Copy / Duplicate",
+      "Move Down",
+      "Move Up",
+      "Now",
+      "Today",
+      "Tomorrow",
+      "Yesterday"
+    ],
+    "packages/affine/widgets/slash-menu/src/tooltips/move-down.ts": [
+      "Any user may have a different perspective on what data they",
+      "For example, one user&#x2019;s edits to a document might be on",
+      "In a decentralized system, we can have a kaleidoscopic",
+      "Other users might choose to accept all, some, or none of",
+      "complexity to our data.&#10;",
+      "computer reconnects, those changes are distributed to",
+      "either have, choose to share, or accept.&#10;",
+      "other users.&#10;",
+      "their laptop on an airplane; when the plane lands and the",
+      "those changes to their version of the document."
+    ],
+    "packages/affine/widgets/slash-menu/src/tooltips/move-up.ts": [
+      "Any user may have a different perspective on what data they",
+      "For example, one user&#x2019;s edits to a document might be on",
+      "In a decentralized system, we can have a kaleidoscopic",
+      "Other users might choose to accept all, some, or none of",
+      "complexity to our data.&#10;",
+      "computer reconnects, those changes are distributed to",
+      "either have, choose to share, or accept.&#10;",
+      "other users.&#10;",
+      "their laptop on an airplane; when the plane lands and the",
+      "those changes to their version of the document."
+    ],
+    "packages/affine/widgets/slash-menu/src/tooltips/now.ts": [
+      "11:45:14 Wed 3 Aug, 2022",
+      "Insert",
+      "and time.&#10;",
+      "date",
+      "now"
+    ],
+    "packages/affine/widgets/slash-menu/src/tooltips/today.ts": [
+      "Insert today&#x2019;s date",
+      "Wed 3 Aug, 2022"
+    ],
+    "packages/affine/widgets/slash-menu/src/tooltips/tomorrow.ts": [
+      "Insert",
+      "Wed 3 Aug, 2022",
+      "date",
+      "tomorrow&#x2019;s"
+    ],
+    "packages/affine/widgets/slash-menu/src/tooltips/yesterday.ts": [
+      "Insert",
+      "Wed 3 Aug, 2022",
+      "date",
+      "yesterday&#x2019;s"
+    ],
+    "packages/affine/widgets/toolbar/src/utils.ts": ["More menu"],
+    "packages/framework/std/src/event/keymap.ts": [
+      "+ name ); } return normalized; } function modifiers(name: string, event: KeyboardEvent, shift = true) { if (event.altKey) name ="
+    ],
+    "packages/framework/std/src/inline/components/v-text.ts": ["true"],
+    "packages/framework/std/src/inline/utils/text.ts": ["true"],
+    "packages/framework/std/src/view/element/block-component.ts": [
+      "Block Version Mismatched",
+      "Data version:",
+      "Editor version:",
+      "We can not render this",
+      "block because the version is mismatched."
+    ]
+  }
+}
