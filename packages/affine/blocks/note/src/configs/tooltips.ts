@@ -231,7 +231,7 @@ export const BoldTextTooltip = html`<svg width="170" height="68" viewBox="0 0 17
 </mask>
 <g mask="url(#mask0_16460_971)">
 <rect x="8" y="36.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="48.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="64.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="76.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="88.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="100.136" width="66" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="116.136" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="128.136" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/>
-<rect x="8" y="8.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="20.1364" width="126.5" height="8" rx="4" fill="#121212" fill-opacity="0.3"/>
+<rect x="8" y="7.5364" width="162" height="9.2" rx="4.6" fill="#121212" fill-opacity="0.65"/><rect x="8" y="19.5364" width="126.5" height="9.2" rx="4.6" fill="#121212" fill-opacity="0.65"/>
 </g>
 </svg>
 `;
@@ -244,7 +244,7 @@ export const ItalicTooltip = html`<svg width="170" height="68" viewBox="0 0 170 
 </mask>
 <g mask="url(#mask0_16460_976)">
 <rect x="8" y="36.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="48.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="64.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="76.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="88.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="100.136" width="66" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="116.136" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="128.136" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/>
-<rect x="8" y="8.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="20.1364" width="126.5" height="8" rx="4" fill="#121212" fill-opacity="0.3"/>
+<g transform="translate(89 12.1364) skewX(-14) translate(-89 -12.1364)"><rect x="8" y="8.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/></g><g transform="translate(71.25 24.1364) skewX(-14) translate(-71.25 -24.1364)"><rect x="8" y="20.1364" width="126.5" height="8" rx="4" fill="#121212" fill-opacity="0.3"/></g>
 </g>
 </svg>
 `;
@@ -257,7 +257,7 @@ export const StrikethroughTooltip = html`<svg width="170" height="68" viewBox="0
 </mask>
 <g mask="url(#mask0_16460_986)">
 <rect x="8" y="36.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="48.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="64.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="76.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="88.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="100.136" width="66" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="116.136" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="128.136" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/>
-<rect x="8" y="8.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="20.1364" width="126.5" height="8" rx="4" fill="#121212" fill-opacity="0.3"/>
+<rect x="8" y="8.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="20.1364" width="126.5" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="11.5364" width="162" height="1.2" fill="#121212"/><rect x="8" y="23.5364" width="126.5" height="1.2" fill="#121212"/>
 </g>
 </svg>
 `;
@@ -270,7 +270,7 @@ export const UnderlineTooltip = html`<svg width="170" height="68" viewBox="0 0 1
 </mask>
 <g mask="url(#mask0_16460_981)">
 <rect x="8" y="36.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="48.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="64.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="76.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="88.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="100.136" width="66" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="116.136" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="128.136" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/>
-<rect x="8" y="8.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="20.1364" width="126.5" height="8" rx="4" fill="#121212" fill-opacity="0.3"/>
+<rect x="8" y="8.1364" width="162" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="20.1364" width="126.5" height="8" rx="4" fill="#121212" fill-opacity="0.3"/><rect x="8" y="18.1364" width="162" height="1.2" fill="#121212"/><rect x="8" y="30.1364" width="126.5" height="1.2" fill="#121212"/>
 </g>
 </svg>
 `;
