@@ -104,3 +104,31 @@ framework toggled on later finds no holes.
 Related manifests, same seam philosophy (typed, serializable, render-free):
 `getShortcutManifest` (Settings › Shortcuts) and `getCommandManifest`
 (catalogue / palette / agent), both under `@labre/affine`.
+
+## Static configs: the `…Wording` sibling fields
+
+A widget that renders a plain data literal (a toolbar action's `label`, a
+slash-menu item's `name`) has no place to call `translateKey` at the point the
+literal is written — the literal is data, not a render. The pattern is a
+sibling field carrying the key/fallback pair, resolved by the widget when it
+actually draws the literal; the static field itself stays untouched, so it
+keeps being what tests and identifiers key on.
+
+**Toolbar actions** (`packages/affine/shared/src/services/toolbar-service/action.ts`):
+`ToolbarAction.labelWording` / `.tooltipWording`, resolved in `combine`
+(`packages/affine/widgets/toolbar/src/utils.ts`) — a declared wording WINS over
+the static `label` / `tooltip` left beside it (the static one is already the
+wording's own English fallback, so the two never disagree).
+
+**Slash menu** (`packages/affine/widgets/slash-menu/src/types.ts`):
+`SlashMenuItemBase.nameWording` / `.descriptionWording`, and
+`SlashMenuTooltip.captionWording`, resolved in `slash-menu-popover.ts` at
+render. `name` stays the item's English identity — what `searchAlias`,
+`slashItemClassName` and any test selector key on — search matches the
+RESOLVED name, the English `name`, and `searchAlias` together
+(`slashItemMatchesQuery` in `utils.ts`), so neither a translated nor a
+habitual query comes up empty. A package registers its own
+`readonly ChromeWording[]` table in its own `translations.ts` (see
+`packages/affine/widgets/slash-menu/src/translations.ts`) and lists it in
+`PACKAGE_WORDINGS` (`packages/affine/all/src/translations.ts`) — the same
+"declared once, walked everywhere" rule `CHROME_WORDINGS` already follows.
