@@ -7,14 +7,63 @@ import {
 } from '@labre/std';
 
 import { edgyCommands } from './commands.js';
-import { EDGY_FACET_TITLE_KEY } from './legend.js';
-import { edgyElementLabel, type EdgyZone } from './metamodel.js';
+import {
+  EDGY_DYNAMIC_NODES,
+  EDGY_DYNAMIC_VERBS,
+  EDGY_ZONES,
+  edgyElementLabel,
+  edgyElementLabelKey,
+  type EdgyElementName,
+  type EdgyZone,
+  edgyVerbSeedKey,
+} from './metamodel.js';
 import { NODE_LABEL, nodeLabelKey } from './node/consts.js';
 import { EDGY_NUDGES } from './nudges.js';
 import { EDGY_PROFILES } from './profiles.js';
 import { EDGY_READING } from './reading.js';
 import { EDGY_ROLES } from './roles.js';
 import { EDGY_RULES } from './rules.js';
+import { EDGY_TEMPLATE_SEED } from './templates/index.js';
+
+/**
+ * The name every one of the 12 official elements and the 6 Venn zones is
+ * seeded with — one key per distinct lowercase word (`organisation`, `brand`
+ * and `product` name BOTH an element and an intersection zone, so the same
+ * key covers both), reused verbatim by `templates/dynamic.ts`,
+ * `templates/index.ts` and the facets background's own creation site
+ * (`actions.ts`).
+ */
+const elementAndZoneSeedEntries = (): TranslationKeyManifestEntry[] => {
+  const names = new Set<EdgyElementName | EdgyZone>([
+    ...(Object.keys(EDGY_DYNAMIC_NODES) as EdgyElementName[]),
+    ...EDGY_ZONES.map(zone => zone.id),
+  ]);
+  return [...names].map(name => ({
+    key: edgyElementLabelKey(name),
+    fallback: edgyElementLabel(name),
+    source: 'seed' as const,
+  }));
+};
+
+/** The metamodel's 24 canonical verbs, drawn raw as a connector label. */
+const verbSeedEntries = (): TranslationKeyManifestEntry[] =>
+  EDGY_DYNAMIC_VERBS.map(verb => ({
+    key: edgyVerbSeedKey(verb),
+    fallback: verb,
+    source: 'seed' as const,
+  }));
+
+/**
+ * The seeds that belong to the four hand-composed scenes only (a lane title,
+ * a case name, a step counter…) — derived from `EDGY_TEMPLATE_SEED`, the very
+ * table the scenes read at placement.
+ */
+const sceneSeedEntries = (): TranslationKeyManifestEntry[] =>
+  Object.values(EDGY_TEMPLATE_SEED).map(({ key, fallback }) => ({
+    key,
+    fallback,
+    source: 'seed' as const,
+  }));
 
 /**
  * THIS framework's contribution to the translation-key manifest — every
@@ -59,14 +108,9 @@ export const edgyTranslationEntries: TranslationKeyManifestEntry[] =
       fallback: label,
       source: 'seed' as const,
     })),
-    // The three facet section titles the automatic legend writes onto the
-    // canvas — a facet names no role of its own (`EDGY_FACET_TITLE_KEY`), so
-    // it is walked here rather than through `collectTranslationKeys('role', …)`.
-    Object.entries(EDGY_FACET_TITLE_KEY).map(([zone, key]) => ({
-      key,
-      fallback: edgyElementLabel(zone as EdgyZone),
-      source: 'seed' as const,
-    })),
+    elementAndZoneSeedEntries(),
+    verbSeedEntries(),
+    sceneSeedEntries(),
     // LAST, and the order is load-bearing: a reading profile carries the
     // framework's own `roles`, so walking it reaches every role key the line
     // above already named. `mergeTranslationEntries` keeps the FIRST

@@ -1303,9 +1303,6 @@
     "packages/affine/fragments/outline/src/outline-viewer.ts": [
       "Open in sidebar"
     ],
-    "packages/affine/gfx/bpmn/src/actions.ts": [
-      "Lane ${}"
-    ],
     "packages/affine/gfx/bpmn/src/export.ts": [
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>n${}n"
     ],
@@ -1430,15 +1427,7 @@
     ],
     "packages/affine/gfx/edgy/src/legend.ts": [
       "Base elements",
-      "Intersections",
       "Legend"
-    ],
-    "packages/affine/gfx/edgy/src/templates/index.ts": [
-      "Admission Form",
-      "Channel ${}",
-      "Confirmation",
-      "Journey step ${}",
-      "Task ${}"
     ],
     "packages/affine/gfx/group/src/command/group-api.ts": [
       "Group ${}"
