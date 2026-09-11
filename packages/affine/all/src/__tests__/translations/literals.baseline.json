@@ -1,6 +1,8 @@
 {
   "kept": {
-    "packages/affine/gfx/text/src/toolbar/actions.ts": ["Aa"]
+    "packages/affine/gfx/text/src/toolbar/actions.ts": [
+      "Aa"
+    ]
   },
   "deferred": {
     "packages/affine/blocks/data-view/src/configs/slash-menu.ts": [
@@ -75,11 +77,15 @@
     "packages/affine/blocks/database/src/properties/created-time/define.ts": [
       "Created Time"
     ],
-    "packages/affine/blocks/database/src/properties/link/define.ts": ["Link"],
+    "packages/affine/blocks/database/src/properties/link/define.ts": [
+      "Link"
+    ],
     "packages/affine/blocks/database/src/properties/rich-text/define.ts": [
       "Text"
     ],
-    "packages/affine/blocks/database/src/properties/title/define.ts": ["Title"],
+    "packages/affine/blocks/database/src/properties/title/define.ts": [
+      "Title"
+    ],
     "packages/affine/blocks/embed/src/embed-figma-block/configs/slash-menu.ts": [
       "Embed a Figma document.",
       "Figma",
@@ -188,7 +194,9 @@
       "Move Up",
       "Paste"
     ],
-    "packages/affine/data-view/src/core/common/properties.ts": ["Properties"],
+    "packages/affine/data-view/src/core/common/properties.ts": [
+      "Properties"
+    ],
     "packages/affine/data-view/src/core/common/property-menu.ts": [
       "Property name",
       "Property type",
@@ -296,11 +304,15 @@
       "Week (starts Sunday)",
       "Year"
     ],
-    "packages/affine/data-view/src/core/sort/add-sort.ts": ["New sort"],
+    "packages/affine/data-view/src/core/sort/add-sort.ts": [
+      "New sort"
+    ],
     "packages/affine/data-view/src/property-presets/checkbox/define.ts": [
       "Checkbox"
     ],
-    "packages/affine/data-view/src/property-presets/date/define.ts": ["Date"],
+    "packages/affine/data-view/src/property-presets/date/define.ts": [
+      "Date"
+    ],
     "packages/affine/data-view/src/property-presets/multi-select/define.ts": [
       "Multi-select"
     ],
@@ -370,7 +382,9 @@
       "Delete Cards",
       "Ungroup"
     ],
-    "packages/affine/data-view/src/view-presets/kanban/pc/header.ts": ["Group"],
+    "packages/affine/data-view/src/view-presets/kanban/pc/header.ts": [
+      "Group"
+    ],
     "packages/affine/data-view/src/view-presets/kanban/pc/menu.ts": [
       "Delete Card",
       "Expand Card",
@@ -551,8 +565,6 @@
       "View name"
     ],
     "packages/affine/widgets/keyboard-toolbar/src/config.ts": [
-      "Attachment",
-      "Attachment",
       "Background",
       "Bold",
       "BulletedList",
@@ -573,8 +585,6 @@
       "Github",
       "Group:",
       "Heading ${}",
-      "Image",
-      "Image",
       "Inline equation",
       "InlineTex",
       "Italic",
@@ -880,7 +890,9 @@
       "Hide toolbar",
       "Playback Settings"
     ],
-    "packages/affine/blocks/frame/src/present/present-button.ts": ["Present"],
+    "packages/affine/blocks/frame/src/present/present-button.ts": [
+      "Present"
+    ],
     "packages/affine/blocks/image/src/configs/slash-menu.ts": [
       "Image",
       "Insert an image.",
@@ -893,10 +905,18 @@
       "Download",
       "Turn into card view"
     ],
-    "packages/affine/blocks/image/src/configs/tooltips.ts": ["Insert a photo."],
-    "packages/affine/blocks/image/src/image-block.ts": ["Image"],
-    "packages/affine/blocks/image/src/image-edgeless-block.ts": ["Image"],
-    "packages/affine/blocks/image/src/preview-image/page.ts": ["Image Block"],
+    "packages/affine/blocks/image/src/configs/tooltips.ts": [
+      "Insert a photo."
+    ],
+    "packages/affine/blocks/image/src/image-block.ts": [
+      "Image"
+    ],
+    "packages/affine/blocks/image/src/image-edgeless-block.ts": [
+      "Image"
+    ],
+    "packages/affine/blocks/image/src/preview-image/page.ts": [
+      "Image Block"
+    ],
     "packages/affine/blocks/image/src/utils.ts": [
       "Copied image to clipboard",
       "Download in progress...",
@@ -917,7 +937,9 @@
       "Equation",
       "Error equation"
     ],
-    "packages/affine/blocks/list/src/turbo/list-layout-handler.ts": ["true"],
+    "packages/affine/blocks/list/src/turbo/list-layout-handler.ts": [
+      "true"
+    ],
     "packages/affine/blocks/note/src/components/edgeless-note-border-dropdown-menu.ts": [
       "Border style",
       "Border style"
@@ -945,7 +967,9 @@
       "Note Style",
       "Shadow"
     ],
-    "packages/affine/blocks/note/src/configs/slash-menu.ts": ["Other Headings"],
+    "packages/affine/blocks/note/src/configs/slash-menu.ts": [
+      "Other Headings"
+    ],
     "packages/affine/blocks/note/src/configs/toolbar.ts": [
       "${} Find it in the TOC for quick navigation.",
       "Auto height",
@@ -1063,11 +1087,16 @@
       "var",
       "version of the document."
     ],
-    "packages/affine/blocks/note/src/move-block.ts": ["Move Down", "Move Up"],
+    "packages/affine/blocks/note/src/move-block.ts": [
+      "Move Down",
+      "Move Up"
+    ],
     "packages/affine/blocks/paragraph/src/turbo/paragraph-layout-handler.ts": [
       "true"
     ],
-    "packages/affine/blocks/paragraph/src/view.ts": ["Type '/' for commands"],
+    "packages/affine/blocks/paragraph/src/view.ts": [
+      "Type '/' for commands"
+    ],
     "packages/affine/blocks/root/src/configs/toolbar.ts": [
       "Conversions",
       "Create Linked Doc",
@@ -1135,7 +1164,9 @@
       "Card style",
       "Card style"
     ],
-    "packages/affine/components/src/citation/citation.ts": ["favicon"],
+    "packages/affine/components/src/citation/citation.ts": [
+      "favicon"
+    ],
     "packages/affine/components/src/color-picker/color-picker.ts": [
       "Colors",
       "Custom",
@@ -1178,7 +1209,9 @@
       "Highlight",
       "highlight"
     ],
-    "packages/affine/components/src/icon-button/index.ts": ["HTML"],
+    "packages/affine/components/src/icon-button/index.ts": [
+      "HTML"
+    ],
     "packages/affine/components/src/icon-picker/affine-icon-picker-panel.ts": [
       "Filter...",
       "No icon found"
@@ -1215,7 +1248,9 @@
       "Reload",
       "Retry"
     ],
-    "packages/affine/components/src/toast/toast.ts": ["Hello World"],
+    "packages/affine/components/src/toast/toast.ts": [
+      "Hello World"
+    ],
     "packages/affine/components/src/toolbar/tooltip.ts": [
       "* Content *",
       "Content"
@@ -1226,7 +1261,10 @@
       "PlainText",
       "Snapshot"
     ],
-    "packages/affine/fragments/doc-title/src/doc-title.ts": ["Title", "true"],
+    "packages/affine/fragments/doc-title/src/doc-title.ts": [
+      "Title",
+      "true"
+    ],
     "packages/affine/fragments/frame-panel/src/body/frame-panel-body.ts": [
       "Add frames to organize and present your Edgeless"
     ],
@@ -1254,7 +1292,6 @@
     "packages/affine/fragments/outline/src/card/outline-preview.ts": [
       "Untitled"
     ],
-    "packages/affine/fragments/outline/src/config.ts": ["Text Block"],
     "packages/affine/fragments/outline/src/header/outline-panel-header.ts": [
       "Table of Contents",
       "Visibility and sort"
@@ -1266,7 +1303,9 @@
     "packages/affine/fragments/outline/src/outline-viewer.ts": [
       "Open in sidebar"
     ],
-    "packages/affine/gfx/bpmn/src/actions.ts": ["Lane ${}"],
+    "packages/affine/gfx/bpmn/src/actions.ts": [
+      "Lane ${}"
+    ],
     "packages/affine/gfx/bpmn/src/export.ts": [
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>n${}n"
     ],
@@ -1284,17 +1323,27 @@
       "This file declares ${} root",
       "Two elements in this file share the id \"${}\", which BPMN"
     ],
-    "packages/affine/gfx/bpmn/src/templates/index.ts": ["BPMN"],
-    "packages/affine/gfx/brush/src/toolbar/configs/brush.ts": ["Color"],
-    "packages/affine/gfx/brush/src/toolbar/configs/highlighter.ts": ["Color"],
-    "packages/affine/gfx/brush/src/toolbar/senior-tool.ts": ["Pen"],
+    "packages/affine/gfx/bpmn/src/templates/index.ts": [
+      "BPMN"
+    ],
+    "packages/affine/gfx/brush/src/toolbar/configs/brush.ts": [
+      "Color"
+    ],
+    "packages/affine/gfx/brush/src/toolbar/configs/highlighter.ts": [
+      "Color"
+    ],
+    "packages/affine/gfx/brush/src/toolbar/senior-tool.ts": [
+      "Pen"
+    ],
     "packages/affine/gfx/c4/src/legend.ts": [
       "Elements",
       "Frames",
       "Legend",
       "Relations"
     ],
-    "packages/affine/gfx/c4/src/templates.ts": ["C4"],
+    "packages/affine/gfx/c4/src/templates.ts": [
+      "C4"
+    ],
     "packages/affine/gfx/connector/src/text/edgeless-connector-label-editor.ts": [
       "Add text"
     ],
@@ -1344,7 +1393,9 @@
       "Legend",
       "Relationships"
     ],
-    "packages/affine/gfx/ddd-context-map/src/templates.ts": ["Context Map"],
+    "packages/affine/gfx/ddd-context-map/src/templates.ts": [
+      "Context Map"
+    ],
     "packages/affine/gfx/ddd-core-domain/src/core-domain/legend.ts": [
       "Legend",
       "Movement",
@@ -1405,7 +1456,9 @@
       "Task",
       "Task ${}"
     ],
-    "packages/affine/gfx/group/src/command/group-api.ts": ["Group ${}"],
+    "packages/affine/gfx/group/src/command/group-api.ts": [
+      "Group ${}"
+    ],
     "packages/affine/gfx/group/src/toolbar/config.ts": [
       "Group has been inserted into doc",
       "Insert into Page",
@@ -1413,14 +1466,23 @@
       "Rename",
       "Ungroup"
     ],
-    "packages/affine/gfx/link/src/toolbar/undo-dense-menu.ts": ["Undo"],
-    "packages/affine/gfx/link/src/toolbar/undo-tool-button.ts": ["Undo"],
-    "packages/affine/gfx/mindmap/src/templates/index.ts": ["Mind Map"],
+    "packages/affine/gfx/link/src/toolbar/undo-dense-menu.ts": [
+      "Undo"
+    ],
+    "packages/affine/gfx/link/src/toolbar/undo-tool-button.ts": [
+      "Undo"
+    ],
+    "packages/affine/gfx/mindmap/src/templates/index.ts": [
+      "Mind Map"
+    ],
     "packages/affine/gfx/mindmap/src/toolbar/basket-elements.ts": [
       "Mind Map",
       "Text"
     ],
-    "packages/affine/gfx/mindmap/src/toolbar/config.ts": ["Layout", "Style"],
+    "packages/affine/gfx/mindmap/src/toolbar/config.ts": [
+      "Layout",
+      "Style"
+    ],
     "packages/affine/gfx/mindmap/src/toolbar/mindmap-importing-placeholder.ts": [
       "Importing mind map..."
     ],
@@ -1481,8 +1543,13 @@
       "To-do List",
       "Track tasks with a to-do list."
     ],
-    "packages/affine/gfx/note/src/toolbar/note-menu.ts": ["File", "Image"],
-    "packages/affine/gfx/note/src/toolbar/senior-tool.ts": ["Note"],
+    "packages/affine/gfx/note/src/toolbar/note-menu.ts": [
+      "File",
+      "Image"
+    ],
+    "packages/affine/gfx/note/src/toolbar/senior-tool.ts": [
+      "Note"
+    ],
     "packages/affine/gfx/shape/src/draggable/shape-menu.ts": [
       "General",
       "Scribbled"
@@ -1496,7 +1563,9 @@
       "Style",
       "Switch shape type"
     ],
-    "packages/affine/gfx/shape/src/toolbar/senior-tool.ts": ["Shape"],
+    "packages/affine/gfx/shape/src/toolbar/senior-tool.ts": [
+      "Shape"
+    ],
     "packages/affine/gfx/shape/src/toolbar/shape-menu-config.ts": [
       "Diamond",
       "Ellipse",
@@ -1511,12 +1580,16 @@
       "Effect",
       "Other"
     ],
-    "packages/affine/gfx/template/src/toolbar/senior-tool.ts": ["Template"],
+    "packages/affine/gfx/template/src/toolbar/senior-tool.ts": [
+      "Template"
+    ],
     "packages/affine/gfx/template/src/toolbar/template-panel.ts": [
       "Add",
       "Search file or anything..."
     ],
-    "packages/affine/gfx/text/src/edgeless-text-editor.ts": ["Type from here"],
+    "packages/affine/gfx/text/src/edgeless-text-editor.ts": [
+      "Type from here"
+    ],
     "packages/affine/gfx/text/src/toolbar/actions.ts": [
       "Alignment",
       "Font",
@@ -1559,7 +1632,9 @@
       "What kind of thing this component is: an activity, data, a practice or knowledge.",
       "Which of Porter's forces this glyph marks: relative competition, a struggle for survival, or a struggle to establish."
     ],
-    "packages/affine/gfx/wardley/src/templates/index.ts": ["Wardley"],
+    "packages/affine/gfx/wardley/src/templates/index.ts": [
+      "Wardley"
+    ],
     "packages/affine/inlines/footnote/src/footnote-node/footnote-popup.ts": [
       "favicon"
     ],
@@ -1631,8 +1706,12 @@
       "To-do List",
       "Visually separate content."
     ],
-    "packages/affine/shared/src/adapters/markdown/markdown.ts": ["Untitled"],
-    "packages/affine/shared/src/adapters/mix-text.ts": ["Untitled"],
+    "packages/affine/shared/src/adapters/markdown/markdown.ts": [
+      "Untitled"
+    ],
+    "packages/affine/shared/src/adapters/mix-text.ts": [
+      "Untitled"
+    ],
     "packages/affine/shared/src/adapters/plain-text/plain-text.ts": [
       "Untitled"
     ],
@@ -1649,8 +1728,12 @@
       "square bracket",
       "white corner bracket"
     ],
-    "packages/affine/shared/src/services/comment-service/utils.ts": ["Comment"],
-    "packages/affine/shared/src/services/notification-service.ts": ["Undo"],
+    "packages/affine/shared/src/services/comment-service/utils.ts": [
+      "Comment"
+    ],
+    "packages/affine/shared/src/services/notification-service.ts": [
+      "Undo"
+    ],
     "packages/affine/shared/src/services/open-doc-config.ts": [
       "Open in center peek",
       "Open this doc"
@@ -1780,12 +1863,18 @@
       "date",
       "yesterday&#x2019;s"
     ],
-    "packages/affine/widgets/toolbar/src/utils.ts": ["More menu"],
+    "packages/affine/widgets/toolbar/src/utils.ts": [
+      "More menu"
+    ],
     "packages/framework/std/src/event/keymap.ts": [
       "+ name ); } return normalized; } function modifiers(name: string, event: KeyboardEvent, shift = true) { if (event.altKey) name ="
     ],
-    "packages/framework/std/src/inline/components/v-text.ts": ["true"],
-    "packages/framework/std/src/inline/utils/text.ts": ["true"],
+    "packages/framework/std/src/inline/components/v-text.ts": [
+      "true"
+    ],
+    "packages/framework/std/src/inline/utils/text.ts": [
+      "true"
+    ],
     "packages/framework/std/src/view/element/block-component.ts": [
       "Block Version Mismatched",
       "Data version:",

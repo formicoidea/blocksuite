@@ -78,6 +78,19 @@ export function hostLocale(std: BlockStdScope): string | undefined {
   return typeof tag === 'string' && tag.length > 0 ? tag : undefined;
 }
 
+/**
+ * `hostLocale(std)`, defaulting to `'en-US'` when the host said nothing —
+ * the locale every `Intl.*Format` call in the library resolves against.
+ *
+ * Dates and numbers fall back to English like every string does, so a
+ * standalone playground stays deterministic: `Intl`'s own runtime-default
+ * fallback would instead read whatever locale the machine happens to have,
+ * which is not a fallback a test can assert on.
+ */
+export function formatLocale(std: BlockStdScope): string {
+  return hostLocale(std) ?? 'en-US';
+}
+
 /** The values of a wording's `{{name}}` placeholders. */
 export type TranslationParams = Record<string, string | number>;
 

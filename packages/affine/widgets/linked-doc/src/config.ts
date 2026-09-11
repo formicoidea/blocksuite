@@ -9,6 +9,7 @@ import { StoreExtensionManagerIdentifier } from '@labre/affine-ext-loader';
 import { insertLinkedNode } from '@labre/affine-inline-reference';
 import {
   DocModeProvider,
+  formatLocale,
   TelemetryProvider,
 } from '@labre/affine-shared/services';
 import type { AffineInlineEditor } from '@labre/affine-shared/types';
@@ -112,7 +113,7 @@ export function createLinkedDocMenuGroup(
       },
     })),
     maxDisplay: MAX_DOCS,
-    overflowText: `${filteredDocList.length - MAX_DOCS} more docs`,
+    overflowText: `${new Intl.NumberFormat(formatLocale(editorHost.std)).format(filteredDocList.length - MAX_DOCS)} more docs`,
   };
 }
 
