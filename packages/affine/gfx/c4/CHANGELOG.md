@@ -1,5 +1,29 @@
 # @labre/affine-gfx-c4
 
+## 0.40.0
+
+### Minor Changes
+
+- 95ff0a5: feat(edgeless): every framework notation now shares one neutral scale, `NOTATION_NEUTRALS` (`@labre/affine-shared/consts`), taken from the Wardley map: ink, frame ink, label grey, divider, card, card border and legend border. Board strips (BPMN participant band, C4 title band) are plain white. Framework hues and stencil-prescribed neutrals (C4 `#444444`, the EDGY base-shape ink `#262626`, Cynefin/Estuarine official inks) are unchanged. Board backgrounds repaint with the scale. Colours already stored on user elements are left untouched, and only newly created elements take the new defaults.
+
+### Patch Changes
+
+- Updated dependencies [95ff0a5]
+- Updated dependencies [95ff0a5]
+  - @labre/affine-shared@0.40.0
+  - @labre/affine-block-surface@0.40.0
+  - @labre/affine-gfx-ddd-shared@0.40.0
+  - @labre/affine-gfx-template@0.40.0
+  - @labre/affine-gfx-connector@0.40.0
+  - @labre/affine-gfx-pointer@0.40.0
+  - @labre/affine-gfx-shape@0.40.0
+  - @labre/affine-gfx-text@0.40.0
+  - @labre/affine-widget-edgeless-toolbar@0.40.0
+  - @labre/affine-ext-loader@0.40.0
+  - @labre/affine-model@0.40.0
+  - @labre/global@0.40.0
+  - @labre/std@0.40.0
+
 ## 0.39.3
 
 ### Patch Changes

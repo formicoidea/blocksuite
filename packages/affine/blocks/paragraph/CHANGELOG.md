@@ -1,5 +1,27 @@
 # @labre/affine-block-paragraph
 
+## 0.40.0
+
+### Minor Changes
+
+- 95ff0a5: feat(blocks): Labre owns its document heading scale (`HEADING_SCALE` in `@labre/affine-shared/consts`). H1 32 / H2 26 / H3 20 / H4 18 / H5 16 / H6 15px step down about 1.25× from the 40px doc title, so the first three levels read clearly apart and H1 never competes with the title. The callout emoji, the slash-menu previews and inline code in headings derive from the same table; the hover affordances (drag-handle grabber, heading-level icon) keep their upstream tuning. Document headings no longer follow the upstream `--affine-font-h-*` theme variables.
+
+### Patch Changes
+
+- Updated dependencies [5b41d83]
+- Updated dependencies [95ff0a5]
+- Updated dependencies [95ff0a5]
+  - @labre/affine-inline-preset@0.40.0
+  - @labre/affine-shared@0.40.0
+  - @labre/affine-components@0.40.0
+  - @labre/affine-rich-text@0.40.0
+  - @labre/affine-ext-loader@0.40.0
+  - @labre/affine-gfx-turbo-renderer@0.40.0
+  - @labre/affine-model@0.40.0
+  - @labre/global@0.40.0
+  - @labre/std@0.40.0
+  - @labre/store@0.40.0
+
 ## 0.39.3
 
 ### Patch Changes

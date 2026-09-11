@@ -1,5 +1,20 @@
 # @labre/affine-widget-edgeless-auto-connect
 
+## 0.40.0
+
+### Patch Changes
+
+- Updated dependencies [95ff0a5]
+- Updated dependencies [95ff0a5]
+  - @labre/affine-shared@0.40.0
+  - @labre/affine-block-note@0.40.0
+  - @labre/affine-block-surface@0.40.0
+  - @labre/affine-components@0.40.0
+  - @labre/affine-ext-loader@0.40.0
+  - @labre/affine-model@0.40.0
+  - @labre/global@0.40.0
+  - @labre/std@0.40.0
+
 ## 0.39.3
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @labre/affine-shared
 
+## 0.40.0
+
+### Minor Changes
+
+- 95ff0a5: feat(blocks): Labre owns its document heading scale (`HEADING_SCALE` in `@labre/affine-shared/consts`). H1 32 / H2 26 / H3 20 / H4 18 / H5 16 / H6 15px step down about 1.25× from the 40px doc title, so the first three levels read clearly apart and H1 never competes with the title. The callout emoji, the slash-menu previews and inline code in headings derive from the same table; the hover affordances (drag-handle grabber, heading-level icon) keep their upstream tuning. Document headings no longer follow the upstream `--affine-font-h-*` theme variables.
+- 95ff0a5: feat(edgeless): every framework notation now shares one neutral scale, `NOTATION_NEUTRALS` (`@labre/affine-shared/consts`), taken from the Wardley map: ink, frame ink, label grey, divider, card, card border and legend border. Board strips (BPMN participant band, C4 title band) are plain white. Framework hues and stencil-prescribed neutrals (C4 `#444444`, the EDGY base-shape ink `#262626`, Cynefin/Estuarine official inks) are unchanged. Board backgrounds repaint with the scale. Colours already stored on user elements are left untouched, and only newly created elements take the new defaults.
+
+### Patch Changes
+
+- @labre/affine-model@0.40.0
+- @labre/global@0.40.0
+- @labre/std@0.40.0
+- @labre/store@0.40.0
+
 ## 0.39.3
 
 ### Patch Changes
