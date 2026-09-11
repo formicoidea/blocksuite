@@ -7,7 +7,11 @@ import {
 } from '@labre/std';
 
 import { CONTEXT_MAP_BACKGROUND } from './background.js';
-import { contextMapCommands } from './commands.js';
+import {
+  CONTEXT_MAP_SEED_BOUNDED_CONTEXT,
+  CONTEXT_MAP_SEED_CLOUD,
+  contextMapCommands,
+} from './commands.js';
 import { CONTEXT_MAP_NUDGES } from './nudges.js';
 import { CONTEXT_MAP_PROFILES } from './profiles.js';
 import { CONTEXT_MAP_READING } from './reading.js';
@@ -44,5 +48,8 @@ export const contextMapTranslationEntries: TranslationKeyManifestEntry[] =
     // framework's own `roles`, so walking it reaches every role key the `role`
     // line above already named. `mergeTranslationEntries` keeps the FIRST
     // occurrence, which is what makes each key report the source it comes from.
-    collectTranslationKeys('reading', CONTEXT_MAP_READING)
+    collectTranslationKeys('reading', CONTEXT_MAP_READING),
+    [CONTEXT_MAP_SEED_BOUNDED_CONTEXT, CONTEXT_MAP_SEED_CLOUD].map(
+      ([key, fallback]) => ({ key, fallback, source: 'seed' as const })
+    )
   );

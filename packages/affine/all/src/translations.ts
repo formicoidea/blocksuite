@@ -1,18 +1,26 @@
+import { FRAME_WORDINGS } from '@labre/affine-block-frame/translations';
 import {
   EXEMPTION_FALLBACK,
   PROVENANCE_FALLBACK,
   SEVERITY_FALLBACK,
 } from '@labre/affine-block-surface';
+import { SURFACE_REF_WORDINGS } from '@labre/affine-block-surface-ref/translations';
 import { bpmnTranslationEntries } from '@labre/affine-gfx-bpmn';
 import { c4TranslationEntries } from '@labre/affine-gfx-c4';
 import { cynefinEstuarineTranslationEntries } from '@labre/affine-gfx-cynefin-estuarine';
+import { DDD_AGGREGATE_WORDINGS } from '@labre/affine-gfx-ddd-aggregate/translations';
 import { contextMapTranslationEntries } from '@labre/affine-gfx-ddd-context-map';
 import { coreDomainTranslationEntries } from '@labre/affine-gfx-ddd-core-domain';
 import { eventStormingTranslationEntries } from '@labre/affine-gfx-ddd-event-storming';
 import { edgyTranslationEntries } from '@labre/affine-gfx-edgy';
+import { GROUP_WORDINGS } from '@labre/affine-gfx-group/translations';
+import { MINDMAP_WORDINGS } from '@labre/affine-gfx-mindmap/translations';
 import { wardleyTranslationEntries } from '@labre/affine-gfx-wardley';
 import { OUTLINE_WORDINGS } from '@labre/affine-fragment-outline/translations';
-import { TEMPLATE_PACKAGE_WORDINGS } from '@labre/affine-gfx-template/translations';
+import {
+  TEMPLATE_PACKAGE_WORDINGS,
+  TEMPLATE_SEED_WORDINGS,
+} from '@labre/affine-gfx-template/translations';
 import {
   CHROME_WORDINGS,
   type ChromeWording,
@@ -309,6 +317,26 @@ const PACKAGE_WORDINGS: readonly (readonly ChromeWording[])[] = [
 ];
 
 /**
+ * Like {@link PACKAGE_WORDINGS}, for a non-framework package's SEEDS: text a
+ * creation action writes INTO the document, not chrome. Kept as its own
+ * source rather than folded into `PACKAGE_WORDINGS` under `chrome` — the two
+ * answer different questions for a host building a catalogue: a seed is
+ * translated once and becomes document content forever (a document created
+ * before the key existed keeps its plain text), while a chrome wording is
+ * re-rendered on every locale switch. `manifest.unit.spec.ts`'s "a placed
+ * artefact is seeded through the seam" pins a few of these by key, exactly as
+ * it does for a framework's own seeds.
+ */
+const PACKAGE_SEED_WORDINGS: readonly (readonly ChromeWording[])[] = [
+  FRAME_WORDINGS,
+  GROUP_WORDINGS,
+  MINDMAP_WORDINGS,
+  SURFACE_REF_WORDINGS,
+  TEMPLATE_SEED_WORDINGS,
+  DDD_AGGREGATE_WORDINGS,
+];
+
+/**
  * Every i18n key THIS package can ask the host for, with its English fallback
  * where one ships.
  *
@@ -342,6 +370,15 @@ export function getTranslationKeyManifest(): TranslationKeyManifestEntry[] {
       key,
       fallback,
       source: 'chrome' as const,
+    })),
+    // The non-framework packages' own SEEDS — text a creation action writes
+    // INTO the document (a frame's default title, a starter mindmap's
+    // captions), never re-rendered once placed. See
+    // `PACKAGE_SEED_WORDINGS`.
+    PACKAGE_SEED_WORDINGS.flat().map(([key, fallback]) => ({
+      key,
+      fallback,
+      source: 'seed' as const,
     }))
   );
 }

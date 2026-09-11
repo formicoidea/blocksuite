@@ -165,7 +165,7 @@ export class EdgelessMindmapToolButton extends EdgelessToolbarToolMixin(
         });
       },
       onImportMindMap: (bound: Bound) => {
-        return importMindmap(bound).then(mindmap => {
+        return importMindmap(bound, this.edgeless.std).then(mindmap => {
           const id = this.crud.addElement('mindmap', {
             children: mindmap,
             layoutType: mindmap?.layoutType === 'left' ? 1 : 0,

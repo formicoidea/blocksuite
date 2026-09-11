@@ -1,3 +1,4 @@
+import { dddSharedTranslationEntries } from '@labre/affine-gfx-ddd-shared';
 import {
   collectTranslationKeys,
   commandCategoryTranslationEntries,
@@ -46,5 +47,10 @@ export const eventStormingTranslationEntries: TranslationKeyManifestEntry[] =
     // framework's own `roles`, so walking it reaches every role key the `role`
     // line above already named. `mergeTranslationEntries` keeps the FIRST
     // occurrence, which is what makes each key report the source it comes from.
-    collectTranslationKeys('reading', EVENT_STORMING_READING)
+    collectTranslationKeys('reading', EVENT_STORMING_READING),
+    // The seeds baked into a placed sticky (`commands.ts`), derived from the
+    // shared palette in `ddd-shared` rather than restated — spread whole
+    // rather than imported from a sibling DDD framework (never allowed), and
+    // de-duplicated with whatever this framework already listed.
+    dddSharedTranslationEntries
   );
