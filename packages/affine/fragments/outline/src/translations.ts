@@ -8,12 +8,6 @@ import type { ChromeWording } from '@labre/affine-shared/services';
  * Declared here rather than restated in `outline-preview.ts` so the manifest
  * (`@labre/affine/translations`, `PACKAGE_WORDINGS`) can walk them — see
  * `packages/affine/shared/src/services/translation-service/README.md`.
- *
- * `placeholderMap` in `./config.js` also carries entries for the paragraph
- * and list block types (`Quote`, `Heading 1`…, `Bulleted List`…): those are
- * never rendered as text by this package (only their KEYS are read, by
- * `headingKeys`), so they carry no wording here — a key with nobody reading
- * it is a manifest entry the "used by nobody" guard would reject.
  */
 export const OUTLINE_PLACEHOLDER_BOOKMARK: ChromeWording = [
   'com.labre.outline.placeholder.bookmark',
