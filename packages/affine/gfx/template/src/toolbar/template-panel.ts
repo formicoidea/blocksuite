@@ -320,7 +320,12 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
         );
       }
 
-      const insertedBound = await templateJob.insertTemplate(template.content);
+      // The seeds in the inserting editor's language (see `Template.localize`);
+      // `content` is the English build, kept for previews, search and tests.
+      const content = original.localize
+        ? original.localize(this.edgeless.std)
+        : template.content;
+      const insertedBound = await templateJob.insertTemplate(content);
 
       original.afterInsert?.(this.edgeless.std, templateJob.insertedElementIds);
 

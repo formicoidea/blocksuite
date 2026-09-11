@@ -11,7 +11,11 @@ import { coreDomainTranslationEntries } from '@labre/affine-gfx-ddd-core-domain'
 import { eventStormingTranslationEntries } from '@labre/affine-gfx-ddd-event-storming';
 import { edgyTranslationEntries } from '@labre/affine-gfx-edgy';
 import { wardleyTranslationEntries } from '@labre/affine-gfx-wardley';
-import { CHROME_WORDINGS } from '@labre/affine-shared/services';
+import {
+  CHROME_WORDINGS,
+  type ChromeWording,
+} from '@labre/affine-shared/services';
+import { SLASH_MENU_WORDINGS } from '@labre/affine-widget-slash-menu';
 import {
   collectTranslationKeys,
   commandCategoryTranslationEntries,
@@ -285,6 +289,22 @@ const CHROME_KEYS: readonly [key: string, fallback: string][] = [
 ];
 
 /**
+ * The block and widget packages' own wordings — one `readonly ChromeWording[]`
+ * per package, declared in that package's `translations.ts` beside the code
+ * that renders them, and walked here rather than restated.
+ *
+ * Per package and not one central table because the wordings belong to the
+ * package that renders them (an image toolbar's "Download" is the image
+ * block's), and because a single file every block edits is a file every
+ * parallel change conflicts on. Framework wordings do NOT go here: they travel
+ * in the framework's own `…TranslationEntries`, so a bundled host gets them
+ * with the framework bundle.
+ */
+const PACKAGE_WORDINGS: readonly (readonly ChromeWording[])[] = [
+  SLASH_MENU_WORDINGS,
+];
+
+/**
  * Every i18n key THIS package can ask the host for, with its English fallback
  * where one ships.
  *
@@ -309,7 +329,7 @@ export function getTranslationKeyManifest(): TranslationKeyManifestEntry[] {
     // `@labre/affine-shared/services` beside nothing at all, and walked here
     // rather than restated. Same rule as the tables above: a wording added to
     // `CHROME_WORDINGS` reaches a host with no second edit.
-    CHROME_WORDINGS.map(([key, fallback]) => ({
+    [...CHROME_WORDINGS, ...PACKAGE_WORDINGS.flat()].map(([key, fallback]) => ({
       key,
       fallback,
       source: 'chrome' as const,
