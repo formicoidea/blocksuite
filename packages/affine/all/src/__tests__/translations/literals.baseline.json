@@ -577,12 +577,10 @@
       "View name"
     ],
     "packages/affine/widgets/keyboard-toolbar/src/config.ts": [
-      "Background",
       "BulletedList",
       "CheckBox",
       "CodeBlock",
       "CollapseTab",
-      "Color",
       "Default Color",
       "Default Color",
       "Document Group&Frame",
@@ -625,7 +623,6 @@
     "packages/affine/blocks/attachment/src/configs/toolbar.ts": [
       "Download",
       "Horizontal style",
-      "Reload",
       "Rename",
       "Rename",
       "Replace attachment",
@@ -650,7 +647,6 @@
       "Large horizontal style",
       "Large horizontal style",
       "Large vertical style",
-      "Reload",
       "Small horizontal style",
       "Small horizontal style",
       "Small vertical style"
@@ -684,11 +680,9 @@
       "Small vertical style"
     ],
     "packages/affine/blocks/embed-doc/src/embed-linked-doc-block/embed-linked-doc-block.ts": [
-      "Reload",
       "Updated"
     ],
     "packages/affine/blocks/embed-doc/src/embed-synced-doc-block/components/embed-synced-doc-card.ts": [
-      "Reload",
       "Updated"
     ],
     "packages/affine/blocks/embed-doc/src/embed-synced-doc-block/configs/toolbar.ts": [
@@ -714,7 +708,6 @@
       "Large horizontal style",
       "Large horizontal style",
       "Large vertical style",
-      "Reload",
       "Small horizontal style",
       "Small horizontal style",
       "Small vertical style"
@@ -762,8 +755,7 @@
     ],
     "packages/affine/blocks/embed/src/embed-iframe-block/configs/toolbar.ts": [
       "Create Linked Doc",
-      "Original",
-      "Reload"
+      "Original"
     ],
     "packages/affine/blocks/embed/src/embed-iframe-block/embed-iframe-block.ts": [
       "Please set a link to the block"
@@ -784,7 +776,6 @@
       "You have reached the last frame"
     ],
     "packages/affine/blocks/frame/src/frame-toolbar.ts": [
-      "Background",
       "Frame has been inserted into doc",
       "Frame has been inserted into doc",
       "Insert into Page",
@@ -848,8 +839,6 @@
       "Edit link",
       "Frame section",
       "Group section",
-      "Reload",
-      "Remove link",
       "Send Backward",
       "Turn into linked doc"
     ],
@@ -871,26 +860,6 @@
     "packages/affine/blocks/surface/src/extensions/interchange-import.ts": [
       "${} ${}"
     ],
-    "packages/affine/components/src/caption/block-caption.ts": [
-      "Write a caption"
-    ],
-    "packages/affine/components/src/card-style-dropdown-menu/dropdown-menu.ts": [
-      "Card style",
-      "Card style"
-    ],
-    "packages/affine/components/src/citation/citation.ts": [
-      "favicon"
-    ],
-    "packages/affine/components/src/color-picker/color-picker.ts": [
-      "Colors",
-      "Custom",
-      "Dark",
-      "Light",
-      "Normal"
-    ],
-    "packages/affine/components/src/context-menu/menu-renderer.ts": [
-      "No Results"
-    ],
     "packages/affine/components/src/date-picker/date-picker.ts": [
       "Clear",
       "TODAY",
@@ -898,37 +867,6 @@
       "next month",
       "previous month",
       "today"
-    ],
-    "packages/affine/components/src/edgeless-shape-color-picker/color-picker.ts": [
-      "Border color",
-      "Color",
-      "Color",
-      "Fill color"
-    ],
-    "packages/affine/components/src/embed-card-modal/embed-card-create-modal.ts": [
-      "Confirm",
-      "Input in https://...",
-      "Invalid link"
-    ],
-    "packages/affine/components/src/embed-card-modal/embed-card-edit-modal.ts": [
-      "Add description alias (empty to inherit document content)",
-      "Add title alias",
-      "Cancel",
-      "Reset",
-      "Title can not be empty",
-      "Write a description...",
-      "Write a title"
-    ],
-    "packages/affine/components/src/highlight-dropdown-menu/dropdown-menu.ts": [
-      "Highlight",
-      "highlight"
-    ],
-    "packages/affine/components/src/icon-button/index.ts": [
-      "HTML"
-    ],
-    "packages/affine/components/src/icon-picker/affine-icon-picker-panel.ts": [
-      "Filter...",
-      "No icon found"
     ],
     "packages/affine/components/src/icon-picker/emoji-data.ts": [
       "Activity",
@@ -939,35 +877,6 @@
       "Smileys & People",
       "Symbols",
       "Travel & Places"
-    ],
-    "packages/affine/components/src/icon-picker/emoji-picker-panel.ts": [
-      "Filter...",
-      "No emoji found"
-    ],
-    "packages/affine/components/src/icon-picker/icon-picker.ts": [
-      "Emoji",
-      "Icons",
-      "Remove"
-    ],
-    "packages/affine/components/src/linked-doc-title/doc-title.ts": [
-      "Doc title"
-    ],
-    "packages/affine/components/src/open-doc-dropdown-menu/dropdown-menu.ts": [
-      "Open",
-      "Open doc menu",
-      "Open doc with"
-    ],
-    "packages/affine/components/src/resource/status.ts": [
-      "${} failed",
-      "Reload",
-      "Retry"
-    ],
-    "packages/affine/components/src/toast/toast.ts": [
-      "Hello World"
-    ],
-    "packages/affine/components/src/toolbar/tooltip.ts": [
-      "* Content *",
-      "Content"
     ],
     "packages/affine/fragments/doc-title/src/doc-title.ts": [
       "true"
@@ -1153,77 +1062,6 @@
     ],
     "packages/affine/gfx/wardley/src/templates/index.ts": [
       "Wardley"
-    ],
-    "packages/affine/inlines/footnote/src/footnote-node/footnote-popup.ts": [
-      "favicon"
-    ],
-    "packages/affine/inlines/latex/src/latex-node/latex-editor-menu.ts": [
-      "Shift Enter to line break"
-    ],
-    "packages/affine/inlines/latex/src/latex-node/latex-node.ts": [
-      "Equation",
-      "Error equation"
-    ],
-    "packages/affine/inlines/link/src/link-node/configs/toolbar.ts": [
-      "Copied link to clipboard",
-      "Copy link",
-      "Edit",
-      "Remove link"
-    ],
-    "packages/affine/inlines/link/src/link-node/link-popup/link-popup.ts": [
-      "Enter text",
-      "Link",
-      "Paste or type a link",
-      "Paste or type a link",
-      "Text"
-    ],
-    "packages/affine/inlines/mention/src/affine-mention.ts": [
-      "@Inactive Member",
-      "@Unknown Member",
-      "@loading"
-    ],
-    "packages/affine/inlines/preset/src/command/config.ts": [
-      "Bold",
-      "Code",
-      "Italic",
-      "Link",
-      "Strikethrough",
-      "Underline"
-    ],
-    "packages/affine/inlines/reference/src/reference-node/reference-popup/reference-popup.ts": [
-      "Add a custom title",
-      "Reset",
-      "Reset",
-      "Save",
-      "Save"
-    ],
-    "packages/affine/rich-text/src/conversion.ts": [
-      "Add a blockquote for emphasis.",
-      "Add tasks to a to-do list.",
-      "Bulleted List",
-      "Code Block",
-      "Code snippet with formatting.",
-      "Create a bulleted list.",
-      "Create a numbered list.",
-      "Divider",
-      "Heading 1",
-      "Heading 2",
-      "Heading 3",
-      "Heading 4",
-      "Heading 5",
-      "Heading 6",
-      "Headings in the 2nd font size.",
-      "Headings in the 3rd font size.",
-      "Headings in the 4th font size.",
-      "Headings in the 5th font size.",
-      "Headings in the 6th font size.",
-      "Headings in the largest font.",
-      "Numbered List",
-      "Quote",
-      "Start typing with plain text.",
-      "Text",
-      "To-do List",
-      "Visually separate content."
     ],
     "packages/affine/shared/src/adapters/markdown/markdown.ts": [
       "Untitled"

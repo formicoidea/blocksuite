@@ -8,6 +8,7 @@ import { SURFACE_REF_WORDINGS } from '@labre/affine-block-surface-ref/translatio
 import { ADAPTER_PANEL_WORDINGS } from '@labre/affine-fragment-adapter-panel/translations';
 import { DOC_TITLE_WORDINGS } from '@labre/affine-fragment-doc-title/translations';
 import { OUTLINE_WORDINGS } from '@labre/affine-fragment-outline/translations';
+import { COMPONENTS_WORDINGS } from '@labre/affine-components/translations';
 import { bpmnTranslationEntries } from '@labre/affine-gfx-bpmn';
 import { c4TranslationEntries } from '@labre/affine-gfx-c4';
 import { cynefinEstuarineTranslationEntries } from '@labre/affine-gfx-cynefin-estuarine';
@@ -28,6 +29,11 @@ import {
 } from '@labre/affine-gfx-template/translations';
 import { TEXT_WORDINGS } from '@labre/affine-gfx-text/translations';
 import { wardleyTranslationEntries } from '@labre/affine-gfx-wardley';
+import { LATEX_WORDINGS as INLINE_LATEX_WORDINGS } from '@labre/affine-inline-latex/translations';
+import { LINK_WORDINGS } from '@labre/affine-inline-link/translations';
+import { MENTION_WORDINGS } from '@labre/affine-inline-mention/translations';
+import { PRESET_WORDINGS } from '@labre/affine-inline-preset/translations';
+import { REFERENCE_WORDINGS } from '@labre/affine-inline-reference/translations';
 import {
   CHROME_WORDINGS,
   type ChromeWording,
@@ -354,6 +360,12 @@ const PACKAGE_WORDINGS: readonly (readonly ChromeWording[])[] = [
   LINKED_DOC_WORDINGS,
   REMOTE_SELECTION_WORDINGS,
   TOOLBAR_WIDGET_WORDINGS,
+  COMPONENTS_WORDINGS,
+  INLINE_LATEX_WORDINGS,
+  LINK_WORDINGS,
+  MENTION_WORDINGS,
+  PRESET_WORDINGS,
+  REFERENCE_WORDINGS,
 ];
 
 /**
