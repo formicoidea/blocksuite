@@ -70,6 +70,27 @@ export const ATTACHMENT_TOAST_DOWNLOAD_FAILED: ChromeWording = [
 ];
 
 /**
+ * The resource-state buttons (`attachment-block.ts`). `label` there also
+ * feeds `AttachmentReloadedEvent`'s telemetry `control` field, so it stays a
+ * stable lowercase English identifier — only the RENDERED text goes through
+ * `translateKey`, via these separate wordings.
+ */
+export const ATTACHMENT_BUTTON_UPGRADE: ChromeWording = [
+  'com.labre.attachment.button.upgrade',
+  'Upgrade',
+];
+
+export const ATTACHMENT_BUTTON_RETRY: ChromeWording = [
+  'com.labre.attachment.button.retry',
+  'retry',
+];
+
+export const ATTACHMENT_BUTTON_RELOAD: ChromeWording = [
+  'com.labre.attachment.button.reload',
+  'reload',
+];
+
+/**
  * This package's contribution to the translation-key manifest, listed in
  * `PACKAGE_WORDINGS` under source `chrome`
  * (`packages/affine/all/src/translations.ts`). The shared verbs it reuses
@@ -87,4 +108,7 @@ export const ATTACHMENT_WORDINGS: readonly ChromeWording[] = [
   ATTACHMENT_RENAME_EMPTY_NAME,
   ATTACHMENT_TOAST_DOWNLOADING,
   ATTACHMENT_TOAST_DOWNLOAD_FAILED,
+  ATTACHMENT_BUTTON_UPGRADE,
+  ATTACHMENT_BUTTON_RETRY,
+  ATTACHMENT_BUTTON_RELOAD,
 ];
