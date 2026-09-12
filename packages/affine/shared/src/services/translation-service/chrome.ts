@@ -197,6 +197,111 @@ export const BOARD_LEGEND_COMPONENTS: ChromeWording = [
   'Generate the legend (components present)',
 ];
 
+/* ── Documents ────────────────────────────────────────────────────────── */
+
+/**
+ * A document with no title, wherever its name is shown instead of one — the
+ * "@" menu's linked-doc list AND the outline panel's own preview of a linked
+ * doc both say it, hence a shared key rather than a package-local one.
+ */
+export const DOC_UNTITLED: ChromeWording = [
+  'com.labre.doc.untitled',
+  'Untitled',
+];
+
+/* ── Export / import formats ────────────────────────────────────────────── */
+
+/**
+ * File-format names shown by more than one picker (the adapter/debug panel's
+ * format selector, the "@" menu's import dialog) — proper nouns the glossary
+ * convention keeps in English even in the French proposal.
+ */
+export const FORMAT_MARKDOWN: ChromeWording = [
+  'com.labre.format.markdown',
+  'Markdown',
+];
+
+export const FORMAT_HTML: ChromeWording = ['com.labre.format.html', 'HTML'];
+
+/* ── Canvas element style ──────────────────────────────────────────────── */
+
+/**
+ * The sketch/general toggle every canvas element's style panel offers
+ * (shape's border, a framework board's own "trait esquissé" switch) — one
+ * pair of words, shared by every drawer of that control rather than declared
+ * once per element type.
+ */
+export const STYLE_GENERAL: ChromeWording = [
+  'com.labre.style.general',
+  'General',
+];
+
+export const STYLE_SCRIBBLED: ChromeWording = [
+  'com.labre.style.scribbled',
+  'Scribbled',
+];
+
+/** The menu label naming that same toggle (shape's, a mindmap's). */
+export const STYLE_MENU_LABEL: ChromeWording = [
+  'com.labre.style.menu-label',
+  'Style',
+];
+
+/* ── Font weight / style ────────────────────────────────────────────────── */
+
+/**
+ * The three font weights and the one non-default font style a text toolbar
+ * offers — said identically by the toolbar's own "current selection" label
+ * (`gfx/text`) and by the popup menu that picks them
+ * (`widgets/edgeless-toolbar`).
+ */
+export const FONT_WEIGHT_LIGHT: ChromeWording = [
+  'com.labre.font.weight.light',
+  'Light',
+];
+
+export const FONT_WEIGHT_REGULAR: ChromeWording = [
+  'com.labre.font.weight.regular',
+  'Regular',
+];
+
+export const FONT_WEIGHT_SEMIBOLD: ChromeWording = [
+  'com.labre.font.weight.semibold',
+  'Semibold',
+];
+
+export const FONT_STYLE_ITALIC: ChromeWording = [
+  'com.labre.font.style.italic',
+  'Italic',
+];
+
+/* ── Canvas tool names ──────────────────────────────────────────────────── */
+
+/**
+ * A canvas tool's own name, said identically by its senior button, its quick
+ * button and the "+" auto-complete panel that offers it as a follow-up —
+ * `mindmap`, `shape` and `edgeless-selected-rect` all draw at least one of
+ * these from the same table rather than wording a tool's name once per
+ * drawer.
+ */
+export const TOOL_NAME_TEXT: ChromeWording = ['com.labre.tool.text', 'Text'];
+
+export const TOOL_NAME_NOTE: ChromeWording = ['com.labre.tool.note', 'Note'];
+
+export const TOOL_NAME_FRAME: ChromeWording = ['com.labre.tool.frame', 'Frame'];
+
+export const TOOL_NAME_SHAPE: ChromeWording = ['com.labre.tool.shape', 'Shape'];
+
+/**
+ * The font-size dropdown's own label — said identically by every text
+ * toolbar that offers it (`gfx/text`'s shared `createTextActions`, and
+ * `blocks/edgeless-text`'s own scale-driven variant of the same control).
+ */
+export const FONT_SIZE_LABEL: ChromeWording = [
+  'com.labre.font.size-label',
+  'Font size',
+];
+
 /**
  * Every wording declared above, in declaration order.
  *
@@ -232,4 +337,19 @@ export const CHROME_WORDINGS: readonly ChromeWording[] = [
   BOARD_RESIZE_TOGGLE,
   BOARD_LEGEND_NOTATION,
   BOARD_LEGEND_COMPONENTS,
+  DOC_UNTITLED,
+  FORMAT_MARKDOWN,
+  FORMAT_HTML,
+  STYLE_GENERAL,
+  STYLE_SCRIBBLED,
+  STYLE_MENU_LABEL,
+  FONT_WEIGHT_LIGHT,
+  FONT_WEIGHT_REGULAR,
+  FONT_WEIGHT_SEMIBOLD,
+  FONT_STYLE_ITALIC,
+  TOOL_NAME_TEXT,
+  TOOL_NAME_NOTE,
+  TOOL_NAME_FRAME,
+  TOOL_NAME_SHAPE,
+  FONT_SIZE_LABEL,
 ];

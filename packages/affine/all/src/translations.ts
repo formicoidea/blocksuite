@@ -5,6 +5,9 @@ import {
   SEVERITY_FALLBACK,
 } from '@labre/affine-block-surface';
 import { SURFACE_REF_WORDINGS } from '@labre/affine-block-surface-ref/translations';
+import { ADAPTER_PANEL_WORDINGS } from '@labre/affine-fragment-adapter-panel/translations';
+import { DOC_TITLE_WORDINGS } from '@labre/affine-fragment-doc-title/translations';
+import { OUTLINE_WORDINGS } from '@labre/affine-fragment-outline/translations';
 import { bpmnTranslationEntries } from '@labre/affine-gfx-bpmn';
 import { c4TranslationEntries } from '@labre/affine-gfx-c4';
 import { cynefinEstuarineTranslationEntries } from '@labre/affine-gfx-cynefin-estuarine';
@@ -14,18 +17,30 @@ import { coreDomainTranslationEntries } from '@labre/affine-gfx-ddd-core-domain'
 import { eventStormingTranslationEntries } from '@labre/affine-gfx-ddd-event-storming';
 import { edgyTranslationEntries } from '@labre/affine-gfx-edgy';
 import { GROUP_WORDINGS } from '@labre/affine-gfx-group/translations';
-import { MINDMAP_WORDINGS } from '@labre/affine-gfx-mindmap/translations';
-import { wardleyTranslationEntries } from '@labre/affine-gfx-wardley';
-import { OUTLINE_WORDINGS } from '@labre/affine-fragment-outline/translations';
+import {
+  MINDMAP_CHROME_WORDINGS,
+  MINDMAP_SEED_WORDINGS,
+} from '@labre/affine-gfx-mindmap/translations';
+import { SHAPE_WORDINGS } from '@labre/affine-gfx-shape/translations';
 import {
   TEMPLATE_PACKAGE_WORDINGS,
   TEMPLATE_SEED_WORDINGS,
 } from '@labre/affine-gfx-template/translations';
+import { TEXT_WORDINGS } from '@labre/affine-gfx-text/translations';
+import { wardleyTranslationEntries } from '@labre/affine-gfx-wardley';
 import {
   CHROME_WORDINGS,
   type ChromeWording,
 } from '@labre/affine-shared/services';
+import { DRAG_HANDLE_WORDINGS } from '@labre/affine-widget-drag-handle/translations';
+import { AUTO_CONNECT_WORDINGS } from '@labre/affine-widget-edgeless-auto-connect/translations';
+import { EDGELESS_SELECTED_RECT_WORDINGS } from '@labre/affine-widget-edgeless-selected-rect/translations';
+import { EDGELESS_TOOLBAR_WORDINGS } from '@labre/affine-widget-edgeless-toolbar/translations';
+import { ZOOM_TOOLBAR_WORDINGS } from '@labre/affine-widget-edgeless-zoom-toolbar/translations';
+import { LINKED_DOC_WORDINGS } from '@labre/affine-widget-linked-doc/translations';
+import { REMOTE_SELECTION_WORDINGS } from '@labre/affine-widget-remote-selection/translations';
 import { SLASH_MENU_WORDINGS } from '@labre/affine-widget-slash-menu/translations';
+import { TOOLBAR_WIDGET_WORDINGS } from '@labre/affine-widget-toolbar/translations';
 import {
   collectTranslationKeys,
   commandCategoryTranslationEntries,
@@ -314,6 +329,19 @@ const PACKAGE_WORDINGS: readonly (readonly ChromeWording[])[] = [
   SLASH_MENU_WORDINGS,
   OUTLINE_WORDINGS,
   TEMPLATE_PACKAGE_WORDINGS,
+  ADAPTER_PANEL_WORDINGS,
+  DOC_TITLE_WORDINGS,
+  SHAPE_WORDINGS,
+  TEXT_WORDINGS,
+  MINDMAP_CHROME_WORDINGS,
+  DRAG_HANDLE_WORDINGS,
+  AUTO_CONNECT_WORDINGS,
+  EDGELESS_SELECTED_RECT_WORDINGS,
+  EDGELESS_TOOLBAR_WORDINGS,
+  ZOOM_TOOLBAR_WORDINGS,
+  LINKED_DOC_WORDINGS,
+  REMOTE_SELECTION_WORDINGS,
+  TOOLBAR_WIDGET_WORDINGS,
 ];
 
 /**
@@ -330,7 +358,7 @@ const PACKAGE_WORDINGS: readonly (readonly ChromeWording[])[] = [
 const PACKAGE_SEED_WORDINGS: readonly (readonly ChromeWording[])[] = [
   FRAME_WORDINGS,
   GROUP_WORDINGS,
-  MINDMAP_WORDINGS,
+  MINDMAP_SEED_WORDINGS,
   SURFACE_REF_WORDINGS,
   TEMPLATE_SEED_WORDINGS,
   DDD_AGGREGATE_WORDINGS,

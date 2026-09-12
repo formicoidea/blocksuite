@@ -594,7 +594,6 @@
       "Heading ${}",
       "Inline equation",
       "InlineTex",
-      "Italic",
       "Kanban view",
       "LinkedPage",
       "List",
@@ -687,9 +686,6 @@
       "Delete",
       "Duplicate"
     ],
-    "packages/affine/blocks/edgeless-text/src/edgeless-toolbar/config.ts": [
-      "Font size"
-    ],
     "packages/affine/blocks/embed-doc/src/embed-linked-doc-block/adapters/html.ts": [
       "+ o.node.props.pageId) ??"
     ],
@@ -745,7 +741,6 @@
     ],
     "packages/affine/blocks/embed/src/common/render-linked-doc.ts": [
       "Enter a title for the new doc.",
-      "Untitled",
       "You can click undo to recovery block content"
     ],
     "packages/affine/blocks/embed/src/configs/toolbar.ts": [
@@ -971,8 +966,6 @@
       "Align objects",
       "Align objects",
       "Click to unlock",
-      "Frame",
-      "Frame",
       "Release from group"
     ],
     "packages/affine/blocks/root/src/edgeless/configs/toolbar/more.ts": [
@@ -989,11 +982,6 @@
       "Zoom to selection"
     ],
     "packages/affine/blocks/surface-ref/src/configs/slash-menu.ts": [
-      "Edgeless",
-      "Edgeless",
-      "Edgeless",
-      "Frame",
-      "Frame",
       "Frame:",
       "Group:",
       "Insert a blank frame",
@@ -1106,14 +1094,7 @@
       "* Content *",
       "Content"
     ],
-    "packages/affine/fragments/adapter-panel/src/config.ts": [
-      "HTML",
-      "Markdown",
-      "PlainText",
-      "Snapshot"
-    ],
     "packages/affine/fragments/doc-title/src/doc-title.ts": [
-      "Title",
       "true"
     ],
     "packages/affine/fragments/frame-panel/src/body/frame-panel-body.ts": [
@@ -1129,30 +1110,6 @@
       "Hide toolbar",
       "Playback Settings",
       "Preview Settings"
-    ],
-    "packages/affine/fragments/outline/src/body/outline-notice.ts": [
-      "Click here or",
-      "SOME CONTENTS HIDDEN",
-      "Some contents are not visible on edgeless.",
-      "to organize content."
-    ],
-    "packages/affine/fragments/outline/src/body/outline-panel-body.ts": [
-      "Hidden Contents",
-      "Use headings to create a table of contents."
-    ],
-    "packages/affine/fragments/outline/src/card/outline-preview.ts": [
-      "Untitled"
-    ],
-    "packages/affine/fragments/outline/src/header/outline-panel-header.ts": [
-      "Table of Contents",
-      "Visibility and sort"
-    ],
-    "packages/affine/fragments/outline/src/header/outline-setting-menu.ts": [
-      "Settings",
-      "Show type icon"
-    ],
-    "packages/affine/fragments/outline/src/outline-viewer.ts": [
-      "Open in sidebar"
     ],
     "packages/affine/gfx/bpmn/src/export.ts": [
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>n${}n"
@@ -1193,14 +1150,11 @@
       "Add text"
     ],
     "packages/affine/gfx/connector/src/toolbar/config.ts": [
-      "Add text",
       "Connector shape",
       "End point style",
       "Flip direction",
-      "Shape",
       "Start point style",
-      "Stroke style",
-      "Style"
+      "Stroke style"
     ],
     "packages/affine/gfx/connector/src/toolbar/connector-dense-menu.ts": [
       "Connector",
@@ -1289,21 +1243,6 @@
     "packages/affine/gfx/link/src/toolbar/undo-tool-button.ts": [
       "Undo"
     ],
-    "packages/affine/gfx/mindmap/src/toolbar/config.ts": [
-      "Layout",
-      "Style"
-    ],
-    "packages/affine/gfx/mindmap/src/toolbar/mindmap-importing-placeholder.ts": [
-      "Importing mind map..."
-    ],
-    "packages/affine/gfx/mindmap/src/toolbar/mindmap-menu.ts": [
-      "Import failed, please try again"
-    ],
-    "packages/affine/gfx/mindmap/src/toolbar/senior-tool.ts": [
-      "Add file",
-      "Mind Map",
-      "Text"
-    ],
     "packages/affine/gfx/note/src/components/note-shadow-panel.ts": [
       "Box shadow",
       "Film shadow",
@@ -1360,43 +1299,14 @@
     "packages/affine/gfx/note/src/toolbar/senior-tool.ts": [
       "Note"
     ],
-    "packages/affine/gfx/shape/src/toolbar/config.ts": [
-      "Add text",
-      "Contained text",
-      "Edit vertices",
-      "Grow shape",
-      "Overflow text",
-      "Style",
-      "Switch shape type"
-    ],
     "packages/affine/gfx/shape/src/toolbar/senior-tool.ts": [
       "Shape"
-    ],
-    "packages/affine/gfx/shape/src/toolbar/shape-menu-config.ts": [
-      "Diamond",
-      "Ellipse",
-      "Polygon",
-      "Rounded rectangle",
-      "Square",
-      "Triangle"
     ],
     "packages/affine/gfx/template/src/toolbar/senior-tool.ts": [
       "Template"
     ],
     "packages/affine/gfx/template/src/toolbar/template-panel.ts": [
       "Search file or anything..."
-    ],
-    "packages/affine/gfx/text/src/edgeless-text-editor.ts": [
-      "Type from here"
-    ],
-    "packages/affine/gfx/text/src/toolbar/actions.ts": [
-      "Alignment",
-      "Font",
-      "Font",
-      "Font size",
-      "Font style",
-      "Font style",
-      "Text color"
     ],
     "packages/affine/gfx/wardley/src/import.ts": [
       "${} `${}` line${} kept verbatim on the map and written back on the next export. Nothing on this canvas draws ${}.",
@@ -1536,54 +1446,6 @@
       "MindMap",
       "Videos",
       "Zip"
-    ],
-    "packages/affine/widgets/drag-handle/src/components/edgeless-preview/preview.ts": [
-      "Edgeless content",
-      "Edgeless shape",
-      "Embed block",
-      "Frame block",
-      "Image block",
-      "Note block"
-    ],
-    "packages/affine/widgets/edgeless-selected-rect/src/auto-complete-panel.ts": [
-      "Add a same object",
-      "Frame",
-      "Note",
-      "Text"
-    ],
-    "packages/affine/widgets/edgeless-toolbar/src/panel/font-weight-and-style-panel.ts": [
-      "${} Italic ${}"
-    ],
-    "packages/affine/widgets/edgeless-zoom-toolbar/src/zoom-bar-toggle-button.ts": [
-      "Toggle Zoom Tool Bar"
-    ],
-    "packages/affine/widgets/edgeless-zoom-toolbar/src/zoom-toolbar.ts": [
-      "Fit to screen",
-      "Zoom in",
-      "Zoom out"
-    ],
-    "packages/affine/widgets/linked-doc/src/config.ts": [
-      "Create \"${}\" doc",
-      "Import",
-      "Link to Doc",
-      "New Doc",
-      "Successfully imported ${} Doc${}."
-    ],
-    "packages/affine/widgets/linked-doc/src/import-doc/import-doc.ts": [
-      "AFFiNE will gradually support more file formats for import.",
-      "Coming soon...",
-      "HTML",
-      "Import",
-      "Import",
-      "Importing the file may take some time. It depends on document size and complexity.",
-      "Learn how to Import your Notion pages into AFFiNE.",
-      "Markdown",
-      "Migrate from other versions of AFFiNE?",
-      "Notion",
-      "Provide feedback."
-    ],
-    "packages/affine/widgets/toolbar/src/utils.ts": [
-      "More menu"
     ],
     "packages/framework/std/src/event/keymap.ts": [
       "+ name ); } return normalized; } function modifiers(name: string, event: KeyboardEvent, shift = true) { if (event.altKey) name ="

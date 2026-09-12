@@ -57,6 +57,10 @@ describe('outline placeholder wordings', () => {
   });
 
   test('every wording is declared once, in render order', () => {
-    expect(OUTLINE_WORDINGS).toHaveLength(5);
+    // A count would need editing on every addition to the package; a
+    // duplicate key is the actual failure mode this guards against — see
+    // `manifest.unit.spec.ts` for the repo-wide version of the same check.
+    const keys = OUTLINE_WORDINGS.map(([key]) => key);
+    expect(new Set(keys).size).toBe(keys.length);
   });
 });

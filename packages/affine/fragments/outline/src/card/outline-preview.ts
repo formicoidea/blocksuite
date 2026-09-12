@@ -10,6 +10,7 @@ import type {
 } from '@labre/affine-model';
 import {
   DocDisplayMetaProvider,
+  DOC_UNTITLED,
   translateKey,
 } from '@labre/affine-shared/services';
 import type { AffineTextAttributes } from '@labre/affine-shared/types';
@@ -31,6 +32,7 @@ import {
   OUTLINE_PLACEHOLDER_CODE,
   OUTLINE_PLACEHOLDER_DATABASE,
   OUTLINE_PLACEHOLDER_IMAGE,
+  OUTLINE_PREVIEW_DELETED_DOC,
 } from '../translations.js';
 import * as styles from './outline-preview.css';
 
@@ -70,7 +72,7 @@ export class OutlineBlockPreview extends SignalWatcher(
           ? LinkedPageIcon({ width: '1.1em', height: '1.1em' })
           : this._docDisplayMetaService.icon(refMeta.id).value;
         const title = unavailable
-          ? 'Deleted doc'
+          ? translateKey(this._std, ...OUTLINE_PREVIEW_DELETED_DOC)
           : this._docDisplayMetaService.title(refMeta.id).value;
 
         return html`<span
@@ -85,7 +87,9 @@ export class OutlineBlockPreview extends SignalWatcher(
               [styles.linkedDocText]: true,
               [styles.linkedDocTextUnavailable]: unavailable,
             })}
-            >${title.length ? title : 'Untitled'}</span
+            >${title.length
+              ? title
+              : translateKey(this._std, ...DOC_UNTITLED)}</span
           ></span
         >`;
       } else {
