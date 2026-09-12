@@ -26,7 +26,10 @@ import { unsafeSVG } from 'lit/directives/unsafe-svg.js';
 
 import { templateManagerFor } from '../contribute.js';
 import { createTemplateJob } from '../services/template.js';
-import { TEMPLATE_PANEL_ADD } from '../translations.js';
+import {
+  TEMPLATE_PANEL_ADD,
+  TEMPLATE_PANEL_SEARCH_PLACEHOLDER,
+} from '../translations.js';
 import { builtInTemplates } from './builtin-templates.js';
 import { defaultPreview, Triangle } from './cards.js';
 import { resolveTemplateName } from './resolve-name.js';
@@ -420,7 +423,10 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
           <input
             class="search-input"
             type="text"
-            placeholder="Search file or anything..."
+            placeholder=${translateKey(
+              this.edgeless.std,
+              ...TEMPLATE_PANEL_SEARCH_PLACEHOLDER
+            )}
             @input=${this._updateSearchKeyword}
             @cut=${stopPropagation}
             @copy=${stopPropagation}

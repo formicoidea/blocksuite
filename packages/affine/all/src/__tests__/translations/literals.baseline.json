@@ -68,7 +68,6 @@
       "Visualize data in a dashboard."
     ],
     "packages/affine/blocks/database/src/database-block.ts": [
-      "Comment",
       "Database title",
       "Delete Database"
     ],
@@ -578,7 +577,6 @@
       "CheckBox",
       "CodeBlock",
       "CollapseTab",
-      "Color",
       "Default Color",
       "Default Color",
       "Divider",
@@ -606,9 +604,7 @@
       "RightTab",
       "StrikeThrough",
       "Table view",
-      "Turn into",
       "UnderLine",
-      "Undo",
       "Youtube"
     ]
   },
@@ -628,9 +624,6 @@
       "Caption",
       "Download",
       "Horizontal style",
-      "Reload",
-      "Rename",
-      "Rename",
       "Replace attachment",
       "Vertical style"
     ],
@@ -654,7 +647,6 @@
       "Large horizontal style",
       "Large horizontal style",
       "Large vertical style",
-      "Reload",
       "Small horizontal style",
       "Small horizontal style",
       "Small vertical style"
@@ -720,11 +712,9 @@
       "Small vertical style"
     ],
     "packages/affine/blocks/embed-doc/src/embed-linked-doc-block/embed-linked-doc-block.ts": [
-      "Reload",
       "Updated"
     ],
     "packages/affine/blocks/embed-doc/src/embed-synced-doc-block/components/embed-synced-doc-card.ts": [
-      "Reload",
       "Updated"
     ],
     "packages/affine/blocks/embed-doc/src/embed-synced-doc-block/configs/toolbar.ts": [
@@ -745,7 +735,6 @@
     ],
     "packages/affine/blocks/embed/src/common/render-linked-doc.ts": [
       "Enter a title for the new doc.",
-      "Untitled",
       "You can click undo to recovery block content"
     ],
     "packages/affine/blocks/embed/src/configs/toolbar.ts": [
@@ -754,7 +743,6 @@
       "Large horizontal style",
       "Large horizontal style",
       "Large vertical style",
-      "Reload",
       "Small horizontal style",
       "Small horizontal style",
       "Small vertical style"
@@ -803,9 +791,7 @@
     ],
     "packages/affine/blocks/embed/src/embed-iframe-block/configs/toolbar.ts": [
       "Caption",
-      "Create Linked Doc",
-      "Original",
-      "Reload"
+      "Original"
     ],
     "packages/affine/blocks/embed/src/embed-iframe-block/embed-iframe-block.ts": [
       "Please set a link to the block"
@@ -828,11 +814,7 @@
     "packages/affine/blocks/frame/src/frame-toolbar.ts": [
       "Background",
       "Frame has been inserted into doc",
-      "Frame has been inserted into doc",
-      "Insert into Page",
-      "Insert into Page",
-      "Rename",
-      "Ungroup"
+      "Frame has been inserted into doc"
     ],
     "packages/affine/blocks/frame/src/present/navigator-setting-button.ts": [
       "Black background",
@@ -958,42 +940,10 @@
     "packages/affine/blocks/paragraph/src/view.ts": [
       "Type '/' for commands"
     ],
-    "packages/affine/blocks/root/src/configs/toolbar.ts": [
-      "Conversions",
-      "Create Linked Doc",
-      "Create Table",
-      "Turn into"
-    ],
-    "packages/affine/blocks/root/src/edgeless/configs/toolbar/alignment.ts": [
-      "alignment-menu"
-    ],
-    "packages/affine/blocks/root/src/edgeless/configs/toolbar/misc.ts": [
-      "Align objects",
-      "Align objects",
-      "Click to unlock",
-      "Frame",
-      "Frame",
-      "Release from group"
-    ],
-    "packages/affine/blocks/root/src/edgeless/configs/toolbar/more.ts": [
-      "Bring Forward",
-      "Edit link",
-      "Frame section",
-      "Group section",
-      "Reload",
-      "Remove link",
-      "Send Backward",
-      "Turn into linked doc"
-    ],
-    "packages/affine/blocks/root/src/edgeless/edgeless-keyboard.ts": [
-      "Zoom to selection"
-    ],
     "packages/affine/blocks/surface-ref/src/configs/slash-menu.ts": [
       "Edgeless",
       "Edgeless",
       "Edgeless",
-      "Frame",
-      "Frame",
       "Frame:",
       "Group:",
       "Insert a blank frame",
@@ -1140,9 +1090,6 @@
       "Hidden Contents",
       "Use headings to create a table of contents."
     ],
-    "packages/affine/fragments/outline/src/card/outline-preview.ts": [
-      "Untitled"
-    ],
     "packages/affine/fragments/outline/src/header/outline-panel-header.ts": [
       "Table of Contents",
       "Visibility and sort"
@@ -1171,12 +1118,6 @@
       "This file declares ${} root",
       "Two elements in this file share the id \"${}\", which BPMN"
     ],
-    "packages/affine/gfx/brush/src/toolbar/configs/brush.ts": [
-      "Color"
-    ],
-    "packages/affine/gfx/brush/src/toolbar/configs/highlighter.ts": [
-      "Color"
-    ],
     "packages/affine/gfx/brush/src/toolbar/senior-tool.ts": [
       "Pen"
     ],
@@ -1188,30 +1129,6 @@
     ],
     "packages/affine/gfx/c4/src/templates.ts": [
       "C4"
-    ],
-    "packages/affine/gfx/connector/src/text/edgeless-connector-label-editor.ts": [
-      "Add text"
-    ],
-    "packages/affine/gfx/connector/src/toolbar/config.ts": [
-      "Add text",
-      "Connector shape",
-      "End point style",
-      "Flip direction",
-      "Shape",
-      "Start point style",
-      "Stroke style",
-      "Style"
-    ],
-    "packages/affine/gfx/connector/src/toolbar/connector-dense-menu.ts": [
-      "Connector",
-      "Curve",
-      "Elbowed",
-      "Straight"
-    ],
-    "packages/affine/gfx/connector/src/toolbar/connector-menu.ts": [
-      "Curve",
-      "Elbowed",
-      "Straight"
     ],
     "packages/affine/gfx/cynefin-estuarine/src/cynefin/consts.ts": [
       "Aporia",
@@ -1227,67 +1144,8 @@
       "Cynefin",
       "Estuarine"
     ],
-    "packages/affine/gfx/ddd-context-map/src/legend.ts": [
-      "${} — ${}",
-      "Boundaries",
-      "Legend",
-      "Relationships"
-    ],
-    "packages/affine/gfx/ddd-core-domain/src/core-domain/legend.ts": [
-      "Legend",
-      "Movement",
-      "Sub-domains",
-      "Team interaction modes"
-    ],
-    "packages/affine/gfx/ddd-event-storming/src/legend.ts": [
-      "Flow",
-      "Legend",
-      "Stickies"
-    ],
-    "packages/affine/gfx/ddd-shared/src/shared/consts.ts": [
-      "Actor",
-      "Aggregate",
-      "Anticorruption Layer",
-      "Big Ball of Mud",
-      "Big-bet sub-domain",
-      "Bounded context",
-      "Collaboration",
-      "Command",
-      "Conformist",
-      "Constraint",
-      "Customer / Supplier",
-      "Domain event",
-      "External system",
-      "Facilitating",
-      "Future position",
-      "Hotspot",
-      "Open Host Service",
-      "Outsourced / purchased",
-      "Partnership",
-      "Platform sub-domain",
-      "Policy",
-      "Published Language",
-      "Read model",
-      "Separate Ways",
-      "Shared Kernel",
-      "X-as-a-Service"
-    ],
     "packages/affine/gfx/edgy/src/legend.ts": [
-      "Base elements",
-      "Legend"
-    ],
-    "packages/affine/gfx/group/src/toolbar/config.ts": [
-      "Group has been inserted into doc",
-      "Insert into Page",
-      "Insert into Page",
-      "Rename",
-      "Ungroup"
-    ],
-    "packages/affine/gfx/link/src/toolbar/undo-dense-menu.ts": [
-      "Undo"
-    ],
-    "packages/affine/gfx/link/src/toolbar/undo-tool-button.ts": [
-      "Undo"
+      "Base elements"
     ],
     "packages/affine/gfx/mindmap/src/toolbar/config.ts": [
       "Layout",
@@ -1383,9 +1241,6 @@
     "packages/affine/gfx/template/src/toolbar/senior-tool.ts": [
       "Template"
     ],
-    "packages/affine/gfx/template/src/toolbar/template-panel.ts": [
-      "Search file or anything..."
-    ],
     "packages/affine/gfx/text/src/edgeless-text-editor.ts": [
       "Type from here"
     ],
@@ -1438,8 +1293,7 @@
     "packages/affine/inlines/link/src/link-node/configs/toolbar.ts": [
       "Copied link to clipboard",
       "Copy link",
-      "Edit",
-      "Remove link"
+      "Edit"
     ],
     "packages/affine/inlines/link/src/link-node/link-popup/link-popup.ts": [
       "Enter text",
@@ -1496,15 +1350,6 @@
       "To-do List",
       "Visually separate content."
     ],
-    "packages/affine/shared/src/adapters/markdown/markdown.ts": [
-      "Untitled"
-    ],
-    "packages/affine/shared/src/adapters/mix-text.ts": [
-      "Untitled"
-    ],
-    "packages/affine/shared/src/adapters/plain-text/plain-text.ts": [
-      "Untitled"
-    ],
     "packages/affine/shared/src/consts/bracket-pairs.ts": [
       "corner bracket",
       "curly bracket",
@@ -1517,12 +1362,6 @@
       "single quote",
       "square bracket",
       "white corner bracket"
-    ],
-    "packages/affine/shared/src/services/comment-service/utils.ts": [
-      "Comment"
-    ],
-    "packages/affine/shared/src/services/notification-service.ts": [
-      "Undo"
     ],
     "packages/affine/shared/src/services/open-doc-config.ts": [
       "Open in center peek",
@@ -1593,13 +1432,6 @@
     ],
     "packages/framework/std/src/inline/utils/text.ts": [
       "true"
-    ],
-    "packages/framework/std/src/view/element/block-component.ts": [
-      "Block Version Mismatched",
-      "Data version:",
-      "Editor version:",
-      "We can not render this",
-      "block because the version is mismatched."
     ]
   }
 }

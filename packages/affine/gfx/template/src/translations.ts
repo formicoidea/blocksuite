@@ -17,6 +17,12 @@ export const TEMPLATE_PANEL_ADD: ChromeWording = [
   'Add',
 ];
 
+/** The templates-panel search field's placeholder. */
+export const TEMPLATE_PANEL_SEARCH_PLACEHOLDER: ChromeWording = [
+  'com.labre.template.panel.search-placeholder',
+  'Search file or anything...',
+];
+
 /** The built-in "Other" category's own tab label. */
 export const TEMPLATE_PANEL_CATEGORY_OTHER: ChromeWording = [
   'com.labre.template.panel.category.other',
@@ -26,6 +32,7 @@ export const TEMPLATE_PANEL_CATEGORY_OTHER: ChromeWording = [
 export const TEMPLATE_PACKAGE_WORDINGS: readonly ChromeWording[] = [
   TEMPLATE_PANEL_ADD,
   TEMPLATE_PANEL_CATEGORY_OTHER,
+  TEMPLATE_PANEL_SEARCH_PLACEHOLDER,
 ];
 
 /**

@@ -173,6 +173,11 @@ const PREVIEW = `<svg width="100%" height="100%" viewBox="0 0 135 80" xmlns="htt
  */
 export const aggregateTemplateCategory: TemplateCategory = {
   name: 'Aggregate Design Canvas',
+  // Reuses the canvas's own header seed key: the tab, the tile's tooltip
+  // (unconverted — see `TemplateCategory.nameKey`'s own doc, hand-written
+  // templates get no generic tooltip seam) and the header band all say the
+  // exact same English word.
+  nameKey: AGGREGATE_SEED_HEADER[0],
   templates: [
     {
       name: 'Aggregate Design Canvas',

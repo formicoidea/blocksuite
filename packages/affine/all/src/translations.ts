@@ -3,18 +3,29 @@ import {
   EXEMPTION_FALLBACK,
   PROVENANCE_FALLBACK,
   SEVERITY_FALLBACK,
+  SVG_SKETCH_WORDINGS,
 } from '@labre/affine-block-surface';
 import { SURFACE_REF_WORDINGS } from '@labre/affine-block-surface-ref/translations';
+import {
+  ROOT_CHROME_WORDINGS,
+  ROOT_SEED_WORDINGS,
+} from '@labre/affine-block-root/translations';
 import { bpmnTranslationEntries } from '@labre/affine-gfx-bpmn';
+import { BRUSH_WORDINGS } from '@labre/affine-gfx-brush/translations';
 import { c4TranslationEntries } from '@labre/affine-gfx-c4';
+import { CONNECTOR_WORDINGS } from '@labre/affine-gfx-connector/translations';
 import { cynefinEstuarineTranslationEntries } from '@labre/affine-gfx-cynefin-estuarine';
 import { DDD_AGGREGATE_WORDINGS } from '@labre/affine-gfx-ddd-aggregate/translations';
 import { contextMapTranslationEntries } from '@labre/affine-gfx-ddd-context-map';
 import { coreDomainTranslationEntries } from '@labre/affine-gfx-ddd-core-domain';
 import { eventStormingTranslationEntries } from '@labre/affine-gfx-ddd-event-storming';
 import { edgyTranslationEntries } from '@labre/affine-gfx-edgy';
-import { GROUP_WORDINGS } from '@labre/affine-gfx-group/translations';
+import {
+  GROUP_CHROME_WORDINGS,
+  GROUP_WORDINGS,
+} from '@labre/affine-gfx-group/translations';
 import { MINDMAP_WORDINGS } from '@labre/affine-gfx-mindmap/translations';
+import { POINTER_WORDINGS } from '@labre/affine-gfx-pointer/translations';
 import { wardleyTranslationEntries } from '@labre/affine-gfx-wardley';
 import { OUTLINE_WORDINGS } from '@labre/affine-fragment-outline/translations';
 import {
@@ -34,6 +45,7 @@ import {
   mergeTranslationEntries,
   type TranslationKeyManifestEntry,
 } from '@labre/std';
+import { STD_WORDINGS } from '@labre/std/translations';
 
 import { getCommands } from './commands.js';
 import { FRAMEWORK_DESCRIPTORS } from './frameworks.js';
@@ -314,6 +326,13 @@ const PACKAGE_WORDINGS: readonly (readonly ChromeWording[])[] = [
   SLASH_MENU_WORDINGS,
   OUTLINE_WORDINGS,
   TEMPLATE_PACKAGE_WORDINGS,
+  BRUSH_WORDINGS,
+  CONNECTOR_WORDINGS,
+  GROUP_CHROME_WORDINGS,
+  POINTER_WORDINGS,
+  ROOT_CHROME_WORDINGS,
+  SVG_SKETCH_WORDINGS,
+  STD_WORDINGS,
 ];
 
 /**
@@ -334,6 +353,7 @@ const PACKAGE_SEED_WORDINGS: readonly (readonly ChromeWording[])[] = [
   SURFACE_REF_WORDINGS,
   TEMPLATE_SEED_WORDINGS,
   DDD_AGGREGATE_WORDINGS,
+  ROOT_SEED_WORDINGS,
 ];
 
 /**

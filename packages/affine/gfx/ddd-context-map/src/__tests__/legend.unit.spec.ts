@@ -22,8 +22,16 @@ describe('the Context Map auto-legend table derives from the presets', () => {
     expect(relationships.entries.map(e => e.role)).toEqual(
       CM_RELATIONSHIPS.map(preset => CM_PATTERN_ROLE[preset.kind])
     );
+    // The spec's own `row.label` is the PRE-TRANSLATION placeholder
+    // (`preset.label` alone): `resolveRowLabel` combines it with
+    // `labelPrefix` and the role's translated `labelKey` at legend-build
+    // time — see the "what a drawn board puts in its legend" block below for
+    // the resolved, combined string.
+    expect(relationships.entries.map(e => e.labelPrefix)).toEqual(
+      CM_RELATIONSHIPS.map(preset => preset.abbrev)
+    );
     expect(relationships.entries.map(e => e.row.label)).toEqual(
-      CM_RELATIONSHIPS.map(preset => `${preset.abbrev} — ${preset.label}`)
+      CM_RELATIONSHIPS.map(preset => preset.label)
     );
   });
 
