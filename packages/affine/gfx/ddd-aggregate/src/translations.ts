@@ -1,4 +1,5 @@
 import type { ChromeWording } from '@labre/affine-shared/services';
+import type { TranslationKeyManifestEntry } from '@labre/std';
 
 /**
  * The Aggregate Design Canvas template's own seeds: the header band's caption
@@ -10,8 +11,10 @@ import type { ChromeWording } from '@labre/affine-shared/services';
  * `ddd-aggregate` carries no `FrameworkId` (it ships one template, no command,
  * no role): it is a non-framework package, so its keys follow
  * `com.labre.ddd-aggregate.seed.<slug>` and its wordings join
- * `PACKAGE_SEED_WORDINGS` (`packages/affine/all/src/translations.ts`), not a
- * framework's `…TranslationEntries`.
+ * `AUXILIARY_TRANSLATION_GROUPS` (`packages/affine/all/src/translations.ts`)
+ * through {@link dddAggregateTranslationEntries}: this package ships as its own
+ * bundle, so core must not import it, and the bundler strips the group from
+ * core's copy exactly as it strips a framework's.
  */
 export const AGGREGATE_SEED_HEADER: ChromeWording = [
   'com.labre.ddd-aggregate.seed.header',
@@ -70,3 +73,15 @@ export const DDD_AGGREGATE_WORDINGS: readonly ChromeWording[] = [
   AGGREGATE_SEED_THROUGHPUT,
   AGGREGATE_SEED_SIZE,
 ];
+
+/**
+ * The same wordings as manifest entries, exported from the package root the way
+ * a framework bundle exports its `…TranslationEntries`: a bundled host composes
+ * them with core's manifest when it installs this bundle.
+ */
+export const dddAggregateTranslationEntries: readonly TranslationKeyManifestEntry[] =
+  DDD_AGGREGATE_WORDINGS.map(([key, fallback]) => ({
+    key,
+    fallback,
+    source: 'seed' as const,
+  }));

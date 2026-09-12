@@ -30,7 +30,7 @@ import { BRUSH_WORDINGS } from '@labre/affine-gfx-brush/translations';
 import { c4TranslationEntries } from '@labre/affine-gfx-c4';
 import { CONNECTOR_WORDINGS } from '@labre/affine-gfx-connector/translations';
 import { cynefinEstuarineTranslationEntries } from '@labre/affine-gfx-cynefin-estuarine';
-import { DDD_AGGREGATE_WORDINGS } from '@labre/affine-gfx-ddd-aggregate/translations';
+import { dddAggregateTranslationEntries } from '@labre/affine-gfx-ddd-aggregate';
 import { contextMapTranslationEntries } from '@labre/affine-gfx-ddd-context-map';
 import { coreDomainTranslationEntries } from '@labre/affine-gfx-ddd-core-domain';
 import { eventStormingTranslationEntries } from '@labre/affine-gfx-ddd-event-storming';
@@ -149,6 +149,20 @@ interface FrameworkTranslationGroup {
   owner: FrameworkId;
   entries: readonly TranslationKeyManifestEntry[];
 }
+
+/**
+ * The auxiliary bundles' contributions (`AUXILIARY_BUNDLES` in `frameworks.ts`):
+ * packages that ship as their own bundle without being a framework. Same
+ * one-line `{ owner: '<label>', … }` shape as the framework groups, so
+ * `scripts/build-bundles.mjs` strips them from core's copy the same way.
+ */
+const AUXILIARY_TRANSLATION_GROUPS: {
+  owner: string;
+  entries: readonly TranslationKeyManifestEntry[];
+}[] = [
+  // One line per bundle: the bundler strips it by its `owner`.
+  { owner: 'ddd-aggregate', entries: dddAggregateTranslationEntries },
+];
 
 const FRAMEWORK_TRANSLATION_GROUPS: FrameworkTranslationGroup[] = [
   { owner: 'wardley', entries: wardleyTranslationEntries },
@@ -424,7 +438,6 @@ const PACKAGE_SEED_WORDINGS: readonly (readonly ChromeWording[])[] = [
   MINDMAP_SEED_WORDINGS,
   SURFACE_REF_WORDINGS,
   TEMPLATE_SEED_WORDINGS,
-  DDD_AGGREGATE_WORDINGS,
   ROOT_SEED_WORDINGS,
 ];
 
@@ -446,6 +459,7 @@ export function getTranslationKeyManifest(): TranslationKeyManifestEntry[] {
     commandTranslationEntries(getCommands()),
     collectTranslationKeys('framework', FRAMEWORK_DESCRIPTORS),
     ...FRAMEWORK_TRANSLATION_GROUPS.map(group => group.entries),
+    ...AUXILIARY_TRANSLATION_GROUPS.map(group => group.entries),
     chromeTableEntries(),
     catalogueCategoryEntries(),
     // The editor's own shared vocabulary — the toasts, the toolbar verbs, the
