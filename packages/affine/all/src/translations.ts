@@ -25,6 +25,12 @@ import {
   CHROME_WORDINGS,
   type ChromeWording,
 } from '@labre/affine-shared/services';
+import { CALLOUT_WORDINGS } from '@labre/affine-block-callout/translations';
+import { CODE_WORDINGS } from '@labre/affine-block-code/translations';
+import { LATEX_WORDINGS } from '@labre/affine-block-latex/translations';
+import { NOTE_WORDINGS } from '@labre/affine-block-note/translations';
+import { PARAGRAPH_WORDINGS } from '@labre/affine-block-paragraph/translations';
+import { GFX_NOTE_WORDINGS } from '@labre/affine-gfx-note/translations';
 import { SLASH_MENU_WORDINGS } from '@labre/affine-widget-slash-menu/translations';
 import {
   collectTranslationKeys,
@@ -314,6 +320,12 @@ const PACKAGE_WORDINGS: readonly (readonly ChromeWording[])[] = [
   SLASH_MENU_WORDINGS,
   OUTLINE_WORDINGS,
   TEMPLATE_PACKAGE_WORDINGS,
+  NOTE_WORDINGS,
+  GFX_NOTE_WORDINGS,
+  CODE_WORDINGS,
+  LATEX_WORDINGS,
+  CALLOUT_WORDINGS,
+  PARAGRAPH_WORDINGS,
 ];
 
 /**

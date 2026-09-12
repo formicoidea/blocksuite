@@ -3,6 +3,8 @@ import {
   TOOLBAR_COPY,
   TOOLBAR_DELETE,
   TOOLBAR_DUPLICATE,
+  TOOLBAR_MOVE_DOWN,
+  TOOLBAR_MOVE_UP,
 } from '@labre/affine-shared/services';
 
 /**
@@ -52,19 +54,19 @@ export const SLASH_MENU_NOW: ChromeWording = [
 
 /* ── Actions group ─────────────────────────────────────────────────────── */
 
-export const SLASH_MENU_MOVE_UP: ChromeWording = [
-  'com.labre.slash-menu.actions.move-up',
-  'Move Up',
-];
+/**
+ * "Move Up" and "Move Down" are shared with the note block's own move-up/down
+ * hotkey config (`packages/affine/blocks/note/src/move-block.ts`) — both this
+ * package and `blocks/note` are owned by the same lot, so the word moved to
+ * `chrome.ts` (`TOOLBAR_MOVE_UP` / `TOOLBAR_MOVE_DOWN`) rather than being
+ * declared here and reused there.
+ */
+export const SLASH_MENU_MOVE_UP = TOOLBAR_MOVE_UP;
+export const SLASH_MENU_MOVE_DOWN = TOOLBAR_MOVE_DOWN;
 
 export const SLASH_MENU_MOVE_UP_DESCRIPTION: ChromeWording = [
   'com.labre.slash-menu.actions.move-up.description',
   'Shift this line up.',
-];
-
-export const SLASH_MENU_MOVE_DOWN: ChromeWording = [
-  'com.labre.slash-menu.actions.move-down',
-  'Move Down',
 ];
 
 export const SLASH_MENU_MOVE_DOWN_DESCRIPTION: ChromeWording = [
@@ -180,15 +182,19 @@ export function slashMenuGroupWording(
  * Every wording declared above, in declaration order — walked by
  * `PACKAGE_WORDINGS` in `packages/affine/all/src/translations.ts` rather than
  * restated there.
+ *
+ * `SLASH_MENU_MOVE_UP` / `_MOVE_DOWN` (aliases of the chrome table's
+ * `TOOLBAR_MOVE_UP` / `_MOVE_DOWN`) are deliberately NOT listed here, exactly
+ * like `SLASH_MENU_COPY` / `_DUPLICATE` / `_DELETE` above: an alias is walked
+ * once, from `CHROME_WORDINGS`, and listing it again here would offer a host
+ * the same key twice.
  */
 export const SLASH_MENU_WORDINGS: readonly ChromeWording[] = [
   SLASH_MENU_TODAY,
   SLASH_MENU_TOMORROW,
   SLASH_MENU_YESTERDAY,
   SLASH_MENU_NOW,
-  SLASH_MENU_MOVE_UP,
   SLASH_MENU_MOVE_UP_DESCRIPTION,
-  SLASH_MENU_MOVE_DOWN,
   SLASH_MENU_MOVE_DOWN_DESCRIPTION,
   SLASH_MENU_COPY_DESCRIPTION,
   SLASH_MENU_DUPLICATE_DESCRIPTION,

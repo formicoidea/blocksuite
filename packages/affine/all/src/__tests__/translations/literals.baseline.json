@@ -1,5 +1,11 @@
 {
   "kept": {
+    "packages/affine/blocks/list/src/turbo/list-layout-handler.ts": [
+      "true"
+    ],
+    "packages/affine/blocks/paragraph/src/turbo/paragraph-layout-handler.ts": [
+      "true"
+    ],
     "packages/affine/blocks/surface-ref/src/configs/tooltips.ts": [
       "Create a blank frame in Edgeless",
       "Create a mind map in Edgeless",
@@ -68,7 +74,6 @@
       "Visualize data in a dashboard."
     ],
     "packages/affine/blocks/database/src/database-block.ts": [
-      "Comment",
       "Database title",
       "Delete Database"
     ],
@@ -573,7 +578,6 @@
     ],
     "packages/affine/widgets/keyboard-toolbar/src/config.ts": [
       "Background",
-      "Bold",
       "BulletedList",
       "CheckBox",
       "CodeBlock",
@@ -581,27 +585,21 @@
       "Color",
       "Default Color",
       "Default Color",
-      "Divider",
       "Document Group&Frame",
       "Embed",
       "Embeds",
-      "Equation",
-      "Equation",
       "Figma",
       "Frame:",
       "Github",
       "Group:",
       "Heading ${}",
-      "Inline equation",
       "InlineTex",
-      "Italic",
       "Kanban view",
       "LinkedPage",
       "List",
       "Loom",
       "NewPage",
       "NumberedList",
-      "Quote",
       "Redo",
       "RightTab",
       "StrikeThrough",
@@ -625,7 +623,6 @@
       "Upload a PDF to document."
     ],
     "packages/affine/blocks/attachment/src/configs/toolbar.ts": [
-      "Caption",
       "Download",
       "Horizontal style",
       "Reload",
@@ -650,7 +647,6 @@
       "Link"
     ],
     "packages/affine/blocks/bookmark/src/configs/toolbar.ts": [
-      "Caption",
       "Large horizontal style",
       "Large horizontal style",
       "Large vertical style",
@@ -658,34 +654,6 @@
       "Small horizontal style",
       "Small horizontal style",
       "Small vertical style"
-    ],
-    "packages/affine/blocks/callout/src/configs/slash-menu.ts": [
-      "Callout",
-      "Callout",
-      "Let your words stand out."
-    ],
-    "packages/affine/blocks/code/src/code-block.ts": [
-      "Copied failed, something went wrong",
-      "Plain Text"
-    ],
-    "packages/affine/blocks/code/src/code-toolbar/components/code-toolbar.ts": [
-      "More",
-      "More"
-    ],
-    "packages/affine/blocks/code/src/code-toolbar/components/lang-button.ts": [
-      "Search for a language"
-    ],
-    "packages/affine/blocks/code/src/code-toolbar/components/preview-button.ts": [
-      "Code",
-      "Preview"
-    ],
-    "packages/affine/blocks/code/src/code-toolbar/config.ts": [
-      "Caption",
-      "Comment",
-      "Comment",
-      "Copy code",
-      "Delete",
-      "Duplicate"
     ],
     "packages/affine/blocks/edgeless-text/src/edgeless-toolbar/config.ts": [
       "Font size"
@@ -708,7 +676,6 @@
       "Start a new document."
     ],
     "packages/affine/blocks/embed-doc/src/embed-linked-doc-block/configs/toolbar.ts": [
-      "Caption",
       "Large horizontal style",
       "Large horizontal style",
       "Large vertical style",
@@ -728,7 +695,6 @@
       "Updated"
     ],
     "packages/affine/blocks/embed-doc/src/embed-synced-doc-block/configs/toolbar.ts": [
-      "Caption",
       "Duplicate as note",
       "Duplicate as note to create an editable copy, the original remains unchanged.",
       "Insert to page",
@@ -749,8 +715,6 @@
       "You can click undo to recovery block content"
     ],
     "packages/affine/blocks/embed/src/configs/toolbar.ts": [
-      "Caption",
-      "Caption",
       "Large horizontal style",
       "Large horizontal style",
       "Large vertical style",
@@ -764,7 +728,6 @@
       "Settings"
     ],
     "packages/affine/blocks/embed/src/embed-html-block/configs/toolbar.ts": [
-      "Caption",
       "Large horizontal style",
       "Open this doc",
       "Small horizontal style"
@@ -802,7 +765,6 @@
       "For Google Drive, and more."
     ],
     "packages/affine/blocks/embed/src/embed-iframe-block/configs/toolbar.ts": [
-      "Caption",
       "Create Linked Doc",
       "Original",
       "Reload"
@@ -849,8 +811,6 @@
       "Photo"
     ],
     "packages/affine/blocks/image/src/configs/toolbar.ts": [
-      "Caption",
-      "Caption",
       "Download",
       "Download",
       "Turn into card view"
@@ -871,92 +831,6 @@
       "Failed to download image!",
       "Failed to read image size, please try another image",
       "You can only upload files less than ${}"
-    ],
-    "packages/affine/blocks/latex/src/configs/slash-menu.ts": [
-      "Create a equation block.",
-      "Create a inline equation.",
-      "Equation",
-      "Equation",
-      "Inline equation",
-      "Inline equation"
-    ],
-    "packages/affine/blocks/latex/src/latex-block.ts": [
-      "Equation",
-      "Error equation"
-    ],
-    "packages/affine/blocks/list/src/turbo/list-layout-handler.ts": [
-      "true"
-    ],
-    "packages/affine/blocks/note/src/components/edgeless-note-border-dropdown-menu.ts": [
-      "Border style",
-      "Border style"
-    ],
-    "packages/affine/blocks/note/src/components/edgeless-note-display-mode-dropdown-menu.ts": [
-      "Display mode",
-      "Mode",
-      "Show in"
-    ],
-    "packages/affine/blocks/note/src/components/edgeless-note-shadow-menu.ts": [
-      "Box shadow",
-      "Film shadow",
-      "Floating shadow",
-      "No shadow",
-      "Paper shadow",
-      "Sticker shadow"
-    ],
-    "packages/affine/blocks/note/src/components/edgeless-note-style-panel.ts": [
-      "Back",
-      "Border",
-      "Corner Radius",
-      "Custom color",
-      "Fill color",
-      "Note Style",
-      "Note Style",
-      "Shadow"
-    ],
-    "packages/affine/blocks/note/src/configs/slash-menu.ts": [
-      "Other Headings"
-    ],
-    "packages/affine/blocks/note/src/configs/toolbar.ts": [
-      "${} Find it in the TOC for quick navigation.",
-      "Auto height",
-      "Content added to your page.",
-      "Content removed from your page.",
-      "Customized height",
-      "Note displayed in Page Mode",
-      "Size",
-      "Slicer",
-      "This note is part of Page Mode. Click to remove it from the page.",
-      "View in Toc"
-    ],
-    "packages/affine/blocks/note/src/configs/tooltips.ts": [
-      "Bold Text",
-      "Bulleted List",
-      "Code Block",
-      "Divider",
-      "Heading #1",
-      "Heading #2",
-      "Heading #3",
-      "Heading #4",
-      "Heading #5",
-      "Heading #6",
-      "Italic",
-      "Numbered List",
-      "Quote",
-      "Strikethrough",
-      "Text",
-      "To-do List",
-      "Underline"
-    ],
-    "packages/affine/blocks/note/src/move-block.ts": [
-      "Move Down",
-      "Move Up"
-    ],
-    "packages/affine/blocks/paragraph/src/turbo/paragraph-layout-handler.ts": [
-      "true"
-    ],
-    "packages/affine/blocks/paragraph/src/view.ts": [
-      "Type '/' for commands"
     ],
     "packages/affine/blocks/root/src/configs/toolbar.ts": [
       "Conversions",
@@ -989,9 +863,6 @@
       "Zoom to selection"
     ],
     "packages/affine/blocks/surface-ref/src/configs/slash-menu.ts": [
-      "Edgeless",
-      "Edgeless",
-      "Edgeless",
       "Frame",
       "Frame",
       "Frame:",
@@ -1303,62 +1174,6 @@
       "Add file",
       "Mind Map",
       "Text"
-    ],
-    "packages/affine/gfx/note/src/components/note-shadow-panel.ts": [
-      "Box shadow",
-      "Film shadow",
-      "Floation shadow",
-      "No shadow",
-      "Paper shadow",
-      "Sticker shadow"
-    ],
-    "packages/affine/gfx/note/src/toolbar/note-menu-config.ts": [
-      "A list with numbering.",
-      "A simple bulleted list.",
-      "A visual divider",
-      "A visual divider.",
-      "Bulleted List",
-      "Capture a code snippet.",
-      "Capture a quote.",
-      "Code Block",
-      "Divider",
-      "Drag/Click to insert Bulleted List",
-      "Drag/Click to insert Code Block",
-      "Drag/Click to insert Heading 1",
-      "Drag/Click to insert Heading 2",
-      "Drag/Click to insert Heading 3",
-      "Drag/Click to insert Heading 4",
-      "Drag/Click to insert Heading 5",
-      "Drag/Click to insert Heading 6",
-      "Drag/Click to insert Numbered List",
-      "Drag/Click to insert Quote",
-      "Drag/Click to insert Text block",
-      "Drag/Click to insert To-do List",
-      "Heading 1",
-      "Heading 2",
-      "Heading 3",
-      "Heading 4",
-      "Heading 5",
-      "Heading 6",
-      "Heading in the 4th font size.",
-      "Heading in the 5th font size.",
-      "Heading in the 6th font size.",
-      "Headings in the 2nd font size.",
-      "Headings in the 3rd font size.",
-      "Headings in the largest font.",
-      "Numbered List",
-      "Quote",
-      "Start typing with plain text.",
-      "Text",
-      "To-do List",
-      "Track tasks with a to-do list."
-    ],
-    "packages/affine/gfx/note/src/toolbar/note-menu.ts": [
-      "File",
-      "Image"
-    ],
-    "packages/affine/gfx/note/src/toolbar/senior-tool.ts": [
-      "Note"
     ],
     "packages/affine/gfx/shape/src/toolbar/config.ts": [
       "Add text",
