@@ -5,6 +5,7 @@ import {
   SEVERITY_FALLBACK,
 } from '@labre/affine-block-surface';
 import { SURFACE_REF_WORDINGS } from '@labre/affine-block-surface-ref/translations';
+import { COMPONENTS_WORDINGS } from '@labre/affine-components/translations';
 import { bpmnTranslationEntries } from '@labre/affine-gfx-bpmn';
 import { c4TranslationEntries } from '@labre/affine-gfx-c4';
 import { cynefinEstuarineTranslationEntries } from '@labre/affine-gfx-cynefin-estuarine';
@@ -21,6 +22,11 @@ import {
   TEMPLATE_PACKAGE_WORDINGS,
   TEMPLATE_SEED_WORDINGS,
 } from '@labre/affine-gfx-template/translations';
+import { LATEX_WORDINGS } from '@labre/affine-inline-latex/translations';
+import { LINK_WORDINGS } from '@labre/affine-inline-link/translations';
+import { MENTION_WORDINGS } from '@labre/affine-inline-mention/translations';
+import { PRESET_WORDINGS } from '@labre/affine-inline-preset/translations';
+import { REFERENCE_WORDINGS } from '@labre/affine-inline-reference/translations';
 import {
   CHROME_WORDINGS,
   type ChromeWording,
@@ -314,6 +320,12 @@ const PACKAGE_WORDINGS: readonly (readonly ChromeWording[])[] = [
   SLASH_MENU_WORDINGS,
   OUTLINE_WORDINGS,
   TEMPLATE_PACKAGE_WORDINGS,
+  COMPONENTS_WORDINGS,
+  LATEX_WORDINGS,
+  LINK_WORDINGS,
+  MENTION_WORDINGS,
+  PRESET_WORDINGS,
+  REFERENCE_WORDINGS,
 ];
 
 /**
