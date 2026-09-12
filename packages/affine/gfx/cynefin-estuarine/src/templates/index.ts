@@ -156,6 +156,28 @@ export const CYNEFIN_ESTUARINE_TEMPLATE_SEEDS: readonly ChromeWording[] = [
   ESTUARINE_SEED_BUDGET,
 ];
 
+/**
+ * The two Templates-panel tab names — new keys, since Cynefin and Estuarine
+ * share one senior-button key (`com.labre.framework.cynefin-estuarine`) that
+ * names neither individually (see `TemplateCategory.nameKey`). Both are proper
+ * nouns; the PO's French proposal for each is the identical word.
+ */
+export const CYNEFIN_TEMPLATE_CATEGORY_NAME: ChromeWording = [
+  'com.labre.cynefin-estuarine.template.category.cynefin',
+  'Cynefin',
+];
+export const ESTUARINE_TEMPLATE_CATEGORY_NAME: ChromeWording = [
+  'com.labre.cynefin-estuarine.template.category.estuarine',
+  'Estuarine',
+];
+
+/**
+ * The two Templates-panel tab names (chrome, not seeds — a widget-resolved
+ * label, never written into a document), for `translations.ts`'s manifest.
+ */
+export const CYNEFIN_ESTUARINE_TEMPLATE_CATEGORY_WORDINGS: readonly ChromeWording[] =
+  [CYNEFIN_TEMPLATE_CATEGORY_NAME, ESTUARINE_TEMPLATE_CATEGORY_NAME];
+
 /** Resolve a wording through the host, or its English fallback with no host. */
 function tr(std: BlockStdScope | undefined, wording: ChromeWording): string {
   return std ? translateKey(std, ...wording) : wording[1];
@@ -187,6 +209,7 @@ const ATTRS =
 
 export const cynefinTemplateCategory: TemplateCategory = {
   name: 'Cynefin',
+  nameKey: CYNEFIN_TEMPLATE_CATEGORY_NAME[0],
   templates: [
     tpl(
       'Decision sorting',
@@ -213,6 +236,7 @@ export const cynefinTemplateCategory: TemplateCategory = {
 
 export const estuarineTemplateCategory: TemplateCategory = {
   name: 'Estuarine',
+  nameKey: ESTUARINE_TEMPLATE_CATEGORY_NAME[0],
   templates: [
     tpl(
       'Constraint map',

@@ -49,7 +49,7 @@ import { C4_MERMAID_EXPORT, c4BoardFrom, c4SafeFilename } from './interchange';
 import { C4_AUTO_LEGEND } from './legend';
 import { c4NodeProps } from './presets';
 import { C4_BOUNDARY_ROLE, C4_ROLE, c4BoardRoleKey } from './roles';
-import { C4_TYPE_PLACEHOLDER } from './type-line';
+import { c4TypePlaceholder } from './type-line';
 
 /**
  * Standalone creation/activation actions for the C4 toolbox — the same shape
@@ -198,17 +198,16 @@ export function createC4Node(std: BlockStdScope, kind: C4NodeKind) {
     surface,
     gfx.layer.generateIndex(),
     C4_ROLE['type-line'],
-    // NOT translated, deliberately: `technologyOfTypeLine` (`type-line.ts`)
-    // and `c4StatedTechnology` (`component.ts`) recognise this prompt — and the
-    // bracketed word every kind's canonical line carries — by comparing the
-    // STORED text against these very English literals. `C4TypeLineWatcher`
-    // recomputes that canonical line from `kind` on every edit commit
-    // (`node/type-line-watcher.ts`), in English, so a translated seed here
-    // would be silently reverted to English the first time an author merely
-    // opened and closed the tier's editor without typing anything — worse
-    // than staying English. Making the comparison locale-aware is a
-    // structural change to a seam this lot does not own (see `notes`).
-    C4_TYPE_PLACEHOLDER[kind],
+    // Resolved at placement, like the title above: `c4TypePlaceholder` reads
+    // through the host's catalogue for both halves of the prompt (the
+    // bracketed word AND the technology slot), and `C4TypeLineWatcher`
+    // (`node/type-line-watcher.ts`) now recomputes the canonical line the same
+    // way on every edit commit, so a translated seed here is no longer
+    // reverted to English the first time an author opens and closes the
+    // tier's editor without typing anything. `technologyOfTypeLine` and
+    // `c4StatedTechnology` (`component.ts`) recognise EITHER the English
+    // literal or the host's own resolved word (`type-line.ts`).
+    c4TypePlaceholder(kind, std),
     TYPE_FONT_SIZE,
     FontWeight.Regular,
     paint.text,

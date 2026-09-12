@@ -41,7 +41,11 @@ import {
   SEQUENCE_STROKE,
   SEQUENCE_WIDTH,
 } from './consts';
-import { BPMN_FORMAT_ID, type BpmnExportBoard } from './export.js';
+import {
+  BPMN_FORMAT_ID,
+  type BpmnExportBoard,
+  exportBpmnXmlWithWarnings,
+} from './export.js';
 import {
   BPMN_SVG_IMPORT,
   BPMN_XML_EXPORT,
@@ -427,9 +431,8 @@ export function bpmnExportFilename(std: BlockStdScope): string {
  */
 export function exportBpmnXmlFile(std: BlockStdScope): void {
   const elements = gfxOf(std).surface?.elementModels ?? [];
-  const { text, filename, mime, warnings } = BPMN_XML_EXPORT.run(elements, {
-    name: bpmnExportFilename(std),
-  });
+  const name = bpmnExportFilename(std);
+  const { text, filename, mime } = BPMN_XML_EXPORT.run(elements, { name });
   // The charset is the browser's business, not the format's: `mime` is what
   // `.bpmn` IS, and this is how a blob is told to carry it.
   downloadBlob(new Blob([text], { type: `${mime};charset=utf-8` }), filename);
@@ -440,10 +443,24 @@ export function exportBpmnXmlFile(std: BlockStdScope): void {
   // Export is the one person entitled to be told" false in the only place a
   // user stands. A warning is never an error: the file downloaded, and it is
   // valid; what it could not say is what this names.
-  if (!warnings || warnings.length === 0) return;
+  //
+  // Read straight from the PURE exporter rather than through
+  // `BPMN_XML_EXPORT.run` above: the interchange capability's `warnings` is
+  // `readonly string[]` (a seam shared with every other format, resolved to
+  // its English fallback with no `std` to ask), while the STRUCTURED
+  // `BpmnExportWarning[]` — key, fallback, params — is what `translateKey`
+  // needs. Calling the exporter a second time costs nothing beyond CPU (it is
+  // pure and deterministic on the same `elements`/`name`), and keeps the
+  // downloaded bytes on the one door `BPMN_XML_EXPORT.run` already is.
+  const { warnings } = exportBpmnXmlWithWarnings(bpmnBoardFrom(elements), {
+    name,
+  });
+  if (warnings.length === 0) return;
   notifyBpmn(std, {
     title: translateKey(std, EXPORT_WARNINGS_KEY, EXPORT_WARNINGS_FALLBACK),
-    message: warnings.join('\n'),
+    message: warnings
+      .map(w => translateKey(std, w.key, w.fallback, w.params))
+      .join('\n'),
     accent: 'warning',
   });
 }

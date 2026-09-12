@@ -3,6 +3,7 @@ import {
   type AutoLegendSpec,
   roleLabel,
 } from '@labre/affine-gfx-ddd-shared';
+import type { ChromeWording } from '@labre/affine-shared/services';
 
 import {
   EDGY_DYNAMIC_NODES,
@@ -100,6 +101,7 @@ const INTERSECTIONS_SECTION: AutoLegendSectionSpec = {
  */
 const BASE_SECTION: AutoLegendSectionSpec = {
   title: 'Base elements',
+  titleKey: 'com.labre.edgy.legend.section.base-elements',
   entries: (['people', 'outcome', 'object', 'activity'] as const).map(kind => ({
     role: EDGY_ROLE[kind],
     exact: true,
@@ -120,6 +122,7 @@ const BASE_SECTION: AutoLegendSectionSpec = {
  */
 const RELATIONS_SECTION: AutoLegendSectionSpec = {
   title: 'Relations',
+  titleKey: 'com.labre.edgy.legend.section.relations',
   entries: [
     {
       role: EDGY_ROLE.relation,
@@ -132,6 +135,18 @@ const RELATIONS_SECTION: AutoLegendSectionSpec = {
     },
   ],
 };
+
+/**
+ * The two section titles above that are this framework's OWN word rather than
+ * a role's — `titleKey` reuses a role's key where the section says a role's
+ * name (the facets, the intersections), but "Base elements" and "Relations"
+ * name a GROUPING of roles, so each mints a key of its own. For
+ * `translations.ts`'s manifest.
+ */
+export const EDGY_LEGEND_CHROME_WORDINGS: readonly ChromeWording[] = [
+  ['com.labre.edgy.legend.section.base-elements', 'Base elements'],
+  ['com.labre.edgy.legend.section.relations', 'Relations'],
+];
 
 export const EDGY_AUTO_LEGEND: AutoLegendSpec = {
   title: 'Legend',

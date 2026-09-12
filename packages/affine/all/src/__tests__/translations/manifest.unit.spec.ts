@@ -77,7 +77,21 @@ const CHROME_TABLE_PREFIXES = [
  * and the list is pinned so a new unpairable call site has to be looked at
  * rather than silently joining them.
  */
-const UNPAIRABLE_CHROME_KEYS: string[] = [];
+const UNPAIRABLE_CHROME_KEYS: string[] = [
+  // `BPMN_QUARANTINE_REASON` (`gfx/bpmn/src/import.ts`) and its own
+  // `BPMN_QUARANTINE_REASON_KEY` are TWO separate `Record`s rather than one
+  // table of `[key, text]` pairs: the reason's plain string is ALSO written
+  // verbatim into `ForeignInterchange.quarantined[].reason` (a data field,
+  // pinned as English in `import.unit.spec.ts`), so it cannot become a tuple
+  // without breaking that contract — see the long comment on
+  // `BPMN_QUARANTINE_REASON_KEY`. The two tables are matched by PROPERTY
+  // NAME (`colour`, `expanded`, …), not by textual adjacency, so this scan
+  // cannot pair them.
+  'com.labre.bpmn.import.quarantine.colour',
+  'com.labre.bpmn.import.quarantine.expanded',
+  'com.labre.bpmn.import.quarantine.imported',
+  'com.labre.bpmn.import.quarantine.nested-lanes',
+];
 
 describe('getTranslationKeyManifest', () => {
   const manifest = getTranslationKeyManifest();

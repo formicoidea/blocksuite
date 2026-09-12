@@ -7,6 +7,7 @@ import {
 } from '@labre/std';
 
 import { edgyCommands } from './commands.js';
+import { EDGY_LEGEND_CHROME_WORDINGS } from './legend.js';
 import {
   EDGY_DYNAMIC_NODES,
   EDGY_DYNAMIC_VERBS,
@@ -24,6 +25,7 @@ import { EDGY_READING } from './reading.js';
 import { EDGY_ROLES } from './roles.js';
 import { EDGY_RULES } from './rules.js';
 import { EDGY_TEMPLATE_SEED } from './templates/index.js';
+import { EDGY_TOOLBAR_WORDINGS } from './toolbar/config.js';
 
 /**
  * The name every one of the 12 official elements and the 6 Venn zones is
@@ -44,6 +46,22 @@ const elementAndZoneSeedEntries = (): TranslationKeyManifestEntry[] => {
     source: 'seed' as const,
   }));
 };
+
+/** The legend's own section titles (see {@link EDGY_LEGEND_CHROME_WORDINGS}). */
+const legendChromeEntries = (): TranslationKeyManifestEntry[] =>
+  EDGY_LEGEND_CHROME_WORDINGS.map(([key, fallback]) => ({
+    key,
+    fallback,
+    source: 'chrome' as const,
+  }));
+
+/** The toolbar tooltips this framework used to hard-code as English literals. */
+const toolbarChromeEntries = (): TranslationKeyManifestEntry[] =>
+  EDGY_TOOLBAR_WORDINGS.map(([key, fallback]) => ({
+    key,
+    fallback,
+    source: 'chrome' as const,
+  }));
 
 /** The metamodel's 24 canonical verbs, drawn raw as a connector label. */
 const verbSeedEntries = (): TranslationKeyManifestEntry[] =>
@@ -111,6 +129,8 @@ export const edgyTranslationEntries: TranslationKeyManifestEntry[] =
     elementAndZoneSeedEntries(),
     verbSeedEntries(),
     sceneSeedEntries(),
+    legendChromeEntries(),
+    toolbarChromeEntries(),
     // LAST, and the order is load-bearing: a reading profile carries the
     // framework's own `roles`, so walking it reaches every role key the line
     // above already named. `mergeTranslationEntries` keeps the FIRST

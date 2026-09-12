@@ -185,19 +185,22 @@ export const WARDLEY_NODE_LABEL: Record<WardleyLabelledKind, string> = {
  * `createWardleyMarket`), never afterwards. "Pipeline" is the PO's glossary
  * term for Wardley: the French proposal IS the English word.
  *
- * ## A known gap: the morph's placeholder detection stays English-only
+ * ## A narrowed gap: the morph's placeholder detection has no `std` to ask
  *
  * `wardleyMorphedLabel` (`morph.ts`) decides whether to refresh an artefact's
- * name across a morph by comparing the STORED text against this very English
- * literal — a comparison this lot does not touch (a pure, `std`-free
- * function used by the morph toolbar). On a host running a French catalogue,
- * an untouched node's translated name will therefore no longer match, and a
- * morph will treat it as author content rather than refreshing it to the
- * target kind's own prompt — a stale label survives the morph instead of
- * being replaced. Not a corruption (nothing is lost, nothing crashes), and
- * the same class of gap `c4MorphedTypeLine` has (`gfx/c4/src/actions.ts`).
- * Flagged in this lot's `notes`; fixing it means making the morph's
- * placeholder comparison locale-aware, which is a seam this lot does not own.
+ * name across a morph, and now accepts an OPTIONAL `std`: given one, it
+ * recognises the stored text as "untouched" whether it reads the English
+ * prompt or the host's own resolved wording, and resolves the TARGET kind's
+ * prompt through the host too (the same fix `c4MorphedTypeLine` carries,
+ * `gfx/c4/src/type-line.ts`). What remains unfixed is the CALL SITE:
+ * `rewriteLabel` is reached through `MorphSpec.afterMorph`
+ * (`packages/affine/blocks/surface`, a package this lot does not own), whose
+ * signature is `(model, from, to): void` — no `std` — so today's morph
+ * toolbar still calls this function with none. On a host running a French
+ * catalogue, an untouched node's translated name therefore still will not be
+ * refreshed by a morph gesture (a stale label survives it instead of being
+ * replaced) — not a corruption, and fixed the moment `afterMorph` is handed
+ * a `std` to pass on. Flagged in this lot's `notes`.
  */
 export const wardleyNodeLabelKey = (kind: WardleyLabelledKind) =>
   `com.labre.wardley.seed.${kind}`;
