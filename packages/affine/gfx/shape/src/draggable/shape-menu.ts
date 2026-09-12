@@ -12,6 +12,7 @@ import {
   ThemeProvider,
 } from '@labre/affine-shared/services';
 import type { ColorEvent } from '@labre/affine-shared/utils';
+import { translateKey } from '@labre/affine-shared/services';
 import { SignalWatcher, WithDisposable } from '@labre/global/lit';
 import type { BlockComponent } from '@labre/std';
 import {
@@ -127,10 +128,13 @@ export class EdgelessShapeMenu extends SignalWatcher(
         <div class="menu-content">
           <div class="shape-type-container">
             ${ShapeComponentConfig.map(
-              ({ name, generalIcon, scribbledIcon, tooltip }) => {
+              ({ name, generalIcon, scribbledIcon, tooltipWording }) => {
                 return html`
                   <edgeless-tool-icon-button
-                    .tooltip=${tooltip}
+                    .tooltip=${translateKey(
+                      this.edgeless.std,
+                      ...tooltipWording
+                    )}
                     .active=${shapeName === name}
                     .activeMode=${'background'}
                     .iconSize=${'20px'}

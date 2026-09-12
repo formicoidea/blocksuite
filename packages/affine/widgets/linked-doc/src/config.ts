@@ -11,6 +11,7 @@ import {
   DocModeProvider,
   formatLocale,
   TelemetryProvider,
+  translateKey,
 } from '@labre/affine-shared/services';
 import type { AffineInlineEditor } from '@labre/affine-shared/types';
 import {
@@ -28,6 +29,14 @@ import type { InlineRange } from '@labre/std/inline';
 import type { TemplateResult } from 'lit';
 
 import { showImportModal } from './import-doc/index.js';
+import {
+  LINKED_DOC_CREATE_DOC,
+  LINKED_DOC_IMPORT,
+  LINKED_DOC_IMPORT_SUCCESS_TOAST,
+  LINKED_DOC_LINK_TO_DOC,
+  LINKED_DOC_NEW_DOC,
+  LINKED_DOC_UNTITLED,
+} from './translations.js';
 import type { LinkedDocViewExtensionOptions } from './view';
 
 export type LinkedWidgetConfig = Required<
@@ -70,7 +79,6 @@ export type LinkedDocContext = {
   close: () => void;
 };
 
-const DEFAULT_DOC_NAME = 'Untitled';
 const DISPLAY_NAME_LENGTH = 8;
 
 export function createLinkedDocMenuGroup(
@@ -87,10 +95,10 @@ export function createLinkedDocMenuGroup(
   const MAX_DOCS = 6;
 
   return {
-    name: 'Link to Doc',
+    name: translateKey(editorHost.std, ...LINKED_DOC_LINK_TO_DOC),
     items: filteredDocList.map(doc => ({
       key: doc.id,
-      name: doc.title || DEFAULT_DOC_NAME,
+      name: doc.title || translateKey(editorHost.std, ...LINKED_DOC_UNTITLED),
       icon:
         editorHost.std.get(DocModeProvider).getPrimaryMode(doc.id) ===
         'edgeless'
@@ -124,7 +132,7 @@ export function createNewDocMenuGroup(
   inlineEditor: AffineInlineEditor
 ): LinkedMenuGroup {
   const doc = editorHost.store;
-  const docName = query || DEFAULT_DOC_NAME;
+  const docName = query || translateKey(editorHost.std, ...LINKED_DOC_UNTITLED);
   const displayDocName =
     docName.slice(0, DISPLAY_NAME_LENGTH) +
     (docName.length > DISPLAY_NAME_LENGTH ? '..' : '');
@@ -132,7 +140,9 @@ export function createNewDocMenuGroup(
   const items: LinkedMenuItem[] = [
     {
       key: 'create',
-      name: `Create "${displayDocName}" doc`,
+      name: translateKey(editorHost.std, ...LINKED_DOC_CREATE_DOC, {
+        name: displayDocName,
+      }),
       icon: NewDocIcon,
       action: () => {
         abort();
@@ -163,7 +173,7 @@ export function createNewDocMenuGroup(
   if (!IS_MOBILE) {
     items.push({
       key: 'import',
-      name: 'Import',
+      name: translateKey(editorHost.std, ...LINKED_DOC_IMPORT),
       icon: ImportIcon,
       action: () => {
         abort();
@@ -175,7 +185,9 @@ export function createNewDocMenuGroup(
         ) => {
           toast(
             editorHost,
-            `Successfully imported ${options.importedCount} Doc${options.importedCount > 1 ? 's' : ''}.`
+            translateKey(editorHost.std, ...LINKED_DOC_IMPORT_SUCCESS_TOAST, {
+              count: options.importedCount,
+            })
           );
           for (const docId of docIds) {
             insertLinkedNode({
@@ -196,13 +208,14 @@ export function createNewDocMenuGroup(
           extensions: storeManager.get('store'),
           onSuccess,
           onFail,
+          std: editorHost.std,
         });
       },
     });
   }
 
   return {
-    name: 'New Doc',
+    name: translateKey(editorHost.std, ...LINKED_DOC_NEW_DOC),
     items,
   };
 }
