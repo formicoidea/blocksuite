@@ -246,88 +246,6 @@ export const NOTE_SHADOW_FILM: ChromeWording = [
   'Film shadow',
 ];
 
-/* ── Block type names ──────────────────────────────────────────────────── */
-
-/**
- * The name of a text primitive block, as it appears identically in more than
- * one of the prose-chrome surfaces: the paragraph's own empty-line
- * placeholder (`packages/affine/blocks/paragraph/src/view.ts`) and the
- * edgeless note's "add to note" menu
- * (`packages/affine/gfx/note/src/toolbar/note-menu-config.ts`). The note
- * block's own slash-menu tooltip captions say the SAME word too
- * (`packages/affine/blocks/note/src/configs/tooltips.ts`), reusing these
- * constants rather than declaring their own.
- *
- * `textConversionConfigs` (`packages/affine/rich-text`) is the canonical
- * source of the English literal itself — outside this lot's packages, so left
- * untouched — but every place THESE packages render the same word resolves it
- * through the seam via the constants below.
- */
-export const BLOCK_NAME_TEXT: ChromeWording = [
-  'com.labre.block-name.text',
-  'Text',
-];
-
-export const BLOCK_NAME_HEADING_1: ChromeWording = [
-  'com.labre.block-name.heading-1',
-  'Heading 1',
-];
-
-export const BLOCK_NAME_HEADING_2: ChromeWording = [
-  'com.labre.block-name.heading-2',
-  'Heading 2',
-];
-
-export const BLOCK_NAME_HEADING_3: ChromeWording = [
-  'com.labre.block-name.heading-3',
-  'Heading 3',
-];
-
-export const BLOCK_NAME_HEADING_4: ChromeWording = [
-  'com.labre.block-name.heading-4',
-  'Heading 4',
-];
-
-export const BLOCK_NAME_HEADING_5: ChromeWording = [
-  'com.labre.block-name.heading-5',
-  'Heading 5',
-];
-
-export const BLOCK_NAME_HEADING_6: ChromeWording = [
-  'com.labre.block-name.heading-6',
-  'Heading 6',
-];
-
-export const BLOCK_NAME_CODE_BLOCK: ChromeWording = [
-  'com.labre.block-name.code-block',
-  'Code Block',
-];
-
-export const BLOCK_NAME_QUOTE: ChromeWording = [
-  'com.labre.block-name.quote',
-  'Quote',
-];
-
-export const BLOCK_NAME_DIVIDER: ChromeWording = [
-  'com.labre.block-name.divider',
-  'Divider',
-];
-
-export const BLOCK_NAME_BULLETED_LIST: ChromeWording = [
-  'com.labre.block-name.bulleted-list',
-  'Bulleted List',
-];
-
-export const BLOCK_NAME_NUMBERED_LIST: ChromeWording = [
-  'com.labre.block-name.numbered-list',
-  'Numbered List',
-];
-
-export const BLOCK_NAME_TODO_LIST: ChromeWording = [
-  'com.labre.block-name.todo-list',
-  'To-do List',
-];
-
 /* ── Documents ────────────────────────────────────────────────────────── */
 
 /**
@@ -434,6 +352,181 @@ export const FONT_SIZE_LABEL: ChromeWording = [
 ];
 
 /**
+ * The border-style dropdown's own trigger label — rendered identically by
+ * `edgeless-shape-color-picker` (`@labre/affine-components`, this lot) and by
+ * `edgeless-note-border-dropdown-menu` (`blocks/note`, a different lot): the
+ * exact same button on a shape and on a note. Declared here so either can
+ * import it rather than one minting a second key for the same word.
+ */
+export const BOARD_BORDER_STYLE_LABEL: ChromeWording = [
+  'com.labre.board.toolbar.border-style',
+  'Border style',
+];
+
+/**
+ * The LaTeX empty-state and KaTeX-error placeholders — rendered identically
+ * by the inline equation (`inlines/latex`, this lot) and the LaTeX BLOCK
+ * (`blocks/latex`, a different lot): the same two words either way an
+ * equation fails to show.
+ */
+export const EQUATION_EMPTY_LABEL: ChromeWording = [
+  'com.labre.latex.equation-empty',
+  'Equation',
+];
+export const EQUATION_ERROR_LABEL: ChromeWording = [
+  'com.labre.latex.equation-error',
+  'Error equation',
+];
+
+/**
+ * The untitled-document fallback — `'Untitled'` is scattered across roughly
+ * two dozen files repo-wide (adapters, embeds, the outline panel, data-view…),
+ * most of them behind `DEFAULT_DOC_NAME` (`shared/src/consts/text.ts`) or
+ * `DocDisplayMetaProvider`'s own internal substitution, neither of which this
+ * lot owns. Declared here so the ONE call site this lot touches
+ * (`inlines/reference/src/reference-node/configs/toolbar.ts`, a defensive
+ * fallback for a title `DocDisplayMetaProvider` already never returns empty)
+ * has a key, and so a later lot revisiting the others finds one key already
+ * waiting rather than a second one to invent.
+ */
+/** An alias: the same word as {@link DOC_UNTITLED}, one key. */
+export const UNTITLED_DOC_LABEL = DOC_UNTITLED;
+
+/* ── Block types ──────────────────────────────────────────────────────── */
+
+/**
+ * The text-block primitive names and descriptions — `rich-text/src/conversion.ts`'s
+ * `textConversionConfigs`, the ONE list that names "Heading 1", "Bulleted
+ * List", "Quote"... for both the slash menu and the format bar's "Turn into"
+ * conversion menu.
+ *
+ * Declared here rather than in `rich-text`'s own `translations.ts` because
+ * both `@labre/affine-rich-text` (L6c, this lot) and the text-block packages
+ * `blocks/note` / `blocks/paragraph` / `blocks/list` / `widgets/slash-menu`
+ * (L6a, a different lot) read the very same words: `conversion.ts` names them
+ * once, the slash menu's own config repeats the same name/description for the
+ * items it derives from `textConversionConfigs`. One key per word here is what
+ * lets both lots point at the SAME constant instead of minting two keys for
+ * "Heading 1".
+ */
+export const BLOCK_TYPE_TEXT: ChromeWording = [
+  'com.labre.block-type.text',
+  'Text',
+];
+export const BLOCK_TYPE_TEXT_DESCRIPTION: ChromeWording = [
+  'com.labre.block-type.text.description',
+  'Start typing with plain text.',
+];
+
+export const BLOCK_TYPE_HEADING_1: ChromeWording = [
+  'com.labre.block-type.heading-1',
+  'Heading 1',
+];
+export const BLOCK_TYPE_HEADING_1_DESCRIPTION: ChromeWording = [
+  'com.labre.block-type.heading-1.description',
+  'Headings in the largest font.',
+];
+
+export const BLOCK_TYPE_HEADING_2: ChromeWording = [
+  'com.labre.block-type.heading-2',
+  'Heading 2',
+];
+export const BLOCK_TYPE_HEADING_2_DESCRIPTION: ChromeWording = [
+  'com.labre.block-type.heading-2.description',
+  'Headings in the 2nd font size.',
+];
+
+export const BLOCK_TYPE_HEADING_3: ChromeWording = [
+  'com.labre.block-type.heading-3',
+  'Heading 3',
+];
+export const BLOCK_TYPE_HEADING_3_DESCRIPTION: ChromeWording = [
+  'com.labre.block-type.heading-3.description',
+  'Headings in the 3rd font size.',
+];
+
+export const BLOCK_TYPE_HEADING_4: ChromeWording = [
+  'com.labre.block-type.heading-4',
+  'Heading 4',
+];
+export const BLOCK_TYPE_HEADING_4_DESCRIPTION: ChromeWording = [
+  'com.labre.block-type.heading-4.description',
+  'Headings in the 4th font size.',
+];
+
+export const BLOCK_TYPE_HEADING_5: ChromeWording = [
+  'com.labre.block-type.heading-5',
+  'Heading 5',
+];
+export const BLOCK_TYPE_HEADING_5_DESCRIPTION: ChromeWording = [
+  'com.labre.block-type.heading-5.description',
+  'Headings in the 5th font size.',
+];
+
+export const BLOCK_TYPE_HEADING_6: ChromeWording = [
+  'com.labre.block-type.heading-6',
+  'Heading 6',
+];
+export const BLOCK_TYPE_HEADING_6_DESCRIPTION: ChromeWording = [
+  'com.labre.block-type.heading-6.description',
+  'Headings in the 6th font size.',
+];
+
+export const BLOCK_TYPE_BULLETED_LIST: ChromeWording = [
+  'com.labre.block-type.bulleted-list',
+  'Bulleted List',
+];
+export const BLOCK_TYPE_BULLETED_LIST_DESCRIPTION: ChromeWording = [
+  'com.labre.block-type.bulleted-list.description',
+  'Create a bulleted list.',
+];
+
+export const BLOCK_TYPE_NUMBERED_LIST: ChromeWording = [
+  'com.labre.block-type.numbered-list',
+  'Numbered List',
+];
+export const BLOCK_TYPE_NUMBERED_LIST_DESCRIPTION: ChromeWording = [
+  'com.labre.block-type.numbered-list.description',
+  'Create a numbered list.',
+];
+
+export const BLOCK_TYPE_TODO_LIST: ChromeWording = [
+  'com.labre.block-type.todo-list',
+  'To-do List',
+];
+export const BLOCK_TYPE_TODO_LIST_DESCRIPTION: ChromeWording = [
+  'com.labre.block-type.todo-list.description',
+  'Add tasks to a to-do list.',
+];
+
+export const BLOCK_TYPE_CODE_BLOCK: ChromeWording = [
+  'com.labre.block-type.code-block',
+  'Code Block',
+];
+export const BLOCK_TYPE_CODE_BLOCK_DESCRIPTION: ChromeWording = [
+  'com.labre.block-type.code-block.description',
+  'Code snippet with formatting.',
+];
+
+export const BLOCK_TYPE_QUOTE: ChromeWording = [
+  'com.labre.block-type.quote',
+  'Quote',
+];
+export const BLOCK_TYPE_QUOTE_DESCRIPTION: ChromeWording = [
+  'com.labre.block-type.quote.description',
+  'Add a blockquote for emphasis.',
+];
+
+export const BLOCK_TYPE_DIVIDER: ChromeWording = [
+  'com.labre.block-type.divider',
+  'Divider',
+];
+export const BLOCK_TYPE_DIVIDER_DESCRIPTION: ChromeWording = [
+  'com.labre.block-type.divider.description',
+  'Visually separate content.',
+];
+
+/**
  * Every wording declared above, in declaration order.
  *
  * The manifest (`@labre/affine/translations`) walks this instead of restating
@@ -441,6 +534,24 @@ export const FONT_SIZE_LABEL: ChromeWording = [
  * edit — the same "declared data, not restated data" rule the roles, the rules
  * and the commands already follow.
  */
+/**
+ * Aliases kept for the prose-chrome call sites (note, paragraph, gfx/note):
+ * the same words as the BLOCK_TYPE_* wordings above, one key per word.
+ */
+export const BLOCK_NAME_TEXT = BLOCK_TYPE_TEXT;
+export const BLOCK_NAME_HEADING_1 = BLOCK_TYPE_HEADING_1;
+export const BLOCK_NAME_HEADING_2 = BLOCK_TYPE_HEADING_2;
+export const BLOCK_NAME_HEADING_3 = BLOCK_TYPE_HEADING_3;
+export const BLOCK_NAME_HEADING_4 = BLOCK_TYPE_HEADING_4;
+export const BLOCK_NAME_HEADING_5 = BLOCK_TYPE_HEADING_5;
+export const BLOCK_NAME_HEADING_6 = BLOCK_TYPE_HEADING_6;
+export const BLOCK_NAME_CODE_BLOCK = BLOCK_TYPE_CODE_BLOCK;
+export const BLOCK_NAME_QUOTE = BLOCK_TYPE_QUOTE;
+export const BLOCK_NAME_DIVIDER = BLOCK_TYPE_DIVIDER;
+export const BLOCK_NAME_BULLETED_LIST = BLOCK_TYPE_BULLETED_LIST;
+export const BLOCK_NAME_NUMBERED_LIST = BLOCK_TYPE_NUMBERED_LIST;
+export const BLOCK_NAME_TODO_LIST = BLOCK_TYPE_TODO_LIST;
+
 export const CHROME_WORDINGS: readonly ChromeWording[] = [
   TOAST_COPIED_TO_CLIPBOARD,
   TOAST_LINKED_DOC_CREATED,
@@ -475,19 +586,7 @@ export const CHROME_WORDINGS: readonly ChromeWording[] = [
   NOTE_SHADOW_STICKER,
   NOTE_SHADOW_PAPER,
   NOTE_SHADOW_FILM,
-  BLOCK_NAME_TEXT,
-  BLOCK_NAME_HEADING_1,
-  BLOCK_NAME_HEADING_2,
-  BLOCK_NAME_HEADING_3,
-  BLOCK_NAME_HEADING_4,
-  BLOCK_NAME_HEADING_5,
-  BLOCK_NAME_HEADING_6,
-  BLOCK_NAME_CODE_BLOCK,
-  BLOCK_NAME_QUOTE,
-  BLOCK_NAME_DIVIDER,
-  BLOCK_NAME_BULLETED_LIST,
-  BLOCK_NAME_NUMBERED_LIST,
-  BLOCK_NAME_TODO_LIST,
+
   DOC_UNTITLED,
   FORMAT_MARKDOWN,
   FORMAT_HTML,
@@ -503,4 +602,34 @@ export const CHROME_WORDINGS: readonly ChromeWording[] = [
   TOOL_NAME_FRAME,
   TOOL_NAME_SHAPE,
   FONT_SIZE_LABEL,
+  BOARD_BORDER_STYLE_LABEL,
+  EQUATION_EMPTY_LABEL,
+  EQUATION_ERROR_LABEL,
+
+  BLOCK_TYPE_TEXT,
+  BLOCK_TYPE_TEXT_DESCRIPTION,
+  BLOCK_TYPE_HEADING_1,
+  BLOCK_TYPE_HEADING_1_DESCRIPTION,
+  BLOCK_TYPE_HEADING_2,
+  BLOCK_TYPE_HEADING_2_DESCRIPTION,
+  BLOCK_TYPE_HEADING_3,
+  BLOCK_TYPE_HEADING_3_DESCRIPTION,
+  BLOCK_TYPE_HEADING_4,
+  BLOCK_TYPE_HEADING_4_DESCRIPTION,
+  BLOCK_TYPE_HEADING_5,
+  BLOCK_TYPE_HEADING_5_DESCRIPTION,
+  BLOCK_TYPE_HEADING_6,
+  BLOCK_TYPE_HEADING_6_DESCRIPTION,
+  BLOCK_TYPE_BULLETED_LIST,
+  BLOCK_TYPE_BULLETED_LIST_DESCRIPTION,
+  BLOCK_TYPE_NUMBERED_LIST,
+  BLOCK_TYPE_NUMBERED_LIST_DESCRIPTION,
+  BLOCK_TYPE_TODO_LIST,
+  BLOCK_TYPE_TODO_LIST_DESCRIPTION,
+  BLOCK_TYPE_CODE_BLOCK,
+  BLOCK_TYPE_CODE_BLOCK_DESCRIPTION,
+  BLOCK_TYPE_QUOTE,
+  BLOCK_TYPE_QUOTE_DESCRIPTION,
+  BLOCK_TYPE_DIVIDER,
+  BLOCK_TYPE_DIVIDER_DESCRIPTION,
 ];
