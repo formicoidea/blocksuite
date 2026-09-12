@@ -197,6 +197,111 @@ export const BOARD_LEGEND_COMPONENTS: ChromeWording = [
   'Generate the legend (components present)',
 ];
 
+/* ── Media / documents / embeds / frames chrome (lot L6b) ─────────────────
+ *
+ * Words rendered by at least two of the attachment / bookmark / image /
+ * embed / embed-doc / surface-ref / frame / frame-panel packages (or shared
+ * with a package outside that group, e.g. `frame` and `frame-panel`): one key
+ * each, per the "un mot partagé = une clé" rule. A word used by only ONE of
+ * those packages stays declared in that package's own `translations.ts`.
+ */
+
+export const TOOLBAR_CAPTION: ChromeWording = [
+  'com.labre.toolbar.caption',
+  'Caption',
+];
+
+export const TOOLBAR_DOWNLOAD: ChromeWording = [
+  'com.labre.toolbar.download',
+  'Download',
+];
+
+export const TOOLBAR_RELOAD: ChromeWording = [
+  'com.labre.toolbar.reload',
+  'Reload',
+];
+
+export const TOOLBAR_RENAME: ChromeWording = [
+  'com.labre.toolbar.rename',
+  'Rename',
+];
+
+/**
+ * The frame primitive's own name — the edgeless tool, its dense-menu entry,
+ * and the surface-ref slash menu's "insert a blank frame" item all name the
+ * same thing.
+ */
+export const TOOLBAR_FRAME: ChromeWording = [
+  'com.labre.toolbar.frame',
+  'Frame',
+];
+
+export const TOOLBAR_SETTINGS: ChromeWording = [
+  'com.labre.toolbar.settings',
+  'Settings',
+];
+
+export const TOOLBAR_HIDE_TOOLBAR: ChromeWording = [
+  'com.labre.toolbar.hide-toolbar',
+  'Hide toolbar',
+];
+
+export const TOOLBAR_PLAYBACK_SETTINGS: ChromeWording = [
+  'com.labre.toolbar.playback-settings',
+  'Playback Settings',
+];
+
+export const TOOLBAR_OPEN_THIS_DOC: ChromeWording = [
+  'com.labre.toolbar.open-this-doc',
+  'Open this doc',
+];
+
+/**
+ * The card-style switcher's four wordings — the bookmark's, the linked-doc
+ * embed's and the generic embed's (github) style menus all offer the same
+ * four choices in the same words.
+ */
+export const TOOLBAR_LARGE_HORIZONTAL_STYLE: ChromeWording = [
+  'com.labre.toolbar.style.large-horizontal',
+  'Large horizontal style',
+];
+
+export const TOOLBAR_SMALL_HORIZONTAL_STYLE: ChromeWording = [
+  'com.labre.toolbar.style.small-horizontal',
+  'Small horizontal style',
+];
+
+export const TOOLBAR_LARGE_VERTICAL_STYLE: ChromeWording = [
+  'com.labre.toolbar.style.large-vertical',
+  'Large vertical style',
+];
+
+export const TOOLBAR_SMALL_VERTICAL_STYLE: ChromeWording = [
+  'com.labre.toolbar.style.small-vertical',
+  'Small vertical style',
+];
+
+export const TOAST_DOWNLOAD_IN_PROGRESS: ChromeWording = [
+  'com.labre.toast.download-in-progress',
+  'Download in progress...',
+];
+
+/** `{{size}}` is a formatted size (`formatSize`), not a plural count. */
+export const TOAST_UPLOAD_SIZE_LIMIT: ChromeWording = [
+  'com.labre.toast.upload-size-limit',
+  'You can only upload files less than {{size}}',
+];
+
+export const CHROME_LOADING: ChromeWording = [
+  'com.labre.chrome.loading',
+  'Loading...',
+];
+
+export const CHROME_UNTITLED: ChromeWording = [
+  'com.labre.chrome.untitled',
+  'Untitled',
+];
+
 /**
  * Every wording declared above, in declaration order.
  *
@@ -232,4 +337,21 @@ export const CHROME_WORDINGS: readonly ChromeWording[] = [
   BOARD_RESIZE_TOGGLE,
   BOARD_LEGEND_NOTATION,
   BOARD_LEGEND_COMPONENTS,
+  TOOLBAR_CAPTION,
+  TOOLBAR_DOWNLOAD,
+  TOOLBAR_RELOAD,
+  TOOLBAR_RENAME,
+  TOOLBAR_FRAME,
+  TOOLBAR_SETTINGS,
+  TOOLBAR_HIDE_TOOLBAR,
+  TOOLBAR_PLAYBACK_SETTINGS,
+  TOOLBAR_OPEN_THIS_DOC,
+  TOOLBAR_LARGE_HORIZONTAL_STYLE,
+  TOOLBAR_SMALL_HORIZONTAL_STYLE,
+  TOOLBAR_LARGE_VERTICAL_STYLE,
+  TOOLBAR_SMALL_VERTICAL_STYLE,
+  TOAST_DOWNLOAD_IN_PROGRESS,
+  TOAST_UPLOAD_SIZE_LIMIT,
+  CHROME_LOADING,
+  CHROME_UNTITLED,
 ];

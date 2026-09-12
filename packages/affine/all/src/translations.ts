@@ -1,10 +1,21 @@
-import { FRAME_WORDINGS } from '@labre/affine-block-frame/translations';
+import { ATTACHMENT_WORDINGS } from '@labre/affine-block-attachment/translations';
+import { BOOKMARK_WORDINGS } from '@labre/affine-block-bookmark/translations';
+import { EMBED_WORDINGS } from '@labre/affine-block-embed/translations';
+import { EMBED_DOC_WORDINGS } from '@labre/affine-block-embed-doc/translations';
+import {
+  FRAME_CHROME_WORDINGS,
+  FRAME_WORDINGS,
+} from '@labre/affine-block-frame/translations';
+import { IMAGE_WORDINGS } from '@labre/affine-block-image/translations';
 import {
   EXEMPTION_FALLBACK,
   PROVENANCE_FALLBACK,
   SEVERITY_FALLBACK,
 } from '@labre/affine-block-surface';
-import { SURFACE_REF_WORDINGS } from '@labre/affine-block-surface-ref/translations';
+import {
+  SURFACE_REF_CHROME_WORDINGS,
+  SURFACE_REF_WORDINGS,
+} from '@labre/affine-block-surface-ref/translations';
 import { bpmnTranslationEntries } from '@labre/affine-gfx-bpmn';
 import { c4TranslationEntries } from '@labre/affine-gfx-c4';
 import { cynefinEstuarineTranslationEntries } from '@labre/affine-gfx-cynefin-estuarine';
@@ -17,6 +28,7 @@ import { GROUP_WORDINGS } from '@labre/affine-gfx-group/translations';
 import { MINDMAP_WORDINGS } from '@labre/affine-gfx-mindmap/translations';
 import { wardleyTranslationEntries } from '@labre/affine-gfx-wardley';
 import { OUTLINE_WORDINGS } from '@labre/affine-fragment-outline/translations';
+import { FRAME_PANEL_WORDINGS } from '@labre/affine-fragment-frame-panel/translations';
 import {
   TEMPLATE_PACKAGE_WORDINGS,
   TEMPLATE_SEED_WORDINGS,
@@ -314,6 +326,14 @@ const PACKAGE_WORDINGS: readonly (readonly ChromeWording[])[] = [
   SLASH_MENU_WORDINGS,
   OUTLINE_WORDINGS,
   TEMPLATE_PACKAGE_WORDINGS,
+  ATTACHMENT_WORDINGS,
+  BOOKMARK_WORDINGS,
+  IMAGE_WORDINGS,
+  EMBED_WORDINGS,
+  EMBED_DOC_WORDINGS,
+  SURFACE_REF_CHROME_WORDINGS,
+  FRAME_CHROME_WORDINGS,
+  FRAME_PANEL_WORDINGS,
 ];
 
 /**

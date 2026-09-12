@@ -572,7 +572,6 @@
       "View name"
     ],
     "packages/affine/widgets/keyboard-toolbar/src/config.ts": [
-      "Background",
       "Bold",
       "BulletedList",
       "CheckBox",
@@ -583,7 +582,6 @@
       "Default Color",
       "Divider",
       "Document Group&Frame",
-      "Embed",
       "Embeds",
       "Equation",
       "Equation",
@@ -613,52 +611,6 @@
     ]
   },
   "pending": {
-    "packages/affine/blocks/attachment/src/components/rename-model.ts": [
-      "File name cannot be empty"
-    ],
-    "packages/affine/blocks/attachment/src/configs/slash-menu.ts": [
-      "Attach a file to document.",
-      "Attachment",
-      "Attachment",
-      "PDF",
-      "PDF",
-      "Upload a PDF to document."
-    ],
-    "packages/affine/blocks/attachment/src/configs/toolbar.ts": [
-      "Caption",
-      "Download",
-      "Horizontal style",
-      "Reload",
-      "Rename",
-      "Rename",
-      "Replace attachment",
-      "Vertical style"
-    ],
-    "packages/affine/blocks/attachment/src/utils.ts": [
-      "Download in progress...",
-      "Downloading ${}",
-      "Failed to download ${}!",
-      "You can only upload files less than ${}"
-    ],
-    "packages/affine/blocks/bookmark/src/components/bookmark-card.ts": [
-      "banner",
-      "icon"
-    ],
-    "packages/affine/blocks/bookmark/src/configs/slash-menu.ts": [
-      "Add a bookmark for reference.",
-      "Link",
-      "Link"
-    ],
-    "packages/affine/blocks/bookmark/src/configs/toolbar.ts": [
-      "Caption",
-      "Large horizontal style",
-      "Large horizontal style",
-      "Large vertical style",
-      "Reload",
-      "Small horizontal style",
-      "Small horizontal style",
-      "Small vertical style"
-    ],
     "packages/affine/blocks/callout/src/configs/slash-menu.ts": [
       "Callout",
       "Callout",
@@ -698,179 +650,6 @@
     ],
     "packages/affine/blocks/embed-doc/src/embed-linked-doc-block/adapters/plain-text.ts": [
       "+ o.node.props.pageId) ??"
-    ],
-    "packages/affine/blocks/embed-doc/src/embed-linked-doc-block/configs/slash-menu.ts": [
-      "Link Doc",
-      "Link to another document.",
-      "Linked Doc",
-      "New Doc",
-      "New Doc",
-      "Start a new document."
-    ],
-    "packages/affine/blocks/embed-doc/src/embed-linked-doc-block/configs/toolbar.ts": [
-      "Caption",
-      "Large horizontal style",
-      "Large horizontal style",
-      "Large vertical style",
-      "Open doc",
-      "Open doc",
-      "Open this doc",
-      "Small horizontal style",
-      "Small horizontal style",
-      "Small vertical style"
-    ],
-    "packages/affine/blocks/embed-doc/src/embed-linked-doc-block/embed-linked-doc-block.ts": [
-      "Reload",
-      "Updated"
-    ],
-    "packages/affine/blocks/embed-doc/src/embed-synced-doc-block/components/embed-synced-doc-card.ts": [
-      "Reload",
-      "Updated"
-    ],
-    "packages/affine/blocks/embed-doc/src/embed-synced-doc-block/configs/toolbar.ts": [
-      "Caption",
-      "Duplicate as note",
-      "Duplicate as note to create an editable copy, the original remains unchanged.",
-      "Insert to page",
-      "Insert to page",
-      "Open doc",
-      "Open doc",
-      "Open this doc"
-    ],
-    "packages/affine/blocks/embed-doc/src/embed-synced-doc-block/embed-edgeless-synced-doc-block.ts": [
-      "This is a linked doc, you can add content here."
-    ],
-    "packages/affine/blocks/embed-doc/src/embed-synced-doc-block/embed-synced-doc-block.ts": [
-      "This is a linked doc, you can add content here."
-    ],
-    "packages/affine/blocks/embed/src/common/render-linked-doc.ts": [
-      "Enter a title for the new doc.",
-      "Untitled",
-      "You can click undo to recovery block content"
-    ],
-    "packages/affine/blocks/embed/src/configs/toolbar.ts": [
-      "Caption",
-      "Caption",
-      "Large horizontal style",
-      "Large horizontal style",
-      "Large vertical style",
-      "Reload",
-      "Small horizontal style",
-      "Small horizontal style",
-      "Small vertical style"
-    ],
-    "packages/affine/blocks/embed/src/embed-html-block/components/fullscreen-toolbar.ts": [
-      "Hide toolbar",
-      "Settings"
-    ],
-    "packages/affine/blocks/embed/src/embed-html-block/configs/toolbar.ts": [
-      "Caption",
-      "Large horizontal style",
-      "Open this doc",
-      "Small horizontal style"
-    ],
-    "packages/affine/blocks/embed/src/embed-html-block/embed-html-block.ts": [
-      "Empty"
-    ],
-    "packages/affine/blocks/embed/src/embed-iframe-block/components/embed-iframe-error-card.ts": [
-      "Edit",
-      "This link couldn’t be loaded."
-    ],
-    "packages/affine/blocks/embed/src/embed-iframe-block/components/embed-iframe-idle-card.ts": [
-      "Embed anything (Google Drive, Google Docs, Spotify, Miro…)"
-    ],
-    "packages/affine/blocks/embed/src/embed-iframe-block/components/embed-iframe-link-edit-popup.ts": [
-      "Link"
-    ],
-    "packages/affine/blocks/embed/src/embed-iframe-block/components/embed-iframe-link-input-base.ts": [
-      "Error in embed iframe creation",
-      "Invalid URL",
-      "Please enter a valid URL",
-      "Please try again"
-    ],
-    "packages/affine/blocks/embed/src/embed-iframe-block/components/embed-iframe-link-input-popup.ts": [
-      "Embed Link",
-      "Paste the Embed link...",
-      "Works with links of Google Drive, Spotify…"
-    ],
-    "packages/affine/blocks/embed/src/embed-iframe-block/components/embed-iframe-loading-card.ts": [
-      "Loading..."
-    ],
-    "packages/affine/blocks/embed/src/embed-iframe-block/configs/slash-menu/slash-menu.ts": [
-      "Embed",
-      "Embed",
-      "For Google Drive, and more."
-    ],
-    "packages/affine/blocks/embed/src/embed-iframe-block/configs/toolbar.ts": [
-      "Caption",
-      "Create Linked Doc",
-      "Original",
-      "Reload"
-    ],
-    "packages/affine/blocks/embed/src/embed-iframe-block/embed-iframe-block.ts": [
-      "Please set a link to the block"
-    ],
-    "packages/affine/blocks/frame/src/edgeless-toolbar/frame-dense-menu.ts": [
-      "Custom",
-      "Frame",
-      "Slide ${}"
-    ],
-    "packages/affine/blocks/frame/src/edgeless-toolbar/frame-menu.ts": [
-      "Custom"
-    ],
-    "packages/affine/blocks/frame/src/edgeless-toolbar/presentation-toolbar.ts": [
-      "Next",
-      "Previous",
-      "The presentation requires at least 1 frame. You can firstly create a frame.",
-      "You have reached the first frame",
-      "You have reached the last frame"
-    ],
-    "packages/affine/blocks/frame/src/frame-toolbar.ts": [
-      "Background",
-      "Frame has been inserted into doc",
-      "Frame has been inserted into doc",
-      "Insert into Page",
-      "Insert into Page",
-      "Rename",
-      "Ungroup"
-    ],
-    "packages/affine/blocks/frame/src/present/navigator-setting-button.ts": [
-      "Black background",
-      "Frame Order",
-      "Hide toolbar",
-      "Playback Settings"
-    ],
-    "packages/affine/blocks/frame/src/present/present-button.ts": [
-      "Present"
-    ],
-    "packages/affine/blocks/image/src/configs/slash-menu.ts": [
-      "Image",
-      "Insert an image.",
-      "Photo"
-    ],
-    "packages/affine/blocks/image/src/configs/toolbar.ts": [
-      "Caption",
-      "Caption",
-      "Download",
-      "Download",
-      "Turn into card view"
-    ],
-    "packages/affine/blocks/image/src/image-block.ts": [
-      "Image"
-    ],
-    "packages/affine/blocks/image/src/image-edgeless-block.ts": [
-      "Image"
-    ],
-    "packages/affine/blocks/image/src/preview-image/page.ts": [
-      "Image Block"
-    ],
-    "packages/affine/blocks/image/src/utils.ts": [
-      "Copied image to clipboard",
-      "Download in progress...",
-      "Downloading image...",
-      "Failed to download image!",
-      "Failed to read image size, please try another image",
-      "You can only upload files less than ${}"
     ],
     "packages/affine/blocks/latex/src/configs/slash-menu.ts": [
       "Create a equation block.",
@@ -960,7 +739,6 @@
     ],
     "packages/affine/blocks/root/src/configs/toolbar.ts": [
       "Conversions",
-      "Create Linked Doc",
       "Create Table",
       "Turn into"
     ],
@@ -971,8 +749,6 @@
       "Align objects",
       "Align objects",
       "Click to unlock",
-      "Frame",
-      "Frame",
       "Release from group"
     ],
     "packages/affine/blocks/root/src/edgeless/configs/toolbar/more.ts": [
@@ -980,30 +756,12 @@
       "Edit link",
       "Frame section",
       "Group section",
-      "Reload",
       "Remove link",
       "Send Backward",
       "Turn into linked doc"
     ],
     "packages/affine/blocks/root/src/edgeless/edgeless-keyboard.ts": [
       "Zoom to selection"
-    ],
-    "packages/affine/blocks/surface-ref/src/configs/slash-menu.ts": [
-      "Edgeless",
-      "Edgeless",
-      "Edgeless",
-      "Frame",
-      "Frame",
-      "Frame:",
-      "Group:",
-      "Insert a blank frame",
-      "Insert a mind map"
-    ],
-    "packages/affine/blocks/surface-ref/src/utils.ts": [
-      "Edgeless content",
-      "Frame",
-      "Group",
-      "Mind map"
     ],
     "packages/affine/blocks/surface/src/extensions/interchange-import.ts": [
       "${} ${}"
@@ -1116,20 +874,6 @@
       "Title",
       "true"
     ],
-    "packages/affine/fragments/frame-panel/src/body/frame-panel-body.ts": [
-      "Add frames to organize and present your Edgeless"
-    ],
-    "packages/affine/fragments/frame-panel/src/header/frame-panel-header.ts": [
-      "All frames",
-      "Presentation"
-    ],
-    "packages/affine/fragments/frame-panel/src/header/frames-setting-menu.ts": [
-      "Dark background",
-      "Fill Screen",
-      "Hide toolbar",
-      "Playback Settings",
-      "Preview Settings"
-    ],
     "packages/affine/fragments/outline/src/body/outline-notice.ts": [
       "Click here or",
       "SOME CONTENTS HIDDEN",
@@ -1139,9 +883,6 @@
     "packages/affine/fragments/outline/src/body/outline-panel-body.ts": [
       "Hidden Contents",
       "Use headings to create a table of contents."
-    ],
-    "packages/affine/fragments/outline/src/card/outline-preview.ts": [
-      "Untitled"
     ],
     "packages/affine/fragments/outline/src/header/outline-panel-header.ts": [
       "Table of Contents",
@@ -1438,7 +1179,6 @@
     "packages/affine/inlines/link/src/link-node/configs/toolbar.ts": [
       "Copied link to clipboard",
       "Copy link",
-      "Edit",
       "Remove link"
     ],
     "packages/affine/inlines/link/src/link-node/link-popup/link-popup.ts": [

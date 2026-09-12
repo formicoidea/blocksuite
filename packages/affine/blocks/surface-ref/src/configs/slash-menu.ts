@@ -1,7 +1,7 @@
 import { EdgelessFrameManagerIdentifier } from '@labre/affine-block-frame';
 import { EdgelessCRUDExtension } from '@labre/affine-block-surface';
 import { MindmapStyle, SurfaceRefBlockSchema } from '@labre/affine-model';
-import { translateKey } from '@labre/affine-shared/services';
+import { TOOLBAR_FRAME, translateKey } from '@labre/affine-shared/services';
 import {
   type SlashMenuActionItem,
   type SlashMenuConfig,
@@ -17,6 +17,12 @@ import { insertSurfaceRefBlockCommand } from '../commands';
 import {
   SURFACE_REF_SEED_MINDMAP_NODE,
   SURFACE_REF_SEED_MINDMAP_ROOT,
+  SURFACE_REF_SLASH_FRAME_DESCRIPTION,
+  SURFACE_REF_SLASH_FRAME_ITEM_NAME,
+  SURFACE_REF_SLASH_GROUP_ITEM_NAME,
+  SURFACE_REF_SLASH_MINDMAP_DESCRIPTION,
+  SURFACE_REF_SLASH_MINDMAP_NAME,
+  SURFACE_REF_SLASH_TOOLTIP_EDGELESS,
 } from '../translations';
 import { EdgelessTooltip, FrameTooltip, MindMapTooltip } from './tooltips';
 
@@ -58,11 +64,14 @@ const surfaceRefSlashMenuConfig: SlashMenuConfig = {
 
     const insertBlankFrameItem: SlashMenuItem = {
       name: 'Frame',
+      nameWording: TOOLBAR_FRAME,
       description: 'Insert a blank frame',
+      descriptionWording: SURFACE_REF_SLASH_FRAME_DESCRIPTION,
       icon: FrameIcon(),
       tooltip: {
         figure: FrameTooltip,
         caption: 'Frame',
+        captionWording: TOOLBAR_FRAME,
       },
       group: `5_Edgeless Element@${index++}`,
       action: () => {
@@ -74,11 +83,14 @@ const surfaceRefSlashMenuConfig: SlashMenuConfig = {
 
     const insertMindMapItem: SlashMenuItem = {
       name: 'Mind Map',
+      nameWording: SURFACE_REF_SLASH_MINDMAP_NAME,
       description: 'Insert a mind map',
+      descriptionWording: SURFACE_REF_SLASH_MINDMAP_DESCRIPTION,
       icon: MindmapIcon(),
       tooltip: {
         figure: MindMapTooltip,
         caption: 'Edgeless',
+        captionWording: SURFACE_REF_SLASH_TOOLTIP_EDGELESS,
       },
       group: `5_Edgeless Element@${index++}`,
       action: () => {
@@ -131,12 +143,15 @@ const surfaceRefSlashMenuConfig: SlashMenuConfig = {
     };
 
     const frameItems = frameMgr.frames.map<SlashMenuActionItem>(frameModel => ({
-      name: 'Frame: ' + frameModel.props.title,
+      name: translateKey(std, ...SURFACE_REF_SLASH_FRAME_ITEM_NAME, {
+        title: frameModel.props.title.toString(),
+      }),
       icon: FrameIcon(),
       group: `5_Edgeless Element@${index++}`,
       tooltip: {
         figure: EdgelessTooltip,
         caption: 'Edgeless',
+        captionWording: SURFACE_REF_SLASH_TOOLTIP_EDGELESS,
       },
       action: () => {
         insertSurfaceRefAndSelect(frameModel.id);
@@ -145,12 +160,15 @@ const surfaceRefSlashMenuConfig: SlashMenuConfig = {
 
     const groupElements = crud.getElementsByType('group');
     const groupItems = groupElements.map<SlashMenuActionItem>(group => ({
-      name: 'Group: ' + group.title.toString(),
+      name: translateKey(std, ...SURFACE_REF_SLASH_GROUP_ITEM_NAME, {
+        title: group.title.toString(),
+      }),
       icon: GroupingIcon(),
       group: `5_Edgeless Element@${index++}`,
       tooltip: {
         figure: EdgelessTooltip,
         caption: 'Edgeless',
+        captionWording: SURFACE_REF_SLASH_TOOLTIP_EDGELESS,
       },
       action: () => {
         insertSurfaceRefAndSelect(group.id);
