@@ -90,4 +90,26 @@ describe('a placed component speaks the inserting editor’s language', () => {
     const boundary = Object.values(elements).find(el => el.name !== undefined);
     expect(boundary?.name).toBe(shout('com.labre.c4.seed.boundary-system'));
   });
+
+  /**
+   * The type line is SEMI-derived (`type-line.ts`): the bracketed word comes
+   * from `kind`, the technology slot is a prompt. Both halves go through
+   * `c4TypePlaceholder`, which is `translateKey` under the hood — so a
+   * "Container" dropped in a translated host starts with a type line in that
+   * language, exactly like the title and description tiers above (#3 of this
+   * lot: the type line no longer stays English-only at placement).
+   */
+  it('"Container" resolves its type line through the host catalogue', () => {
+    const localized = named('Container').localize!(hostWith(shout));
+    expect(textOf(localized, 'c4:type-line')).toBe(
+      `[${shout('com.labre.c4.type.container')}: ${shout('com.labre.c4.type.technology-placeholder')}]`
+    );
+  });
+
+  it('"Person" — which states no technology — resolves only the bracketed word', () => {
+    const localized = named('Person').localize!(hostWith(shout));
+    expect(textOf(localized, 'c4:type-line')).toBe(
+      `[${shout('com.labre.c4.type.person')}]`
+    );
+  });
 });

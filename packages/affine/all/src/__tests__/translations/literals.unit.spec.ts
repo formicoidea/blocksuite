@@ -369,6 +369,28 @@ const KEPT_HITS: readonly { file: string; text: string }[] = [
     text: 'true',
   },
 
+  // The `.bpmn` writer's XML PROLOG — `<?xml version="1.0" encoding="UTF-8"?>`
+  // — matched by P3 because it sits after `text: `. It is markup, not prose:
+  // no host ever shows it, and no translator could do anything with it.
+  {
+    file: 'packages/affine/gfx/bpmn/src/export.ts',
+    text: '<?xml version="1.0" encoding="UTF-8"?>n${}n',
+  },
+
+  // `TemplateCategory.name` reused as the fallback of an EXISTING senior-button
+  // key (`com.labre.framework.wardley` / `.c4`) whose OWN registered manifest
+  // fallback is longer ("Wardley map" / "C4 model") — the templates-panel tab
+  // deliberately shows the SHORTER form (`nameKey` resolves with `name`, not
+  // the manifest's fallback, as its own fallback: `TemplateCategory.nameKey`).
+  // Already keyed and functionally translated; not a hit this spec's
+  // fallback-matching can see, because the two call sites of one key state two
+  // different English strings on purpose.
+  {
+    file: 'packages/affine/gfx/wardley/src/templates/index.ts',
+    text: 'Wardley',
+  },
+  { file: 'packages/affine/gfx/c4/src/templates.ts', text: 'C4' },
+
   // Named here for the paper trail, but NOT above, because the detector
   // never turns them into a hit in the first place:
   // - `name: 'Cynefin / Estuarine'` (gfx/cynefin-estuarine/toolbar/senior-tool.ts)

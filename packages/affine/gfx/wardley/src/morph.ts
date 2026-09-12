@@ -9,6 +9,8 @@ import {
   TextElementModel,
   WardleyNodeElementModel,
 } from '@labre/affine-model';
+import { translateKey } from '@labre/affine-shared/services';
+import type { BlockStdScope } from '@labre/std';
 import type { GfxModel, GfxPrimitiveElementModel } from '@labre/std/gfx';
 import type { TemplateResult } from 'lit';
 
@@ -24,6 +26,7 @@ import {
   WARDLEY_NODE_LABEL,
   wardleyMorphClears,
   wardleyMorphProps,
+  wardleyNodeLabelKey,
 } from './presets';
 import { WARDLEY_ROLE } from './roles';
 
@@ -192,15 +195,31 @@ export function wardleyNodeOfComponent(
  *
  * Pure and total over every string: the input is a canvas text element somebody
  * may have typed anything into.
+ *
+ * `std` is OPTIONAL: "untouched" means equal to the English prompt OR to the
+ * host's own resolved wording for `from`'s kind, and the target's prompt is
+ * likewise resolved through the host when one is given — mirroring
+ * `c4MorphedTypeLine`'s fix for the identical class of gap. With no `std`
+ * this behaves exactly as it always has (English only). The residual gap:
+ * the morph toolbar's `afterMorph` callback (`MorphSpec`,
+ * `packages/affine/blocks/surface`, a package this lot does not own) does not
+ * hand its callee a `std` today, so `rewriteLabel` below still cannot pass
+ * one — see `notes`.
  */
 export function wardleyMorphedLabel(
   from: WardleyMorphKind,
   to: WardleyMorphKind,
-  rawText: string | null | undefined
+  rawText: string | null | undefined,
+  std?: BlockStdScope
 ): string | null {
-  return (rawText ?? '').trim() === WARDLEY_NODE_LABEL[from]
-    ? WARDLEY_NODE_LABEL[to]
-    : null;
+  const text = (rawText ?? '').trim();
+  const fromPrompt = std
+    ? translateKey(std, wardleyNodeLabelKey(from), WARDLEY_NODE_LABEL[from])
+    : WARDLEY_NODE_LABEL[from];
+  if (text !== WARDLEY_NODE_LABEL[from] && text !== fromPrompt) return null;
+  return std
+    ? translateKey(std, wardleyNodeLabelKey(to), WARDLEY_NODE_LABEL[to])
+    : WARDLEY_NODE_LABEL[to];
 }
 
 /** The centre of an element, from the box it currently occupies. */

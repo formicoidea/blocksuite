@@ -13,8 +13,17 @@
       "Group",
       "Mind Map"
     ],
+    "packages/affine/gfx/bpmn/src/export.ts": [
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>n${}n"
+    ],
+    "packages/affine/gfx/c4/src/templates.ts": [
+      "C4"
+    ],
     "packages/affine/gfx/text/src/toolbar/actions.ts": [
       "Aa"
+    ],
+    "packages/affine/gfx/wardley/src/templates/index.ts": [
+      "Wardley"
     ]
   },
   "deferred": {
@@ -639,9 +648,6 @@
     "packages/affine/fragments/doc-title/src/doc-title.ts": [
       "true"
     ],
-    "packages/affine/gfx/bpmn/src/export.ts": [
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>n${}n"
-    ],
     "packages/affine/gfx/bpmn/src/import.ts": [
       "${bands.length === 1 ? 'This lane' :",
       "${} ${}",
@@ -659,32 +665,6 @@
     "packages/affine/gfx/brush/src/toolbar/senior-tool.ts": [
       "Pen"
     ],
-    "packages/affine/gfx/c4/src/legend.ts": [
-      "Elements",
-      "Frames",
-      "Legend",
-      "Relations"
-    ],
-    "packages/affine/gfx/c4/src/templates.ts": [
-      "C4"
-    ],
-    "packages/affine/gfx/cynefin-estuarine/src/cynefin/consts.ts": [
-      "Aporia",
-      "Confusion",
-      "prepare to exit"
-    ],
-    "packages/affine/gfx/cynefin-estuarine/src/estuarine/consts.ts": [
-      "COUNTER FACTUAL",
-      "LIMINAL",
-      "VOLATILE"
-    ],
-    "packages/affine/gfx/cynefin-estuarine/src/templates/index.ts": [
-      "Cynefin",
-      "Estuarine"
-    ],
-    "packages/affine/gfx/edgy/src/legend.ts": [
-      "Base elements"
-    ],
     "packages/affine/gfx/shape/src/toolbar/senior-tool.ts": [
       "Shape"
     ],
@@ -693,15 +673,7 @@
     ],
     "packages/affine/gfx/wardley/src/import.ts": [
       "${} `${}` line${} kept verbatim on the map and written back on the next export. Nothing on this canvas draws ${}.",
-      "a link names nothing on one of its ends, so the arrow it asks for runs to no artefact and is invisible on the canvas.",
-      "a link names this, and no statement in the file declares it. The arrow is in the document and runs to no artefact, so it is invisible on the canvas.",
-      "line ${} declares coordinates this reader cannot make a number of, so they were not used.",
-      "this name is declared more than once. Both artefacts are on the map, and every link naming it means the first — OWM identifies a component by its name."
-    ],
-    "packages/affine/gfx/wardley/src/legend.ts": [
-      "Gradient representing the growth of Wardley's evolution function.",
-      "Gradient: investment (red) then benefit (green).",
-      "Opportunity gradient: differential value (green) vs operational value (red)."
+      "line ${} declares coordinates this reader cannot make a number of, so they were not used."
     ],
     "packages/affine/gfx/wardley/src/natures.ts": [
       "A way of doing — a method, a convention, an operating model.",
@@ -714,9 +686,6 @@
       "Wardley",
       "What kind of thing this component is: an activity, data, a practice or knowledge.",
       "Which of Porter's forces this glyph marks: relative competition, a struggle for survival, or a struggle to establish."
-    ],
-    "packages/affine/gfx/wardley/src/templates/index.ts": [
-      "Wardley"
     ],
     "packages/affine/shared/src/consts/bracket-pairs.ts": [
       "corner bracket",

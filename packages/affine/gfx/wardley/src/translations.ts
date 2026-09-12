@@ -11,6 +11,8 @@ import { WARDLEY_AXIS_SEED } from './actions.js';
 import { WARDLEY_AUDIT_CRITERIA } from './audit-criteria.js';
 import { WARDLEY_BACKGROUND } from './background.js';
 import { wardleyCommands } from './commands.js';
+import { WARDLEY_OWM_IMPORT_REMARKS } from './import.js';
+import { WARDLEY_LEGEND_WORDINGS } from './legend.js';
 import { WARDLEY_TAG_DEFS } from './natures.js';
 import { WARDLEY_NUDGES } from './nudges.js';
 import { WARDLEY_NODE_LABEL, wardleyNodeLabelKey } from './presets.js';
@@ -19,6 +21,7 @@ import { WARDLEY_READING } from './reading.js';
 import { WARDLEY_ROLES } from './roles.js';
 import { WARDLEY_RULES } from './rules.js';
 import { KODAK_INERTIA_SEED, TEA_SHOP_SEED } from './templates/maps.js';
+import { WARDLEY_TOOLBAR_WORDINGS } from './toolbar/config.js';
 
 /**
  * The prompt every labelled artefact is created NEXT TO — the fallback IS
@@ -47,6 +50,35 @@ const exampleSeedEntries = (): TranslationKeyManifestEntry[] =>
   [...Object.values(TEA_SHOP_SEED), ...Object.values(KODAK_INERTIA_SEED)].map(
     ({ key, fallback }) => ({ key, fallback, source: 'seed' as const })
   );
+
+/**
+ * The auto-legend's own wordings — title, row captions, gradient blocks and
+ * the Porter panel — derived from `legend.ts`'s own `WARDLEY_LEGEND_WORDINGS`,
+ * the very table `createWardleyLegend` reads when it writes the group onto
+ * the canvas.
+ */
+const legendSeedEntries = (): TranslationKeyManifestEntry[] =>
+  WARDLEY_LEGEND_WORDINGS.map(([key, fallback]) => ({
+    key,
+    fallback,
+    source: 'seed' as const,
+  }));
+
+/** The toolbar tooltips this framework used to hard-code as English literals. */
+const toolbarChromeEntries = (): TranslationKeyManifestEntry[] =>
+  WARDLEY_TOOLBAR_WORDINGS.map(([key, fallback]) => ({
+    key,
+    fallback,
+    source: 'chrome' as const,
+  }));
+
+/** The five fixed-wording OWM import remarks ({@link WARDLEY_OWM_IMPORT_REMARKS}). */
+const importRemarkEntries = (): TranslationKeyManifestEntry[] =>
+  Object.values(WARDLEY_OWM_IMPORT_REMARKS).map(([key, english]) => ({
+    key,
+    fallback: english,
+    source: 'chrome' as const,
+  }));
 
 /**
  * THIS framework's contribution to the translation-key manifest — every
@@ -80,6 +112,9 @@ export const wardleyTranslationEntries: TranslationKeyManifestEntry[] =
     nodeSeedEntries(),
     axisSeedEntries(),
     exampleSeedEntries(),
+    legendSeedEntries(),
+    toolbarChromeEntries(),
+    importRemarkEntries(),
     collectTranslationKeys('reading', WARDLEY_READING),
     // The library's own tag pack (`WARDLEY_TAG_DEFS`) — the natures and the
     // Porter competition tags. A host's app-seeded pack needs no entry here:
