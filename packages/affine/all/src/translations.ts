@@ -1,11 +1,22 @@
-import { FRAME_WORDINGS } from '@labre/affine-block-frame/translations';
+import { ATTACHMENT_WORDINGS } from '@labre/affine-block-attachment/translations';
+import { BOOKMARK_WORDINGS } from '@labre/affine-block-bookmark/translations';
+import { EMBED_WORDINGS } from '@labre/affine-block-embed/translations';
+import { EMBED_DOC_WORDINGS } from '@labre/affine-block-embed-doc/translations';
+import {
+  FRAME_CHROME_WORDINGS,
+  FRAME_WORDINGS,
+} from '@labre/affine-block-frame/translations';
+import { IMAGE_WORDINGS } from '@labre/affine-block-image/translations';
 import {
   EXEMPTION_FALLBACK,
   PROVENANCE_FALLBACK,
   SEVERITY_FALLBACK,
   SVG_SKETCH_WORDINGS,
 } from '@labre/affine-block-surface';
-import { SURFACE_REF_WORDINGS } from '@labre/affine-block-surface-ref/translations';
+import {
+  SURFACE_REF_CHROME_WORDINGS,
+  SURFACE_REF_WORDINGS,
+} from '@labre/affine-block-surface-ref/translations';
 import { ADAPTER_PANEL_WORDINGS } from '@labre/affine-fragment-adapter-panel/translations';
 import { DOC_TITLE_WORDINGS } from '@labre/affine-fragment-doc-title/translations';
 import { OUTLINE_WORDINGS } from '@labre/affine-fragment-outline/translations';
@@ -34,6 +45,7 @@ import {
 } from '@labre/affine-gfx-mindmap/translations';
 import { SHAPE_WORDINGS } from '@labre/affine-gfx-shape/translations';
 import { POINTER_WORDINGS } from '@labre/affine-gfx-pointer/translations';
+import { FRAME_PANEL_WORDINGS } from '@labre/affine-fragment-frame-panel/translations';
 import {
   TEMPLATE_PACKAGE_WORDINGS,
   TEMPLATE_SEED_WORDINGS,
@@ -385,6 +397,14 @@ const PACKAGE_WORDINGS: readonly (readonly ChromeWording[])[] = [
   ROOT_CHROME_WORDINGS,
   SVG_SKETCH_WORDINGS,
   STD_WORDINGS,
+  ATTACHMENT_WORDINGS,
+  BOOKMARK_WORDINGS,
+  IMAGE_WORDINGS,
+  EMBED_WORDINGS,
+  EMBED_DOC_WORDINGS,
+  SURFACE_REF_CHROME_WORDINGS,
+  FRAME_CHROME_WORDINGS,
+  FRAME_PANEL_WORDINGS,
 ];
 
 /**
