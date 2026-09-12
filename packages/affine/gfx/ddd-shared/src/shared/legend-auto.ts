@@ -97,6 +97,15 @@ export interface AutoLegendSpec {
    * the day a host ships a locale pack it translates a key, not a leftover).
    */
   title: string;
+  /**
+   * i18n key for {@link title}, resolved through the host's catalogue at
+   * legend-build time — the same mechanism as
+   * {@link AutoLegendSectionSpec.titleKey}, one level up. Every framework that
+   * says "Legend" reuses `BOARD_LEGEND_TITLE`
+   * (`@labre/affine-shared/services`), since it is the SAME word on every
+   * board that has one.
+   */
+  titleKey?: string;
   width?: number;
   /**
    * The framework's role vocabulary, so a present role is matched against an
@@ -255,6 +264,9 @@ export function createAutoLegend(
 
   const bound = Bound.deserialize(background.xywh);
   const sections = autoLegendSections(rolesInBound(gfx, bound), spec, std);
+  const title = spec.titleKey
+    ? translateKey(std, spec.titleKey, spec.title)
+    : spec.title;
   const { height } = measureLegend(sections, spec.width);
 
   std.store.captureSync();
@@ -263,7 +275,7 @@ export function createAutoLegend(
     std,
     bound.x + INSET_X,
     bound.y + bound.h - INSET_BOTTOM - height,
-    { title: spec.title, sections, width: spec.width }
+    { title, sections, width: spec.width }
   );
   gfx.selection.set({ elements: [id], editing: false });
   return id;

@@ -163,7 +163,7 @@ const formatLabel = (format: InterchangeFormat) => format.id.toUpperCase();
  */
 function remarkLine(std: BlockStdScope, note: InterchangeNote): string {
   const message = note.messageKey
-    ? translateKey(std, note.messageKey, note.message)
+    ? translateKey(std, note.messageKey, note.message, note.messageParams)
     : note.message;
   const subject = note.sourceId ?? note.element;
   return subject ? `${subject}: ${message}` : message;

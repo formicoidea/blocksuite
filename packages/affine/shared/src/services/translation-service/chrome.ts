@@ -527,6 +527,64 @@ export const BLOCK_TYPE_DIVIDER_DESCRIPTION: ChromeWording = [
 ];
 
 /**
+ * The auto-legend BOX title every framework's `createAutoLegend` draws
+ * (`AutoLegendSpec.title`, `@labre/affine-gfx-ddd-shared`) — "Legend" itself,
+ * distinct from the {@link BOARD_LEGEND_NOTATION} / {@link BOARD_LEGEND_COMPONENTS}
+ * toolbar BUTTONS that create it. Declared here because it is the same word on
+ * every board that has one (the three DDD tools today; EDGY's own legend
+ * still says it as a literal until that lot converts it).
+ */
+export const BOARD_LEGEND_TITLE: ChromeWording = [
+  'com.labre.board.legend.title',
+  'Legend',
+];
+
+/* ── Undo, wherever a quick-tool or a notification offers it ──────────── */
+
+/**
+ * "Undo" said by the link package's quick-tool button (dense + full) and by
+ * the generic notification's own undo action
+ * (`services/notification-service.ts`) — the SAME word in two packages, one
+ * key.
+ */
+export const TOOLBAR_UNDO: ChromeWording = ['com.labre.toolbar.undo', 'Undo'];
+
+/* ── The block comment toolbar button ─────────────────────────────────── */
+
+export const TOOLBAR_COMMENT: ChromeWording = [
+  'com.labre.toolbar.comment',
+  'Comment',
+];
+
+/* ── A document with no title ─────────────────────────────────────────── */
+
+/**
+ * "Untitled" — `DEFAULT_DOC_NAME` (`shared/src/consts/text.ts`) and the PNG
+ * export's own fallback filename (`blocks/surface`'s `export-manager.ts`) say
+ * the exact same word for the exact same situation (a doc with no title),
+ * so one key serves both.
+ */
+export const CHROME_UNTITLED = DOC_UNTITLED;
+
+/** The doc-display-meta service's own fallback for a doc that no longer exists. */
+export const CHROME_DELETED_DOC: ChromeWording = [
+  'com.labre.doc.deleted',
+  'Deleted doc',
+];
+
+/* ── Clipboard size-limit toasts (adapters/clipboard/utils.ts) ────────── */
+
+export const CHROME_CLIPBOARD_FILE_TOO_LARGE: ChromeWording = [
+  'com.labre.clipboard.file-too-large',
+  'File is too large to be copied',
+];
+
+export const CHROME_CLIPBOARD_SIZE_LIMIT: ChromeWording = [
+  'com.labre.clipboard.size-limit',
+  'File cannot be copied due to the clipboard size limit',
+];
+
+/**
  * Every wording declared above, in declaration order.
  *
  * The manifest (`@labre/affine/translations`) walks this instead of restating
@@ -632,4 +690,11 @@ export const CHROME_WORDINGS: readonly ChromeWording[] = [
   BLOCK_TYPE_QUOTE_DESCRIPTION,
   BLOCK_TYPE_DIVIDER,
   BLOCK_TYPE_DIVIDER_DESCRIPTION,
+  BOARD_LEGEND_TITLE,
+  TOOLBAR_UNDO,
+  TOOLBAR_COMMENT,
+
+  CHROME_DELETED_DOC,
+  CHROME_CLIPBOARD_FILE_TOO_LARGE,
+  CHROME_CLIPBOARD_SIZE_LIMIT,
 ];

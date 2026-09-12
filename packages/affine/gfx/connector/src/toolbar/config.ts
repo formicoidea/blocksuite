@@ -23,6 +23,7 @@ import {
   type ToolbarGenericAction,
   type ToolbarModuleConfig,
   ToolbarModuleExtension,
+  translateKey,
 } from '@labre/affine-shared/services';
 import {
   getMostCommonResolvedValue,
@@ -70,6 +71,17 @@ import {
   roleVocabularies,
 } from '../direction/typed-edge';
 import { mountConnectorLabelEditor } from '../text';
+import {
+  CONNECTOR_ADD_TEXT,
+  CONNECTOR_LABEL_END_POINT_STYLE,
+  CONNECTOR_LABEL_SHAPE,
+  CONNECTOR_LABEL_START_POINT_STYLE,
+  CONNECTOR_LABEL_STROKE_STYLE,
+  CONNECTOR_LABEL_STYLE,
+  CONNECTOR_MODE_WORDING,
+  CONNECTOR_TOOLTIP_CONNECTOR_SHAPE,
+  CONNECTOR_TOOLTIP_FLIP_DIRECTION,
+} from '../translations';
 
 const FRONT_ENDPOINT_STYLE_LIST = [
   {
@@ -201,7 +213,7 @@ export const connectorToolbarConfig = {
         return html`
           <edgeless-color-picker-button
             class="stroke-color"
-            .label="${'Stroke style'}"
+            .label="${translateKey(ctx.std, ...CONNECTOR_LABEL_STROKE_STYLE)}"
             .pick=${onPickColor}
             .color=${stroke}
             .theme=${theme}
@@ -242,7 +254,7 @@ export const connectorToolbarConfig = {
         };
 
         return renderMenu({
-          label: 'Style',
+          label: translateKey(ctx.std, ...CONNECTOR_LABEL_STYLE),
           items: LINE_STYLE_LIST,
           currentValue: rough,
           onPick,
@@ -266,7 +278,10 @@ export const connectorToolbarConfig = {
             };
 
             return renderMenu({
-              label: 'Start point style',
+              label: translateKey(
+                ctx.std,
+                ...CONNECTOR_LABEL_START_POINT_STYLE
+              ),
               items: FRONT_ENDPOINT_STYLE_LIST,
               currentValue: pointStyle,
               onPick,
@@ -277,6 +292,7 @@ export const connectorToolbarConfig = {
           id: 'b.flip-direction',
           icon: FlipDirectionIcon(),
           tooltip: 'Flip direction',
+          tooltipWording: CONNECTOR_TOOLTIP_FLIP_DIRECTION,
           /**
            * Hidden for a TYPED EDGE (`docs/adr/0010` M3).
            *
@@ -338,7 +354,7 @@ export const connectorToolbarConfig = {
             };
 
             return renderMenu({
-              label: 'End point style',
+              label: translateKey(ctx.std, ...CONNECTOR_LABEL_END_POINT_STYLE),
               items: REAR_ENDPOINT_STYLE_LIST,
               currentValue: pointStyle,
               onPick,
@@ -408,10 +424,18 @@ export const connectorToolbarConfig = {
               updateModelsWith(ctx, models, field, value);
             };
 
+            const items = CONNECTOR_MODE_LIST.map(item => ({
+              ...item,
+              key: translateKey(ctx.std, ...CONNECTOR_MODE_WORDING[item.value]),
+            }));
+
             return renderMenu({
-              label: 'Shape',
-              tooltip: 'Connector shape',
-              items: CONNECTOR_MODE_LIST,
+              label: translateKey(ctx.std, ...CONNECTOR_LABEL_SHAPE),
+              tooltip: translateKey(
+                ctx.std,
+                ...CONNECTOR_TOOLTIP_CONNECTOR_SHAPE
+              ),
+              items,
               currentValue: mode,
               onPick,
             });
@@ -422,6 +446,7 @@ export const connectorToolbarConfig = {
     {
       id: 'g.text',
       tooltip: 'Add text',
+      tooltipWording: CONNECTOR_ADD_TEXT,
       icon: AddTextIcon(),
       when(ctx) {
         const models = ctx.getSurfaceModelsByType(ConnectorElementModel);
