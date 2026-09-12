@@ -41,7 +41,7 @@ const stdWith = (service?: TranslationService) =>
 /** A tiny fake catalogue: French for the wordings this test exercises. */
 const FR: Record<string, string> = {
   'com.labre.slash-menu.date.today': "Aujourd'hui",
-  'com.labre.slash-menu.actions.move-up': 'Monter',
+  'com.labre.toolbar.move-up': 'Monter',
   'com.labre.slash-menu.actions.move-up.description':
     'Déplacer cette ligne vers le haut.',
   'com.labre.slash-menu.actions.copy-duplicate.caption': 'Copier / Dupliquer',

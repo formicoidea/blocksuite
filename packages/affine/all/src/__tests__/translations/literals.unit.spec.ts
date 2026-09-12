@@ -356,6 +356,19 @@ const KEPT_HITS: readonly { file: string; text: string }[] = [
   // "Aa" — the font-menu button's example glyph, not a word to translate.
   { file: 'packages/affine/gfx/text/src/toolbar/actions.ts', text: 'Aa' },
 
+  // `[data-v-text="true"]` — a CSS attribute SELECTOR in a query string, not
+  // prose. P2's plain-attribute pattern matches "text=" inside "data-v-text="
+  // and captures the selector's own value ("true") as if it were a rendered
+  // attribute. Same shape in both the list and paragraph turbo painters.
+  {
+    file: 'packages/affine/blocks/list/src/turbo/list-layout-handler.ts',
+    text: 'true',
+  },
+  {
+    file: 'packages/affine/blocks/paragraph/src/turbo/paragraph-layout-handler.ts',
+    text: 'true',
+  },
+
   // Named here for the paper trail, but NOT above, because the detector
   // never turns them into a hit in the first place:
   // - `name: 'Cynefin / Estuarine'` (gfx/cynefin-estuarine/toolbar/senior-tool.ts)
