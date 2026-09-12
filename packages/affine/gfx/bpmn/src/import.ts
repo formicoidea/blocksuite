@@ -44,12 +44,13 @@ import { BPMN_ROLE } from './roles.js';
  * fallback, so the console table and a playground with no catalogue read
  * exactly what they read before.
  *
- * These three and no others, and the line is not arbitrary: every remaining
- * remark NAMES something out of the file — `<boundaryEvent>`, an id, a count of
- * lanes — and the seam has neither interpolation nor pluralisation. A key for
- * one of those would be a sentence with holes in it that a translator cannot
- * see the shape of, which is the same refusal the interchange count labels
- * already make (`interchange-import.ts`).
+ * Only these three and {@link BPMN_QUARANTINE_REASON} (declared further down,
+ * with its own key pairing) — every OTHER remark NAMES something out of the
+ * file — `<boundaryEvent>`, an id, a count of lanes — and the seam has neither
+ * interpolation nor pluralisation. A key for one of those would be a sentence
+ * with holes in it that a translator cannot see the shape of, which is the
+ * same refusal the interchange count labels already make
+ * (`interchange-import.ts`).
  *
  * They are contributed to the manifest by `./translations.ts`, with the
  * framework, because they ship in the BPMN bundle rather than in core.
@@ -269,6 +270,29 @@ export const BPMN_QUARANTINE_REASON = {
     'self-contained set), so writing this back would claim a resolution of ' +
     'another document that never happened.',
 } as const;
+
+/**
+ * {@link BPMN_QUARANTINE_REASON}'s own i18n keys, one per reason.
+ *
+ * A SEPARATE table rather than folding the key into each reason string
+ * (`BPMN_IMPORT_REMARKS`'s `[key, english]` shape): `BPMN_QUARANTINE_REASON`'s
+ * plain strings are ALSO written verbatim into
+ * `ForeignInterchange.quarantined[].reason` — a DATA field the reader hands
+ * the writer, never re-emitted, never shown, and pinned in
+ * `import.unit.spec.ts` as the literal English text — so it cannot become a
+ * tuple without breaking that contract. Only the REPORT note (`messageKey`
+ * below) is resolved through the host's catalogue; the carried `reason` data
+ * stays English, exactly as it always has.
+ */
+export const BPMN_QUARANTINE_REASON_KEY: Record<
+  keyof typeof BPMN_QUARANTINE_REASON,
+  string
+> = {
+  colour: 'com.labre.bpmn.import.quarantine.colour',
+  expanded: 'com.labre.bpmn.import.quarantine.expanded',
+  nestedLanes: 'com.labre.bpmn.import.quarantine.nested-lanes',
+  imported: 'com.labre.bpmn.import.quarantine.imported',
+};
 
 /**
  * The children of an activity that are NOT its body.
@@ -870,14 +894,24 @@ export function importBpmnXml(
     payload: ForeignInterchange,
     fragment: string,
     reason: string,
-    entry: Omit<InterchangeNote, 'kind' | 'message'>
+    entry: Omit<InterchangeNote, 'kind' | 'message'>,
+    // The reason's OWN key ({@link BPMN_QUARANTINE_REASON_KEY}) — separate
+    // from `reason` because that string is also written into
+    // `payload.quarantined[].reason` (data, never translated); only the
+    // REPORT note below carries the key.
+    reasonKey?: string
   ) => {
     payload.quarantined = [
       ...(payload.quarantined ?? []),
       { fragment, reason },
     ];
     quarantined++;
-    note({ kind: 'quarantined', ...entry, message: reason });
+    note({
+      kind: 'quarantined',
+      ...entry,
+      message: reason,
+      ...(reasonKey ? { messageKey: reasonKey } : {}),
+    });
   };
 
   /** Every attribute the reader does not model — colours quarantined (D5). */
@@ -897,7 +931,8 @@ export function importBpmnXml(
           payload,
           `${attr.name}="${escapeAttr(attr.value)}"`,
           BPMN_QUARANTINE_REASON.colour,
-          { sourceId, element: attr.name }
+          { sourceId, element: attr.name },
+          BPMN_QUARANTINE_REASON_KEY.colour
         );
         continue;
       }
@@ -1122,7 +1157,8 @@ export function importBpmnXml(
             pool.payload,
             fragmentOf(nested),
             BPMN_QUARANTINE_REASON.nestedLanes,
-            { sourceId, element: 'childLaneSet' }
+            { sourceId, element: 'childLaneSet' },
+            BPMN_QUARANTINE_REASON_KEY.nestedLanes
           );
           // A lane holding a child set is not a band Labre paints — its LEAVES
           // are — so the shape drawing it describes a subdivision the flat pool
@@ -1363,7 +1399,8 @@ export function importBpmnXml(
           payload,
           fragmentOf(child),
           BPMN_QUARANTINE_REASON.expanded,
-          { sourceId, element: child.nodeName }
+          { sourceId, element: child.nodeName },
+          BPMN_QUARANTINE_REASON_KEY.expanded
         );
         // The body's diagram goes with the body, all the way down. A shape left
         // behind here is an ORPHAN — nothing declares what it draws any more —
@@ -1642,7 +1679,8 @@ export function importBpmnXml(
           host.payload,
           fragmentOf(root),
           BPMN_QUARANTINE_REASON.imported,
-          { element: 'import' }
+          { element: 'import' },
+          BPMN_QUARANTINE_REASON_KEY.imported
         );
         continue;
       }

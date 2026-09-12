@@ -54,6 +54,45 @@ import { WARDLEY_NODE_SIZE, wardleyNodeProps } from './presets.js';
 import { WARDLEY_ROLE } from './roles.js';
 
 /**
+ * The OWM import remarks whose wording is FIXED, as `[key, English]` pairs.
+ *
+ * A reader is a pure function of text (mirroring `.bpmn`'s own, ADR 0012 P3)
+ * and has no `std`, so it cannot ask the host's catalogue for anything: it
+ * declares the key on the note and `reportInterchangeImport` resolves it when
+ * it draws the report (`InterchangeNote.messageKey`). The English string
+ * stays here and stays the fallback.
+ *
+ * Only these five, and the line is drawn exactly where BPMN's is
+ * (`gfx/bpmn/src/import.ts`): every OTHER remark below NAMES something out of
+ * the file — a line number, a count of carried lines — and the seam has
+ * neither interpolation nor pluralisation.
+ *
+ * Contributed to the manifest by `./translations.ts`.
+ */
+export const WARDLEY_OWM_IMPORT_REMARKS = {
+  unreadableCoordinatesInvented: [
+    'com.labre.wardley.import.remark.unreadable-coordinates',
+    'its coordinates were unreadable, so it was placed where a map with no coordinates places things. The file did not say where it goes.',
+  ],
+  noCoordinatesInvented: [
+    'com.labre.wardley.import.remark.no-coordinates',
+    'the file gives it no coordinates, so it was placed where a map with no coordinates places things. The file did not say where it goes.',
+  ],
+  duplicateName: [
+    'com.labre.wardley.import.remark.duplicate-name',
+    'this name is declared more than once. Both artefacts are on the map, and every link naming it means the first — OWM identifies a component by its name.',
+  ],
+  linkEmptyEnd: [
+    'com.labre.wardley.import.remark.link-empty-end',
+    'a link names nothing on one of its ends, so the arrow it asks for runs to no artefact and is invisible on the canvas.',
+  ],
+  linkUndeclaredEnd: [
+    'com.labre.wardley.import.remark.link-undeclared-end',
+    'a link names this, and no statement in the file declares it. The arrow is in the document and runs to no artefact, so it is invisible on the canvas.',
+  ],
+} as const satisfies Record<string, readonly [key: string, english: string]>;
+
+/**
  * An OnlineWardleyMaps (OWM) DSL document, read as a Wardley map — the inverse
  * of `export.ts` on the vocabulary Labre draws, and an honest accounting of
  * everything else (`docs/adr/0012`, D1–D6).
@@ -379,12 +418,18 @@ export function importWardleyOwm(
     carriedKinds.set(kind, (carriedKinds.get(kind) ?? 0) + 1);
   };
 
-  const inventedNote = (element: string, name: string, why: string) => {
+  const inventedNote = (
+    element: string,
+    name: string,
+    why: string,
+    whyKey?: string
+  ) => {
     notes.push({
       kind: 'invented-layout',
       sourceId: name,
       element,
       message: why,
+      ...(whyKey ? { messageKey: whyKey } : {}),
     });
   };
 
@@ -430,8 +475,11 @@ export function importWardleyOwm(
         element,
         name,
         bracket.present
-          ? 'its coordinates were unreadable, so it was placed where a map with no coordinates places things. The file did not say where it goes.'
-          : 'the file gives it no coordinates, so it was placed where a map with no coordinates places things. The file did not say where it goes.'
+          ? WARDLEY_OWM_IMPORT_REMARKS.unreadableCoordinatesInvented[1]
+          : WARDLEY_OWM_IMPORT_REMARKS.noCoordinatesInvented[1],
+        bracket.present
+          ? WARDLEY_OWM_IMPORT_REMARKS.unreadableCoordinatesInvented[0]
+          : WARDLEY_OWM_IMPORT_REMARKS.noCoordinatesInvented[0]
       );
       return { ...place, invented: true };
     }
@@ -637,8 +685,8 @@ export function importWardleyOwm(
         kind: 'warning',
         sourceId: statement.name,
         element: statement.keyword,
-        message:
-          'this name is declared more than once. Both artefacts are on the map, and every link naming it means the first — OWM identifies a component by its name.',
+        message: WARDLEY_OWM_IMPORT_REMARKS.duplicateName[1],
+        messageKey: WARDLEY_OWM_IMPORT_REMARKS.duplicateName[0],
       });
     }
     declared.add(statement.name);
@@ -666,8 +714,8 @@ export function importWardleyOwm(
         notes.push({
           kind: 'warning',
           element: 'link',
-          message:
-            'a link names nothing on one of its ends, so the arrow it asks for runs to no artefact and is invisible on the canvas.',
+          message: WARDLEY_OWM_IMPORT_REMARKS.linkEmptyEnd[1],
+          messageKey: WARDLEY_OWM_IMPORT_REMARKS.linkEmptyEnd[0],
         });
         continue;
       }
@@ -676,8 +724,8 @@ export function importWardleyOwm(
         kind: 'warning',
         sourceId: end,
         element: 'link',
-        message:
-          'a link names this, and no statement in the file declares it. The arrow is in the document and runs to no artefact, so it is invisible on the canvas.',
+        message: WARDLEY_OWM_IMPORT_REMARKS.linkUndeclaredEnd[1],
+        messageKey: WARDLEY_OWM_IMPORT_REMARKS.linkUndeclaredEnd[0],
       });
     }
   }

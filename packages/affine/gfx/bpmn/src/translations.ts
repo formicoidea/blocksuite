@@ -15,7 +15,12 @@ import {
   POOL_NAME_FALLBACK,
   POOL_NAME_KEY,
 } from './consts.js';
-import { BPMN_IMPORT_REMARKS } from './import.js';
+import { BPMN_EXPORT_WARNING_KEYS } from './export.js';
+import {
+  BPMN_IMPORT_REMARKS,
+  BPMN_QUARANTINE_REASON,
+  BPMN_QUARANTINE_REASON_KEY,
+} from './import.js';
 import { BPMN_PROFILES } from './profiles.js';
 import { BPMN_READINGS } from './reading.js';
 import { BPMN_ROLES } from './roles.js';
@@ -48,6 +53,35 @@ const importRemarkEntries = (): TranslationKeyManifestEntry[] =>
   Object.values(BPMN_IMPORT_REMARKS).map(([key, english]) => ({
     key,
     fallback: english,
+    source: 'chrome' as const,
+  }));
+
+/**
+ * {@link BPMN_QUARANTINE_REASON}'s own four keys — a report note about
+ * material the import kept but will never write back (D5), fixed wording like
+ * the three remarks above and for the same reason: nothing in any of the four
+ * sentences names anything out of the file.
+ */
+const quarantineReasonEntries = (): TranslationKeyManifestEntry[] =>
+  (
+    Object.keys(
+      BPMN_QUARANTINE_REASON
+    ) as (keyof typeof BPMN_QUARANTINE_REASON)[]
+  ).map(reason => ({
+    key: BPMN_QUARANTINE_REASON_KEY[reason],
+    fallback: BPMN_QUARANTINE_REASON[reason],
+    source: 'chrome' as const,
+  }));
+
+/**
+ * The nine export-warning keys ({@link BPMN_EXPORT_WARNING_KEYS}) — a report
+ * built from the board rather than written into it, so `chrome` like the
+ * import remarks above and not `seed`.
+ */
+const exportWarningEntries = (): TranslationKeyManifestEntry[] =>
+  BPMN_EXPORT_WARNING_KEYS.map(([key, fallback]) => ({
+    key,
+    fallback,
     source: 'chrome' as const,
   }));
 
@@ -102,6 +136,8 @@ export const bpmnTranslationEntries: TranslationKeyManifestEntry[] =
     furnitureSeedEntries(),
     exampleSeedEntries(),
     importRemarkEntries(),
+    quarantineReasonEntries(),
+    exportWarningEntries(),
     // LAST, and the order is load-bearing: a reading profile carries the
     // framework's own `roles`, so walking it reaches every role key the `role`
     // line above already named. `mergeTranslationEntries` keeps the FIRST
