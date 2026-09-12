@@ -12,6 +12,7 @@ import {
   MINDMAP_SEED_TOPIC_1,
   MINDMAP_SEED_TOPIC_2,
   MINDMAP_SEED_TOPIC_3,
+  MINDMAP_TEMPLATE_CATEGORY,
 } from '../translations';
 
 /**
@@ -684,6 +685,8 @@ function buildStyle4(seeds: MindmapSeeds): SurfaceElementsJSON {
 
 export const mindmapTemplateCategory: TemplateCategory = {
   name: 'Mind Map',
+  // See `TemplateCategory.nameKey`.
+  nameKey: MINDMAP_TEMPLATE_CATEGORY[0],
   templates: [
     tpl(
       'Mind Map — Style 1',
