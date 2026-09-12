@@ -103,6 +103,22 @@ export const TOOLBAR_DRAW_CONNECTOR: ChromeWording = [
 ];
 
 /**
+ * The two block-reorder verbs of a line-oriented block: the slash menu's own
+ * "Actions" group (`packages/affine/widgets/slash-menu`) and the note block's
+ * move-up/down hotkey config (`packages/affine/blocks/note/src/move-block.ts`)
+ * say the exact same word — one key, shared rather than declared twice.
+ */
+export const TOOLBAR_MOVE_UP: ChromeWording = [
+  'com.labre.toolbar.move-up',
+  'Move Up',
+];
+
+export const TOOLBAR_MOVE_DOWN: ChromeWording = [
+  'com.labre.toolbar.move-down',
+  'Move Down',
+];
+
+/**
  * The four wordings of the view switcher — the control that decides whether a
  * link is drawn as words, as a card or as the document itself.
  *
@@ -197,6 +213,121 @@ export const BOARD_LEGEND_COMPONENTS: ChromeWording = [
   'Generate the legend (components present)',
 ];
 
+/* ── Note shadow styles ────────────────────────────────────────────────
+ * The note block's own shadow options, shared verbatim between the surface
+ * toolbar's style panel (blocks/note) and the edgeless senior menu's shadow
+ * panel (gfx/note) — five of the six read identically in both; the sixth
+ * ("Floating shadow" there, "Floation shadow" here, a pre-existing typo in
+ * gfx/note) is kept apart precisely because the fallback must stay the
+ * literal on screen, letter for letter.
+ */
+export const NOTE_SHADOW_NONE: ChromeWording = [
+  'com.labre.note.shadow.none',
+  'No shadow',
+];
+
+export const NOTE_SHADOW_BOX: ChromeWording = [
+  'com.labre.note.shadow.box',
+  'Box shadow',
+];
+
+export const NOTE_SHADOW_STICKER: ChromeWording = [
+  'com.labre.note.shadow.sticker',
+  'Sticker shadow',
+];
+
+export const NOTE_SHADOW_PAPER: ChromeWording = [
+  'com.labre.note.shadow.paper',
+  'Paper shadow',
+];
+
+export const NOTE_SHADOW_FILM: ChromeWording = [
+  'com.labre.note.shadow.film',
+  'Film shadow',
+];
+
+/* ── Block type names ──────────────────────────────────────────────────── */
+
+/**
+ * The name of a text primitive block, as it appears identically in more than
+ * one of the prose-chrome surfaces: the paragraph's own empty-line
+ * placeholder (`packages/affine/blocks/paragraph/src/view.ts`) and the
+ * edgeless note's "add to note" menu
+ * (`packages/affine/gfx/note/src/toolbar/note-menu-config.ts`). The note
+ * block's own slash-menu tooltip captions say the SAME word too
+ * (`packages/affine/blocks/note/src/configs/tooltips.ts`), reusing these
+ * constants rather than declaring their own.
+ *
+ * `textConversionConfigs` (`packages/affine/rich-text`) is the canonical
+ * source of the English literal itself — outside this lot's packages, so left
+ * untouched — but every place THESE packages render the same word resolves it
+ * through the seam via the constants below.
+ */
+export const BLOCK_NAME_TEXT: ChromeWording = [
+  'com.labre.block-name.text',
+  'Text',
+];
+
+export const BLOCK_NAME_HEADING_1: ChromeWording = [
+  'com.labre.block-name.heading-1',
+  'Heading 1',
+];
+
+export const BLOCK_NAME_HEADING_2: ChromeWording = [
+  'com.labre.block-name.heading-2',
+  'Heading 2',
+];
+
+export const BLOCK_NAME_HEADING_3: ChromeWording = [
+  'com.labre.block-name.heading-3',
+  'Heading 3',
+];
+
+export const BLOCK_NAME_HEADING_4: ChromeWording = [
+  'com.labre.block-name.heading-4',
+  'Heading 4',
+];
+
+export const BLOCK_NAME_HEADING_5: ChromeWording = [
+  'com.labre.block-name.heading-5',
+  'Heading 5',
+];
+
+export const BLOCK_NAME_HEADING_6: ChromeWording = [
+  'com.labre.block-name.heading-6',
+  'Heading 6',
+];
+
+export const BLOCK_NAME_CODE_BLOCK: ChromeWording = [
+  'com.labre.block-name.code-block',
+  'Code Block',
+];
+
+export const BLOCK_NAME_QUOTE: ChromeWording = [
+  'com.labre.block-name.quote',
+  'Quote',
+];
+
+export const BLOCK_NAME_DIVIDER: ChromeWording = [
+  'com.labre.block-name.divider',
+  'Divider',
+];
+
+export const BLOCK_NAME_BULLETED_LIST: ChromeWording = [
+  'com.labre.block-name.bulleted-list',
+  'Bulleted List',
+];
+
+export const BLOCK_NAME_NUMBERED_LIST: ChromeWording = [
+  'com.labre.block-name.numbered-list',
+  'Numbered List',
+];
+
+export const BLOCK_NAME_TODO_LIST: ChromeWording = [
+  'com.labre.block-name.todo-list',
+  'To-do List',
+];
+
 /**
  * Every wording declared above, in declaration order.
  *
@@ -221,6 +352,8 @@ export const CHROME_WORDINGS: readonly ChromeWording[] = [
   TOOLBAR_LINK,
   TOOLBAR_CREATE_LINKED_DOC,
   TOOLBAR_DRAW_CONNECTOR,
+  TOOLBAR_MOVE_UP,
+  TOOLBAR_MOVE_DOWN,
   TOOLBAR_SWITCH_VIEW,
   TOOLBAR_INLINE_VIEW,
   TOOLBAR_CARD_VIEW,
@@ -232,4 +365,22 @@ export const CHROME_WORDINGS: readonly ChromeWording[] = [
   BOARD_RESIZE_TOGGLE,
   BOARD_LEGEND_NOTATION,
   BOARD_LEGEND_COMPONENTS,
+  NOTE_SHADOW_NONE,
+  NOTE_SHADOW_BOX,
+  NOTE_SHADOW_STICKER,
+  NOTE_SHADOW_PAPER,
+  NOTE_SHADOW_FILM,
+  BLOCK_NAME_TEXT,
+  BLOCK_NAME_HEADING_1,
+  BLOCK_NAME_HEADING_2,
+  BLOCK_NAME_HEADING_3,
+  BLOCK_NAME_HEADING_4,
+  BLOCK_NAME_HEADING_5,
+  BLOCK_NAME_HEADING_6,
+  BLOCK_NAME_CODE_BLOCK,
+  BLOCK_NAME_QUOTE,
+  BLOCK_NAME_DIVIDER,
+  BLOCK_NAME_BULLETED_LIST,
+  BLOCK_NAME_NUMBERED_LIST,
+  BLOCK_NAME_TODO_LIST,
 ];

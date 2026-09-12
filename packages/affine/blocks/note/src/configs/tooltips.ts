@@ -3,8 +3,30 @@ import {
   HEADING_SCALE,
   headingLineBox,
 } from '@labre/affine-shared/consts';
+import {
+  BLOCK_NAME_BULLETED_LIST,
+  BLOCK_NAME_CODE_BLOCK,
+  BLOCK_NAME_DIVIDER,
+  BLOCK_NAME_NUMBERED_LIST,
+  BLOCK_NAME_QUOTE,
+  BLOCK_NAME_TEXT,
+  BLOCK_NAME_TODO_LIST,
+} from '@labre/affine-shared/services';
 import type { SlashMenuTooltip } from '@labre/affine-widget-slash-menu';
 import { html, svg } from 'lit';
+
+import {
+  NOTE_TOOLTIP_BOLD_TEXT,
+  NOTE_TOOLTIP_HEADING_1,
+  NOTE_TOOLTIP_HEADING_2,
+  NOTE_TOOLTIP_HEADING_3,
+  NOTE_TOOLTIP_HEADING_4,
+  NOTE_TOOLTIP_HEADING_5,
+  NOTE_TOOLTIP_HEADING_6,
+  NOTE_TOOLTIP_ITALIC,
+  NOTE_TOOLTIP_STRIKETHROUGH,
+  NOTE_TOOLTIP_UNDERLINE,
+} from '../translations.js';
 // prettier-ignore
 const TextTooltip = html`<svg width="170" height="68" viewBox="0 0 170 68" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect width="170" height="68" rx="2" fill="white"/>
@@ -294,85 +316,102 @@ export const tooltips: Record<string, SlashMenuTooltip> = {
   Text: {
     figure: TextTooltip,
     caption: 'Text',
+    captionWording: BLOCK_NAME_TEXT,
   },
 
   'Heading 1': {
     figure: Heading1Tooltip,
     caption: 'Heading #1',
+    captionWording: NOTE_TOOLTIP_HEADING_1,
   },
 
   'Heading 2': {
     figure: Heading2Tooltip,
     caption: 'Heading #2',
+    captionWording: NOTE_TOOLTIP_HEADING_2,
   },
 
   'Heading 3': {
     figure: Heading3Tooltip,
     caption: 'Heading #3',
+    captionWording: NOTE_TOOLTIP_HEADING_3,
   },
 
   'Heading 4': {
     figure: Heading4Tooltip,
     caption: 'Heading #4',
+    captionWording: NOTE_TOOLTIP_HEADING_4,
   },
 
   'Heading 5': {
     figure: Heading5Tooltip,
     caption: 'Heading #5',
+    captionWording: NOTE_TOOLTIP_HEADING_5,
   },
 
   'Heading 6': {
     figure: Heading6Tooltip,
     caption: 'Heading #6',
+    captionWording: NOTE_TOOLTIP_HEADING_6,
   },
 
   'Code Block': {
     figure: CodeBlockTooltip,
     caption: 'Code Block',
+    captionWording: BLOCK_NAME_CODE_BLOCK,
   },
 
   Quote: {
     figure: QuoteTooltip,
     caption: 'Quote',
+    captionWording: BLOCK_NAME_QUOTE,
   },
 
   Divider: {
     figure: DividerTooltip,
     caption: 'Divider',
+    captionWording: BLOCK_NAME_DIVIDER,
   },
 
   'Bulleted List': {
     figure: BulletedListTooltip,
     caption: 'Bulleted List',
+    captionWording: BLOCK_NAME_BULLETED_LIST,
   },
 
   'Numbered List': {
     figure: NumberedListTooltip,
     caption: 'Numbered List',
+    captionWording: BLOCK_NAME_NUMBERED_LIST,
   },
 
   Bold: {
     figure: BoldTextTooltip,
     caption: 'Bold Text',
+    captionWording: NOTE_TOOLTIP_BOLD_TEXT,
   },
 
   Italic: {
     figure: ItalicTooltip,
     caption: 'Italic',
+    captionWording: NOTE_TOOLTIP_ITALIC,
   },
 
   Underline: {
     figure: UnderlineTooltip,
     caption: 'Underline',
+    captionWording: NOTE_TOOLTIP_UNDERLINE,
   },
 
   Strikethrough: {
     figure: StrikethroughTooltip,
     caption: 'Strikethrough',
+    captionWording: NOTE_TOOLTIP_STRIKETHROUGH,
   },
 
   'To-do List': {
     figure: TodoTooltip,
     caption: 'To-do List',
+    captionWording: BLOCK_NAME_TODO_LIST,
   },
 };
