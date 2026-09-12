@@ -88,9 +88,10 @@ function createConversionItem(
   const { name, description, icon, flavour, type } = config;
   return {
     name,
-    nameWording: NOTE_SLASH_ITEM_NAME_WORDINGS[name],
+    nameWording: config.nameWording ?? NOTE_SLASH_ITEM_NAME_WORDINGS[name],
     group,
     description,
+    descriptionWording: config.descriptionWording,
     icon,
     tooltip: tooltips[name],
     when: ({ model }) => model.store.schema.flavourSchemaMap.has(flavour),
@@ -110,7 +111,7 @@ function createTextFormatItem(
   const { name, icon, id, action } = config;
   return {
     name,
-    nameWording: NOTE_SLASH_ITEM_NAME_WORDINGS[name],
+    nameWording: config.nameWording ?? NOTE_SLASH_ITEM_NAME_WORDINGS[name],
     icon,
     group,
     tooltip: tooltips[name],
